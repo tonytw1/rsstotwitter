@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="nz.gen.wellington.rsstotwitter.model.TwitterAccount" table="account" lazy="false" >		
+	  	<id name="id">
+            <generator class="native" />
+    	</id>
+		<property name="username" type="string" />		
+        <property name="password" type="string" />
+        
+        <set name="mentions" table="account_mentions" access="field"  lazy="false" >			
+			<key column="account" />
+			<many-to-many class="nz.gen.wellington.rsstotwitter.model.Tweet" column="tweet" />
+		</set>
+		        
+    </class>
+
+</hibernate-mapping>

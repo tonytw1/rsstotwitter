@@ -1,0 +1,1 @@
+alter table twitter_event add column feed int NOT NULL;

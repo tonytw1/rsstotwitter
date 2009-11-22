@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="rsstotwitter" default="build" basedir=".">
+	
+	<property name="lib" location="war/WEB-INF/lib"/>
+	<property name="dist" location="dist"/>
+	<property name="web.dir" value="war"/>
+	<property name="src.dir" location="src"/>
+	<property name="warfile" location="${dist}/rsstotwitter.war"/>
+ 	<property name="name" value="rsstotwitter"/>
+	<property name="build.dir" value="build"/>	
+	<property name="build.out.dir" value="build/out"/>	
+	
+	<path id="classpath">
+		<fileset dir="${lib}">
+		   	<include name="**/*.jar"/>
+		</fileset>		
+	</path>
+	
+	<target name="clean">		
+	  	<delete file="${warfile}"/>
+		<delete dir="${build.out.dir}"/>
+		<delete dir="${build.dir}/bin"/>
+		<delete dir="${build.dir}"/>
+	</target>
+
+
+
+  <target name="build" depends="clean" description="Compile main source tree java files">    	
+	
+  	
+   	<mkdir dir="${build.dir}"/>  	
+	<mkdir dir="${build.dir}/bin"/>  	
+	<mkdir dir="${build.out.dir}"/>
+
+   	<javac destdir="${build.dir}/bin" debug="true" deprecation="false" optimize="false" failonerror="true">
+      	<src path="${src.dir}"/>
+       	<classpath refid="classpath"/>
+   	</javac>
+  	
+ 	<copy todir="${build.dir}/bin" preservelastmodified="true" flatten="true">
+	    <fileset dir="${src.dir}">
+         	<include name="**/*.hbm.xml"/>
+       	</fileset>
+	</copy>
+  	
+	<copy todir="${build.dir}/bin" preservelastmodified="true" flatten="true">
+	    <fileset dir="${src.dir}">
+         	<include name="**/*.properties"/>
+       	</fileset>
+	</copy>
+  	
+  </target>
+
+ 	<target name="buildwar" depends="build" description="Deploy application as a WAR file">
+        <war destfile="${build.out.dir}/${name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+            
+        	<fileset dir="${web.dir}">
+                <include name="**/*.*"/>
+            </fileset>
+        	
+        	<classes dir="${build.dir}/bin"/>        	
+        </war>
+    </target>
+	
+	
+	
+	<target name="deploy" depends="buildwar" description="Deploy application as a WAR file">
+	  	<copy todir="/Users/tony/dev/resin-3.0.19/webapps" preservelastmodified="true">
+	      	<fileset dir="${build.out.dir}">
+	           	<include name="*.war"/>
+	       	</fileset>
+	   	</copy>
+	</target>
+
+	
+	
+	
+</project>

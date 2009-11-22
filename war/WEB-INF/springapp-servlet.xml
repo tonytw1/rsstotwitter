@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- This bean substitutes variables from the env properties file -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>file:conf/rsstotwitter.properties</value>
+		</property>
+	</bean>
+
+	
+	<bean id="tinyUrlService" class="nz.gen.wellington.tinyurl.TinyUrlService" />
+	<bean id="twitterService" class="nz.gen.wellington.twitter.TwitterService" />
+	<bean id="feedDAO" class="nz.gen.wellington.rsstotwitter.repositories.FeedDAO" />
+	
+	<bean id="twitBuilderService" class="nz.gen.wellington.twitter.TwitBuilderService">
+		<constructor-arg ref="tinyUrlService" />
+	</bean>
+	
+	
+		
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<constructor-arg ref="sessionFactory" />
+	</bean>
+		
+	<bean id="twitterHistoryDAO" class="nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO">
+		<constructor-arg ref="hibernateTemplate" />
+	</bean>
+	
+	<bean id="twitteredFeedDAO" class="nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO">
+		<constructor-arg ref="hibernateTemplate" />
+	</bean>
+	
+	<bean id="tweetDAO" class="nz.gen.wellington.rsstotwitter.repositories.TweetDAO">
+		<constructor-arg ref="hibernateTemplate" />
+	</bean>
+
+	<bean id="accountDAO" class="nz.gen.wellington.rsstotwitter.repositories.AccountDAO">
+		<constructor-arg ref="hibernateTemplate" />
+	</bean>
+	
+			
+	<bean id="twitterUpdateService" class="nz.gen.wellington.rsstotwitter.timers.TwitterUpdateService">
+		<constructor-arg ref="feedDAO" />
+		<constructor-arg ref="twitterHistoryDAO" />
+		<constructor-arg ref="twitBuilderService" />
+		<constructor-arg ref="twitterService" />
+		<constructor-arg ref="twitteredFeedDAO" />
+		<constructor-arg ref="tweetDAO" />
+	</bean>
+	
+	<bean id="twitterUpdateServiceRunner" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+  		<property name="targetObject" ref="twitterUpdateService" />
+  		<property name="targetMethod" value="run" />
+  		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="twitterUpdateServiceTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+   		<property name="jobDetail" ref="twitterUpdateServiceRunner" />
+    	<property name="startDelay" value="120000" />
+    	<property name="repeatInterval" value="600000" />
+	</bean>
+	
+	
+	
+	<bean id="twitterArchiver" class="nz.gen.wellington.rsstotwitter.timers.TwitterArchiver">
+		<constructor-arg ref="twitterService" />
+		<constructor-arg ref="twitteredFeedDAO" />
+		<constructor-arg ref="tweetDAO" />
+		<constructor-arg ref="accountDAO" />
+	</bean>
+	
+	<bean id="twitterArchiverRunner" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+  		<property name="targetObject" ref="twitterArchiver" />
+  		<property name="targetMethod" value="run" />
+  		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="twitterArchiverTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+   		<property name="jobDetail" ref="twitterArchiverRunner" />
+    	<property name="startDelay" value="0" />
+    	<property name="repeatInterval" value="86400000" />
+	</bean>
+			
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="twitterUpdateServiceTrigger"/>
+				<ref bean="twitterArchiverTrigger"/>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" lazy-init="false">
+  		<property name="mappingResources">
+    		<list>
+	    		<value>Tweet.hbm.xml</value>
+	    		<value>TwitterAccount.hbm.xml</value>	    		  
+        		<value>TwitterEvent.hbm.xml</value>
+       			<value>TwitteredFeed.hbm.xml</value>  	
+  	 		</list>
+  		</property>
+  		<property name="hibernateProperties">
+    		<props>
+    			<prop key="hibernate.transaction.auto_close_session">false</prop>
+      			<prop key="hibernate.current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</prop>
+      			<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>      	
+      			<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+		      	<prop key="hibernate.cache.use_query_cache">false</prop>
+      			<prop key="hibernate.cache.use_second_level_cache">false</prop>      	
+		    </props>
+		</property>
+ 		<property name="dataSource">
+    		<ref bean="dataSource"/>
+		</property>
+	</bean>
+	
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName">
+   			<value>com.mysql.jdbc.Driver</value>
+ 		</property>
+ 		<property name="url">
+   			<value>jdbc:mysql://dev.local/${database.name}?useUnicode=true&amp;characterEncoding=UTF-8</value>
+ 		</property>
+ 		
+ 		<property name="username">
+   			<value>${database.username}</value>
+ 		</property>
+ 		<property name="password">
+   			<value>${database.password}</value>
+ 		</property>
+ 		
+ 		<property name="maxActive">
+   			<value>10</value>
+ 		</property>
+ 		
+ 		<property name="maxIdle">
+   			<value>5</value>
+ 		</property> 		
+	</bean> 
+	        
+</beans>

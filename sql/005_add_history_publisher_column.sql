@@ -1,0 +1,1 @@
+alter table twitter_event add column publisher varchar(255);

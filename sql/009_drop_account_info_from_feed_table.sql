@@ -1,0 +1,1 @@
+alter table twittered_feed add column account int;
