@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
+import java.util.Iterator;
 import java.util.List;
 
 import net.unto.twitter.TwitterProtos.Status;
@@ -49,36 +50,37 @@ public class TwitterUpdateService {
     }
     
     
+	@SuppressWarnings("unchecked")
 	public void updateFeed(TwitteredFeed feed) {
         log.info("Running twitter update for: " + feed.getUrl());
         
-        boolean rateLimitExceeded = isRateLimitExceeded(feed);
-        if (!rateLimitExceeded) {
+        int tweetsSent = getNumberOfTweetsSentInLastTwentyFourHours(feed);
+        if (hasNotExceededFeedRateLimit(tweetsSent)) {
 
         	final SyndFeed syndfeed = feedDAO.loadSyndFeedWithFeedFetcher(feed.getUrl());
         	if (syndfeed != null) {
-        		final List<SyndEntry> feedItems = syndfeed.getEntries();
         		
-        		for (SyndEntry feedItem : feedItems) {
+        		Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
+        		while (feedItemsIterator.hasNext() && hasNotExceededFeedRateLimit(tweetsSent)) {
+        			SyndEntry feedItem = (SyndEntry) feedItemsIterator.next();
         			
         			boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
         			if (!publisherRateLimitExceeded) {
         				
-	        			boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);              
 	        			final String guid = feedItem.getUri();
-	        			boolean hasBeenTwitteredAlready = twitterHistoryDAO.hasAlreadyBeenTwittered(guid);
-	        			
-	        			if (isLessThanOneWeekOld && !hasBeenTwitteredAlready) {
+	        			if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {
 	        				final String twit = twitBuilderService.buildTwitForItem(feedItem.getTitle(), feedItem.getLink(), feedItem.getAuthor(), feed.getTwitterTag());
 	        				Status sentPost = twitterService.twitter(twit, feed.getAccount().getUsername(), feed.getAccount().getPassword());
 							if (sentPost != null) {
 								Tweet sentTweet = new Tweet(sentPost);
 								tweetDAO.saveTweet(sentTweet);
 	        					twitterHistoryDAO.markAsTwittered(guid, twit, feedItem.getAuthor(), feed, sentTweet);
+	        					tweetsSent++;
 	        					
 	        				} else {
 	        					log.warn("Failed to twitter: " + twit);
 	        				}
+							
 	        			} else {
 	        				log.info("Not twittering as guid has already been twittered or is more than a week old: " + guid);
 	        			}
@@ -96,7 +98,12 @@ public class TwitterUpdateService {
         } else {
         	log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; skipping");
         }
+        
         log.info("Twitter update completed");
+	}
+
+	private boolean hasNotExceededFeedRateLimit(int tweetsSent) {
+		return tweetsSent < MAX_TWITS_PER_DAY;
 	}
 
     
@@ -109,10 +116,10 @@ public class TwitterUpdateService {
 		return false;
 	}
 
-	private boolean isRateLimitExceeded(TwitteredFeed feed) {
+	private int getNumberOfTweetsSentInLastTwentyFourHours(TwitteredFeed feed) {
     	final int numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);
     	log.info("Feed '" + feed.getUrl() + "' has made " + numberOfTwitsInLastTwentyFourHours + " twits in the last 24 hours");
-    	return numberOfTwitsInLastTwentyFourHours >= MAX_TWITS_PER_DAY;
+    	return numberOfTwitsInLastTwentyFourHours;
 	}
     
 
