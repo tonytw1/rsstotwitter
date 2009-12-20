@@ -1,31 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/java"/>
-	<classpathentry kind="src" path="test/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/rome-fetcher-0.9.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/rome-0.9.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.13.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/joda-time-1.5.2.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jdom.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec-1.3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/mockito-all-1.6.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-3.0.15-ga-bin.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/dom4j-1.6.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-collections-3.2.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/ehcache-1.2.3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/cglib-nodep-2.1_3.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jta1.0.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/json-lib-2.2.1-jdk15.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.1.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/ezmorph-1.0.4.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-beanutils.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/java-twitter-0.9-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/protobuf-java-2.1.0.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

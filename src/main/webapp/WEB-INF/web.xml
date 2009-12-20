@@ -1,0 +1,6 @@
+<web-app>
+  <display-name>Brown Bag</display-name>
+  <session-timeout>30</session-timeout>
+
+  	  	
+</web-app>

@@ -59,7 +59,7 @@
 	
 	<bean id="twitterUpdateServiceTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
    		<property name="jobDetail" ref="twitterUpdateServiceRunner" />
-    	<property name="startDelay" value="120000" />
+    	<property name="startDelay" value="10000" />
     	<property name="repeatInterval" value="600000" />
 	</bean>
 	
