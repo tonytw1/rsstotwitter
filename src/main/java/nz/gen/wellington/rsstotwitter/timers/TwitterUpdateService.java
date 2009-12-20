@@ -65,30 +65,14 @@ public class TwitterUpdateService {
         			SyndEntry feedItem = (SyndEntry) feedItemsIterator.next();
         			
         			boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
-        			if (!publisherRateLimitExceeded) {
-        				
-	        			final String guid = feedItem.getUri();
-	        			if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {
-	        				final String twit = twitBuilderService.buildTwitForItem(feedItem.getTitle(), feedItem.getLink(), feedItem.getAuthor(), feed.getTwitterTag());
-	        				Status sentPost = twitterService.twitter(twit, feed.getAccount().getUsername(), feed.getAccount().getPassword());
-							if (sentPost != null) {
-								Tweet sentTweet = new Tweet(sentPost);
-								tweetDAO.saveTweet(sentTweet);
-	        					twitterHistoryDAO.markAsTwittered(guid, twit, feedItem.getAuthor(), feed, sentTweet);
-	        					tweetsSent++;
-	        					
-	        				} else {
-	        					log.warn("Failed to twitter: " + twit);
-	        				}
-							
-	        			} else {
-	        				log.info("Not twittering as guid has already been twittered or is more than a week old: " + guid);
+        			if (!publisherRateLimitExceeded) {        				
+	        			if (processItem(feed, feedItem)) {
+	        				tweetsSent++;
 	        			}
-	        			
+	        			                                             	        			
         			} else {
         				log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit");
-        			}
-        			
+        			}        			
         		}
         		
         	} else {
@@ -102,6 +86,29 @@ public class TwitterUpdateService {
         log.info("Twitter update completed");
 	}
 
+	
+	private boolean processItem(TwitteredFeed feed, SyndEntry feedItem) {
+		final String guid = feedItem.getUri();
+		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {
+			final String twit = twitBuilderService.buildTwitForItem(feedItem.getTitle(), feedItem.getLink(), feedItem.getAuthor(), feed.getTwitterTag());
+			Status sentPost = twitterService.twitter(twit, feed.getAccount().getUsername(), feed.getAccount().getPassword());
+			if (sentPost != null) {
+				Tweet sentTweet = new Tweet(sentPost);
+				tweetDAO.saveTweet(sentTweet);
+				twitterHistoryDAO.markAsTwittered(guid, twit, feedItem.getAuthor(), feed, sentTweet);				
+				return true;
+				
+			} else {
+				log.warn("Failed to twitter: " + twit);
+			}
+			
+		} else {
+			log.info("Not twittering as guid has already been twittered or is more than a week old: " + guid);
+		}
+		return false;
+	}
+
+	
 	private boolean hasNotExceededFeedRateLimit(int tweetsSent) {
 		return tweetsSent < MAX_TWITS_PER_DAY;
 	}
