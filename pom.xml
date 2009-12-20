@@ -47,37 +47,9 @@
   		<version>0.9</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.google.protobuf</groupId>
-  		<artifactId>protobuf-java</artifactId>
-  		<version>2.2.0</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>spring-core</artifactId>
-  		<version>3.0.0.RELEASE</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>hibernate</groupId>
-  		<artifactId>hibernate</artifactId>
-  		<version>3.0.5</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
   		<groupId>org.mockito</groupId>
   		<artifactId>mockito-all</artifactId>
   		<version>1.8.2</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>spring-hibernate3</artifactId>
-  		<version>2.0.8</version>
   		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
@@ -107,6 +79,70 @@
   		<artifactId>mysql-connector-java</artifactId>
   		<version>5.1.10</version>
   		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring</artifactId>
+  		<version>2.5.6</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-webmvc</artifactId>
+  		<version>2.5.6</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-hibernate3</artifactId>
+  		<version>2.0.8</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-dbcp</groupId>
+  		<artifactId>commons-dbcp</artifactId>
+  		<version>1.2.2</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>hibernate</groupId>
+  		<artifactId>hibernate</artifactId>
+  		<version>2.1.8</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>quartz</groupId>
+  		<artifactId>quartz</artifactId>
+  		<version>1.5.2</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.google.protobuf</groupId>
+  		<artifactId>protobuf-java</artifactId>
+  		<version>2.1.0</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.google.collections</groupId>
+  		<artifactId>google-collections</artifactId>
+  		<version>1.0-rc5</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.sf.json-lib</groupId>
+  		<artifactId>json-lib</artifactId>
+  		<version>2.3</version>
+  		<type>jar</type>
+  		<classifier>jdk15</classifier>
   		<scope>compile</scope>
   	</dependency>
   	  
