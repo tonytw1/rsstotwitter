@@ -3,10 +3,9 @@ package nz.gen.wellington.rsstotwitter.model;
 import java.util.Date;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
-import net.unto.twitter.TwitterProtos.Status;
+import twitter4j.Status;
+
 
 public class Tweet {
 
@@ -28,11 +27,10 @@ public class Tweet {
 		this.text = status.getText();
 		this.author = status.getUser().getScreenName();
 		
-		DateTimeFormatter parser = DateTimeFormat.forPattern("E MMM dd HH:mm:ss Z YYYY");
-		DateTime time = parser.parseDateTime(status.getCreatedAt());
+		DateTime time = new DateTime(status.getCreatedAt());
 		this.date = time.toDate();
 		
-		this.inReplyToUserId = status.getInReplyToUserId();		
+		this.inReplyToUserId = status.getInReplyToUserId();
 	}
 
 	public Long getId() {

@@ -1,6 +1,5 @@
 <web-app>
   <display-name>rsstotwitter</display-name>
-  <session-timeout>30</session-timeout>
 	
 	<servlet>
   		<servlet-name>rsstotwitter</servlet-name>

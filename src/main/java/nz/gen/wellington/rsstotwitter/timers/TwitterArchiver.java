@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.unto.twitter.TwitterProtos.Status;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
@@ -14,6 +13,8 @@ import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
 import nz.gen.wellington.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
+
+import twitter4j.Status;
 
 public class TwitterArchiver {
 

@@ -41,11 +41,7 @@
   		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
-  	<dependency>
-  		<groupId>net.unto</groupId>
-  		<artifactId>twitter</artifactId>
-  		<version>0.9</version>
-  	</dependency>
+  
   	<dependency>
   		<groupId>org.mockito</groupId>
   		<artifactId>mockito-all</artifactId>
@@ -57,20 +53,6 @@
   		<groupId>commons-httpclient</groupId>
   		<artifactId>commons-httpclient</artifactId>
   		<version>3.1</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>rome</groupId>
-  		<artifactId>rome</artifactId>
-  		<version>0.9</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>rome</groupId>
-  		<artifactId>rome-fetcher</artifactId>
-  		<version>0.9</version>
   		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
@@ -110,13 +92,6 @@
   		<scope>compile</scope>
   	</dependency>
   	<dependency>
-  		<groupId>hibernate</groupId>
-  		<artifactId>hibernate</artifactId>
-  		<version>2.1.8</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	<dependency>
   		<groupId>quartz</groupId>
   		<artifactId>quartz</artifactId>
   		<version>1.5.2</version>
@@ -143,6 +118,41 @@
   		<version>2.3</version>
   		<type>jar</type>
   		<classifier>jdk15</classifier>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-hibernate3</artifactId>
+  		<version>2.0.8</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.java.dev.rome</groupId>
+  		<artifactId>rome</artifactId>
+  		<version>1.0.0</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.java.dev.rome</groupId>
+  		<artifactId>rome-fetcher</artifactId>
+  		<version>1.0.0</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.twitter4j</groupId>
+  		<artifactId>twitter4j</artifactId>
+  		<version>2.1.2</version>
+  		<type>pom</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.twitter4j</groupId>
+  		<artifactId>twitter4j-core</artifactId>
+  		<version>2.1.2</version>
+  		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
   	  

@@ -2,7 +2,6 @@ package nz.gen.wellington.rsstotwitter.repositories;
 
 import java.util.List;
 
-import net.unto.twitter.TwitterProtos.Status;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterEvent;
 import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;

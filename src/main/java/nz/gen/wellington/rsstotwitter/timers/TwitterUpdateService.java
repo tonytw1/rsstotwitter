@@ -3,7 +3,6 @@ package nz.gen.wellington.rsstotwitter.timers;
 import java.util.Iterator;
 import java.util.List;
 
-import net.unto.twitter.TwitterProtos.Status;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
 import nz.gen.wellington.rsstotwitter.repositories.FeedDAO;
@@ -15,6 +14,8 @@ import nz.gen.wellington.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+
+import twitter4j.Status;
 
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
