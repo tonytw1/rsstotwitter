@@ -3,6 +3,8 @@ package nz.gen.wellington.twitter;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+
 import org.apache.log4j.Logger;
 
 import twitter4j.ResponseList;
@@ -10,6 +12,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.http.AccessToken;
 
 
 public class TwitterService {
@@ -21,27 +24,35 @@ public class TwitterService {
     static Logger log = Logger.getLogger(TwitterService.class);
 
 	
-    public Status twitter(String twit, String username, String password) {
-        if (twit.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH) {        	
-        	 Twitter twitter = getAuthenticatedApi(username, password);
-        	 log.info("Twittering: " + twit);
-        	 try {
-        		 return twitter.updateStatus(twit);		 
-        	 } catch (TwitterException e) {
-        		 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
-        		 return null;
-        	 }
+    public Status twitter(String twit, TwitterAccount account) {    	
+		if (!(twit.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
+			log.warn("Message too long to twitter; not twittered: " + twit);
+			return null;
+		}        
+		        	        	
+		Twitter twitter = getAuthenticatedApiForAccount(account);		
+		if (twitter == null) {
+    		return null;
+    	}
+				
+		log.info("Twittering: " + twit);
+		try {
+			return twitter.updateStatus(twit);		 
+		} catch (TwitterException e) {
+        	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
+		}
         	
-        } else {
-            log.warn("Message to long to twitter; not twittered: " + twit);
-        }        
-        return null;
+		return null;
     }
 
     
-    public List<Status> getReplies(String username, String password) {
-		log.info("Getting twitter replies from live api for " + username);
-   	 	Twitter twitter = getAuthenticatedApi(username, password);
+    public List<Status> getReplies(TwitterAccount account) {
+    	Twitter twitter = getAuthenticatedApiForAccount(account);
+    	if (twitter == null) {
+    		return null;
+    	}
+    	
+		log.info("Getting twitter replies from live api");
         List<Status> all = new ArrayList<Status>();
         
         // TODO how to paginate this correctly?
@@ -60,9 +71,16 @@ public class TwitterService {
 	}
     
     
-    private Twitter getAuthenticatedApi(String username, String password) {
-    	Twitter twitter = new TwitterFactory().getInstance(username, password);
-    	return twitter;
-    }
+	private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
+		boolean accountHasAccessToken = account.getToken() != null && account.getTokenSecret() != null;
+		if (!accountHasAccessToken) {
+			log.warn("Could connect to account '" + account.getUsername()
+					+ "' as there is no access token available");
+			return null;
+		}
+
+		return new TwitterFactory().getOAuthAuthorizedInstance(new AccessToken(
+				account.getToken(), account.getTokenSecret()));
+	}
     
 }

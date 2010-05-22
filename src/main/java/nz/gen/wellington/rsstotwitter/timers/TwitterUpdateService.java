@@ -92,7 +92,7 @@ public class TwitterUpdateService {
 		final String guid = feedItem.getUri();
 		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {
 			final String twit = twitBuilderService.buildTwitForItem(feedItem.getTitle(), feedItem.getLink(), feedItem.getAuthor(), feed.getTwitterTag());
-			Status sentPost = twitterService.twitter(twit, feed.getAccount().getUsername(), feed.getAccount().getPassword());
+			Status sentPost = twitterService.twitter(twit, feed.getAccount());
 			if (sentPost != null) {
 				Tweet sentTweet = new Tweet(sentPost);
 				tweetDAO.saveTweet(sentTweet);

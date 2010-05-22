@@ -6,7 +6,11 @@ public class TwitterAccount {
 
 	private int id;
 	private String username;
-	private String password;	
+	private String password;
+	
+	private String token;
+	private String tokenSecret;
+	
 	private Set<Tweet> mentions;
 
 	public TwitterAccount() {
@@ -52,6 +56,22 @@ public class TwitterAccount {
 
 	public void addMention(Tweet mention) {
 		mentions.add(mention);
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getTokenSecret() {
+		return tokenSecret;
+	}
+
+	public void setTokenSecret(String tokenSecret) {
+		this.tokenSecret = tokenSecret;
 	}
 	
 }

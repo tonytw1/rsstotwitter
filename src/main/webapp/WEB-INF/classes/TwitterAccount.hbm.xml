@@ -11,7 +11,10 @@
     	</id>
 		<property name="username" type="string" />		
         <property name="password" type="string" />
-        
+                
+     	<property name="token" type="string" />
+    	<property name="tokenSecret" type="string" column="token_secret" />
+     	        
         <set name="mentions" table="account_mentions" access="field"  lazy="false" >			
 			<key column="account" />
 			<many-to-many class="nz.gen.wellington.rsstotwitter.model.Tweet" column="tweet" />

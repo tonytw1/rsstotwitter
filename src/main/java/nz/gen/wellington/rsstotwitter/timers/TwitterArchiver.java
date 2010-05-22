@@ -48,7 +48,7 @@ public class TwitterArchiver {
 	
 	private void archiveMentions(TwitterAccount account) {
         log.info("Running mention archiver for: " + account.getUsername());        
-        List<Status> replies = twitterService.getReplies(account.getUsername(), account.getPassword());
+        List<Status> replies = twitterService.getReplies(account);
         log.info("Found " + replies.size() + " replies");
         for (Status status : replies) {
         	if (!tweetDAO.isStoredLocally(status.getId())) {

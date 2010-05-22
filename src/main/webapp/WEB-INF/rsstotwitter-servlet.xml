@@ -123,7 +123,7 @@
    			<value>com.mysql.jdbc.Driver</value>
  		</property>
  		<property name="url">
-   			<value>jdbc:mysql://localhost/${database.name}?useUnicode=true&amp;characterEncoding=UTF-8</value>
+   			<value>jdbc:mysql://${database.host}/${database.name}?useUnicode=true&amp;characterEncoding=UTF-8</value>
  		</property>
  		
  		<property name="username">
