@@ -24,12 +24,29 @@ public class TwitterService {
     static Logger log = Logger.getLogger(TwitterService.class);
 
 	
-    public Status twitter(String twit, TwitterAccount account) {    	
+    public Status twitter(String twit, TwitterAccount account) {
+		log.info("Attempting to tweet: " + twit);
+
 		if (!(twit.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
 			log.warn("Message too long to twitter; not twittered: " + twit);
 			return null;
-		}        
-		        	        	
+		}
+		
+		log.debug("Checking for valid characters.");
+		char[] charArray = twit.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			char letter = twit.charAt(i);
+			log.debug(letter + "(" + Character.codePointAt(charArray, i) +"): " + Character.isValidCodePoint(letter));
+			if (!Character.isValidCodePoint(letter)) {
+				log.warn("Message has invalid code point: " + letter);
+				return null;
+			}
+			if (65533 == Character.codePointAt(charArray, i)) {
+				log.warn("Message has problem code point 65533: " + letter);
+				return null;
+			}						
+		}
+			        	        	
 		Twitter twitter = getAuthenticatedApiForAccount(account);		
 		if (twitter == null) {
     		return null;
