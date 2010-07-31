@@ -1,5 +1,6 @@
 package nz.gen.wellington.twitter;
 
+import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.tinyurl.TinyUrlService;
 
 public class TwitBuilderService {
@@ -10,11 +11,11 @@ public class TwitBuilderService {
         this.tinyUrlService = tinyUrlService;
     }
 
-    public String buildTwitForItem(String title, String link, String publisher, String tag) {
+    public String buildTwitForItem(FeedItem feedItem, String tag) {
         StringBuffer twit = new StringBuffer();
-        twit.append(title);
-        if (link != null) {
-            final String tinyUrlLink = tinyUrlService.makeTinyUrl(link);            
+        twit.append(feedItem.getTitle());
+        if (feedItem.getLink() != null) {
+            final String tinyUrlLink = tinyUrlService.makeTinyUrl(feedItem.getLink());            
             twit.append(" ");
             twit.append(tinyUrlLink);
         }
@@ -22,9 +23,9 @@ public class TwitBuilderService {
             appendTag(tag, twit);
         }
         
-        if (publisher != null && !publisher.isEmpty()) {
-        	return prependPublisher(publisher, twit);
-        }        
+        if (feedItem.getAuthor() != null && !feedItem.getAuthor().isEmpty()) {
+        	return prependPublisher(feedItem.getAuthor(), twit);
+        }
         return twit.toString();
     }
 

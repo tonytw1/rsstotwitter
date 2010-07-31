@@ -1,8 +1,8 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
-import java.util.Iterator;
 import java.util.List;
 
+import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
 import nz.gen.wellington.rsstotwitter.repositories.FeedDAO;
@@ -16,9 +16,6 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import twitter4j.Status;
-
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndFeed;
 
 public class TwitterUpdateService {
     
@@ -50,9 +47,7 @@ public class TwitterUpdateService {
         }
     }
     
-    
-	@SuppressWarnings("unchecked")
-	public void updateFeed(TwitteredFeed feed) {
+   	public void updateFeed(TwitteredFeed feed) {
         log.info("Running twitter update for: " + feed.getUrl());
                 
         int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);
@@ -61,16 +56,17 @@ public class TwitterUpdateService {
         	return;
         }
         
-        final SyndFeed syndfeed = feedDAO.loadSyndFeedWithFeedFetcher(feed.getUrl());
-        if (syndfeed == null) {
+        List<FeedItem> feedItems = feedDAO.loadFeedItems(feed.getUrl());
+        if (feedItems == null) {
         	log.warn("Could not load feed from url: " + feed.getUrl());
         	return;
         }
         
-        Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
-        while (feedItemsIterator.hasNext() && !hasExceededFeedRateLimit(tweetsSent)) {
-        	SyndEntry feedItem = (SyndEntry) feedItemsIterator.next();
-        			
+        for (FeedItem feedItem : feedItems) {
+			if (hasExceededFeedRateLimit(tweetsSent)) {
+				return;
+			}
+		        			
         	boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
         	if (!publisherRateLimitExceeded) {        				
 	        	if (processItem(feed, feedItem)) {
@@ -86,10 +82,10 @@ public class TwitterUpdateService {
 	}
 
 	
-	private boolean processItem(TwitteredFeed feed, SyndEntry feedItem) {
-		final String guid = feedItem.getUri();
+	private boolean processItem(TwitteredFeed feed, FeedItem feedItem) {
+		final String guid = feedItem.getGuid();
 		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {
-			final String twit = twitBuilderService.buildTwitForItem(feedItem.getTitle(), feedItem.getLink(), feedItem.getAuthor(), feed.getTwitterTag());
+			final String twit = twitBuilderService.buildTwitForItem(feedItem, feed.getTwitterTag());
 			Status sentPost = twitterService.twitter(twit, feed.getAccount());
 			if (sentPost != null) {
 				Tweet sentTweet = new Tweet(sentPost);
@@ -122,7 +118,7 @@ public class TwitterUpdateService {
 		return false;
 	}
 
-	private boolean isLessThanOneWeekOld(SyndEntry feedItem) {
+	private boolean isLessThanOneWeekOld(FeedItem feedItem) {
         final DateTime sevenDaysAgo = new DateTime().minusDays(7);
         return new DateTime(feedItem.getPublishedDate()).isAfter(sevenDaysAgo);        
     }
