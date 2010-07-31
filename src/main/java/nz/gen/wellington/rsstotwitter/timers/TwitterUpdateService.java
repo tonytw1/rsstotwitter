@@ -56,35 +56,34 @@ public class TwitterUpdateService {
         log.info("Running twitter update for: " + feed.getUrl());
         
         int tweetsSent = getNumberOfTweetsSentInLastTwentyFourHours(feed);
-        if (hasNotExceededFeedRateLimit(tweetsSent)) {
-
-        	final SyndFeed syndfeed = feedDAO.loadSyndFeedWithFeedFetcher(feed.getUrl());
-        	if (syndfeed != null) {
-        		
-        		Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
-        		while (feedItemsIterator.hasNext() && hasNotExceededFeedRateLimit(tweetsSent)) {
-        			SyndEntry feedItem = (SyndEntry) feedItemsIterator.next();
-        			
-        			boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
-        			if (!publisherRateLimitExceeded) {        				
-	        			if (processItem(feed, feedItem)) {
-	        				tweetsSent++;
-	        			}
-	        			                                             	        			
-        			} else {
-        				log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit");
-        			}        			
-        		}
-        		
-        	} else {
-        		log.warn("Could not load feed from url: " + feed.getUrl());
-        	}
-        	
-        } else {
+        if (hasExceededFeedRateLimit(tweetsSent)) {
         	log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; skipping");
+        	return;
         }
+
         
-        log.info("Twitter update completed");
+        final SyndFeed syndfeed = feedDAO.loadSyndFeedWithFeedFetcher(feed.getUrl());
+        if (syndfeed == null) {
+        	log.warn("Could not load feed from url: " + feed.getUrl());        		
+        }
+        	
+        
+        Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
+        while (feedItemsIterator.hasNext() && !hasExceededFeedRateLimit(tweetsSent)) {
+        	SyndEntry feedItem = (SyndEntry) feedItemsIterator.next();
+        			
+        	boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
+        	if (!publisherRateLimitExceeded) {        				
+	        	if (processItem(feed, feedItem)) {
+	        		tweetsSent++;
+	        	}
+	        			                                             	        			
+        	} else {
+        		log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit");
+        	}        			
+        }
+        	
+        log.info("Twitter update completed for feed: " + feed.getUrl());
 	}
 
 	
@@ -110,8 +109,8 @@ public class TwitterUpdateService {
 	}
 
 	
-	private boolean hasNotExceededFeedRateLimit(int tweetsSent) {
-		return tweetsSent < MAX_TWITS_PER_DAY;
+	private boolean hasExceededFeedRateLimit(int tweetsSent) {
+		return tweetsSent >= MAX_TWITS_PER_DAY;
 	}
 
     
