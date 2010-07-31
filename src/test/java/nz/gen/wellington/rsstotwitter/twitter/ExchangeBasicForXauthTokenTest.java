@@ -9,9 +9,9 @@ import twitter4j.http.AccessToken;
 
 public class ExchangeBasicForXauthTokenTest {
 
-	@Test
-	public void getXauthAccessToken() throws Exception {
-		AccessToken accessToken = exchangeBasicForToken("", "");
+	// TODO Annotate to run
+	public void testgetXauthAccessToken() throws Exception {
+		AccessToken accessToken = exchangeBasicForToken("USERNAME", "PASSWORD");
 		final String token = accessToken.getToken();
 		final String tokenSecret = accessToken.getTokenSecret();
 		System.out.println(token + ":" + tokenSecret);
@@ -23,7 +23,7 @@ public class ExchangeBasicForXauthTokenTest {
 			AccessToken accessToken = twitter.getOAuthAccessToken();
 			return accessToken;
 		} catch (TwitterException e) {
-			e.printStackTrace();
+			System.out.println(e);
 		}
 		return null;
 	}  
