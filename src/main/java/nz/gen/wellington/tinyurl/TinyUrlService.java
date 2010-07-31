@@ -1,6 +1,7 @@
 package nz.gen.wellington.tinyurl;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -19,7 +20,13 @@ public class TinyUrlService {
     public String makeTinyUrl(String url) {
         log.info("Fetching tinyurl for: " + url);
         HttpClient client = new HttpClient();
-        String apiCallUrl = TINY_URL_API + URLEncoder.encode(url);
+        String apiCallUrl = null;
+        try {
+            apiCallUrl = TINY_URL_API + URLEncoder.encode(url, "UTF8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+        
         HttpMethod method = new GetMethod(apiCallUrl);
         method.setFollowRedirects(false);
         try {
