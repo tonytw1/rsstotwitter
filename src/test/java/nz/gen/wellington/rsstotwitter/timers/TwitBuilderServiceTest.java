@@ -1,51 +1,63 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.stub;
-import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
 import nz.gen.wellington.tinyurl.TinyUrlService;
 import nz.gen.wellington.twitter.TwitBuilderService;
 import nz.gen.wellington.twitter.TwitterService;
 
-public class TwitBuilderServiceTest extends TestCase {
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+
+public class TwitBuilderServiceTest {
 
     private static final String TITLE = "The quick brown fox";
     private static final String LONG_URL = "http://www.longurl/etc";
     private static final String LONG_TITLE = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-    TinyUrlService tinyUrlService;
+    @Mock TinyUrlService tinyUrlService;
     TwitBuilderService service;
-    
-    @Override
-    protected void setUp() throws Exception {
-        tinyUrlService = mock(TinyUrlService.class);        
-        stub(tinyUrlService.makeTinyUrl(LONG_URL)).toReturn("http://tinyurl/1");
+
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        tinyUrlService = mock(TinyUrlService.class);
+        when(tinyUrlService.makeTinyUrl(LONG_URL)).thenReturn("http://tinyurl/1");
         service = new TwitBuilderService(tinyUrlService);
     }
-    
-    public void testShouldIgnoreLinkIfSetToNull() throws Exception {
+
+    @Test
+    public void shouldIgnoreLinkIfSetToNull() throws Exception {
         final String twit = service.buildTwitForItem(TITLE, null, null, null);
         assertEquals(TITLE, twit);
     }
-    
-    public void testShouldConvertLinksIntoTinyUrls() throws Exception {
+
+    @Test
+    public void shouldConvertLinksIntoTinyUrls() throws Exception {
         final String twit = service.buildTwitForItem(TITLE, LONG_URL, null, null);
         verify(tinyUrlService).makeTinyUrl(LONG_URL);
         assertEquals("The quick brown fox http://tinyurl/1", twit);
     }
     
-    
-    public void testShouldNorAppendChannelNotSet() throws Exception {
+    @Test
+    public void shouldNorAppendChannelNotSet() throws Exception {
         final String twit = service.buildTwitForItem(TITLE, LONG_URL, null, null);        
         assertEquals("The quick brown fox http://tinyurl/1", twit);        
     }
-    
-    public void testShouldPrependPublisher() throws Exception {
+
+    @Test
+    public void shouldPrependPublisher() throws Exception {
         final String twit = service.buildTwitForItem(TITLE, LONG_URL, "A Publisher", null);        
         assertEquals("A Publisher - The quick brown fox http://tinyurl/1", twit);        
     }
-            
-    public void testShouldNotIncludeChannelButOnlyIfThereIsRoom() throws Exception {
+
+    @Test
+    public void shouldNotIncludeChannelButOnlyIfThereIsRoom() throws Exception {
         final String twit = service.buildTwitForItem(TITLE, LONG_URL, null, "testtag");      
         assertTrue(twit.length() <= TwitterService.MAXIMUM_TWITTER_MESSAGE_LENGTH);      
         assertEquals(TITLE + " http://tinyurl/1 #testtag", twit);
@@ -55,5 +67,5 @@ public class TwitBuilderServiceTest extends TestCase {
         assertTrue(longTwit.length() <= TwitterService.MAXIMUM_TWITTER_MESSAGE_LENGTH);
         assertFalse(longTwit.endsWith("#testtag"));       
     }
-        
+
 }
