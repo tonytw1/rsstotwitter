@@ -54,19 +54,18 @@ public class TwitterUpdateService {
 	@SuppressWarnings("unchecked")
 	public void updateFeed(TwitteredFeed feed) {
         log.info("Running twitter update for: " + feed.getUrl());
-        
-        int tweetsSent = getNumberOfTweetsSentInLastTwentyFourHours(feed);
+                
+        int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);
         if (hasExceededFeedRateLimit(tweetsSent)) {
         	log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; skipping");
         	return;
         }
-
         
         final SyndFeed syndfeed = feedDAO.loadSyndFeedWithFeedFetcher(feed.getUrl());
         if (syndfeed == null) {
-        	log.warn("Could not load feed from url: " + feed.getUrl());        		
+        	log.warn("Could not load feed from url: " + feed.getUrl());
+        	return;
         }
-        	
         
         Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
         while (feedItemsIterator.hasNext() && !hasExceededFeedRateLimit(tweetsSent)) {
@@ -122,13 +121,6 @@ public class TwitterUpdateService {
     	}    	
 		return false;
 	}
-
-	private int getNumberOfTweetsSentInLastTwentyFourHours(TwitteredFeed feed) {
-    	final int numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);
-    	log.info("Feed '" + feed.getUrl() + "' has made " + numberOfTwitsInLastTwentyFourHours + " twits in the last 24 hours");
-    	return numberOfTwitsInLastTwentyFourHours;
-	}
-    
 
 	private boolean isLessThanOneWeekOld(SyndEntry feedItem) {
         final DateTime sevenDaysAgo = new DateTime().minusDays(7);
