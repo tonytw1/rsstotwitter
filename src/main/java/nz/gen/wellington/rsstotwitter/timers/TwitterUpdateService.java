@@ -15,6 +15,7 @@ import nz.gen.wellington.twitter.TwitterService;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import twitter4j.GeoLocation;
 import twitter4j.Status;
 
 public class TwitterUpdateService {
@@ -85,8 +86,14 @@ public class TwitterUpdateService {
 	private boolean processItem(TwitteredFeed feed, FeedItem feedItem) {
 		final String guid = feedItem.getGuid();
 		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {
-			final String twit = twitBuilderService.buildTwitForItem(feedItem, feed.getTwitterTag());
-			Status sentPost = twitterService.twitter(twit, feed.getAccount());
+
+			final String twit = twitBuilderService.buildTwitForItem(feedItem, feed.getTwitterTag());	// TODO return type should be the whole tweet.
+			GeoLocation geoLocation = null;
+			if (feedItem.isGeocoded()) {
+				geoLocation = new GeoLocation(feedItem.getLatitude(), feedItem.getLongitude());
+			}
+			Status sentPost = twitterService.twitter(twit, geoLocation, feed.getAccount());
+			
 			if (sentPost != null) {
 				Tweet sentTweet = new Tweet(sentPost);
 				tweetDAO.saveTweet(sentTweet);

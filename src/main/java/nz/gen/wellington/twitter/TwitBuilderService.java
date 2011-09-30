@@ -5,7 +5,7 @@ import nz.gen.wellington.tinyurl.TinyUrlService;
 
 public class TwitBuilderService {
 
-    TinyUrlService tinyUrlService;
+    private TinyUrlService tinyUrlService;
     
     public TwitBuilderService(TinyUrlService tinyUrlService) {       
         this.tinyUrlService = tinyUrlService;

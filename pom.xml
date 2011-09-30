@@ -148,6 +148,19 @@
   		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
-  	  
+  	
+  	<dependency>
+    <groupId>org.geonames</groupId>
+    <artifactId>georss-rome</artifactId>
+    <version>0.9.8</version>
+    
+    <exclusions>
+        <exclusion>
+                <groupId>rome</groupId>
+                <artifactId>rome</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+  	
   </dependencies>
 </project>

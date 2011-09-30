@@ -9,6 +9,8 @@ import nz.gen.wellington.rsstotwitter.model.FeedItem;
 
 import org.apache.log4j.Logger;
 
+import com.sun.syndication.feed.module.georss.GeoRSSModule;
+import com.sun.syndication.feed.module.georss.GeoRSSUtils;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.fetcher.FeedFetcher;
@@ -29,7 +31,17 @@ public class FeedDAO {
         Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
         while (feedItemsIterator.hasNext()) {        	
         	SyndEntry feedItem = (SyndEntry) feedItemsIterator.next();
-        	feedItems.add(new FeedItem(feedItem.getTitle(), feedItem.getUri(), feedItem.getLink(), feedItem.getPublishedDate(), feedItem.getAuthor()));
+        	
+        	Double latitude = null;
+        	Double longitude = null;        	
+			GeoRSSModule geoModule = (GeoRSSModule) GeoRSSUtils.getGeoRSS(feedItem);
+			if (geoModule != null && geoModule.getPosition() != null) {
+				latitude = geoModule.getPosition().getLatitude();
+				longitude = geoModule.getPosition().getLongitude();
+				log.info("Rss item '" + feedItem.getTitle() + "' has position information: " + latitude + "," + latitude);
+			}
+        	
+        	feedItems.add(new FeedItem(feedItem.getTitle(), feedItem.getUri(), feedItem.getLink(), feedItem.getPublishedDate(), feedItem.getAuthor(), latitude, longitude));
         }
         return feedItems;
     }

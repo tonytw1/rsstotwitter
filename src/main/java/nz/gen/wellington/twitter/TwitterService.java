@@ -7,6 +7,7 @@ import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
 import org.apache.log4j.Logger;
 
+import twitter4j.GeoLocation;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -24,9 +25,8 @@ public class TwitterService {
     static Logger log = Logger.getLogger(TwitterService.class);
 
 	
-    public Status twitter(String twit, TwitterAccount account) {
+    public Status twitter(String twit, GeoLocation geoLocation, TwitterAccount account) {
 		log.info("Attempting to tweet: " + twit);
-
 		if (!(twit.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
 			log.warn("Message too long to twitter; not twittered: " + twit);
 			return null;
@@ -54,14 +54,16 @@ public class TwitterService {
 				
 		log.info("Twittering: " + twit);
 		try {
-			return twitter.updateStatus(twit);		 
+			if (geoLocation != null) {
+				return twitter.updateStatus(twit, geoLocation);
+			}
+			return twitter.updateStatus(twit);
 		} catch (TwitterException e) {
         	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
 		}
         	
 		return null;
     }
-
     
     public List<Status> getReplies(TwitterAccount account) {
     	Twitter twitter = getAuthenticatedApiForAccount(account);

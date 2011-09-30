@@ -72,24 +72,23 @@ public class TwitterUpdateServiceTest {
 	@Test
 	public void shouldTweetFeedItems() throws Exception {
 		List<FeedItem> feedItems = new ArrayList<FeedItem>();
-		FeedItem feedItem = new FeedItem("title", "guid", "link", Calendar.getInstance().getTime(), "author");
+		FeedItem feedItem = new FeedItem("title", "guid", "link", Calendar.getInstance().getTime(), "author", null, null);
 		feedItems.add(feedItem);
 		when(feedDAO.loadFeedItems(FIRST_FEED_URL)).thenReturn(feedItems);
 		when(twitBuilderService.buildTwitForItem(feedItem, feed.getTwitterTag())).thenReturn(FIRST_TWIT);
 		
 		service.updateFeed(feed);
 		verify(twitBuilderService).buildTwitForItem(feedItem, null);
-		verify(twitterService).twitter(FIRST_TWIT, feed.getAccount());
+		verify(twitterService).twitter(FIRST_TWIT, null, feed.getAccount());
 		// TODO verify saved
 	}
-	
-	
+		
 	@Test
 	public void shouldNotTweetFeedItemsOlderThanOneWeek() throws Exception {
 		List<FeedItem> feedItems = new ArrayList<FeedItem>();
 		Date oldDate = Calendar.getInstance().getTime();
 		oldDate.setYear(90);
-		FeedItem feedItem = new FeedItem("title", "guid", "link", oldDate, "author");
+		FeedItem feedItem = new FeedItem("title", "guid", "link", oldDate, "author", null, null);
 		feedItems.add(feedItem);
 		when(feedDAO.loadFeedItems(FIRST_FEED_URL)).thenReturn(feedItems);
 
