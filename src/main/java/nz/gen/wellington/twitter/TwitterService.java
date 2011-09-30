@@ -15,15 +15,12 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 
-
 public class TwitterService {
     
     public static final int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
 	private static final int REPLY_PAGES_TO_FETCH = 1;
     
-	
-    static Logger log = Logger.getLogger(TwitterService.class);
-
+	private static Logger log = Logger.getLogger(TwitterService.class);
 	
     public Status twitter(String twit, GeoLocation geoLocation, TwitterAccount account) {
 		log.info("Attempting to tweet: " + twit);
@@ -52,12 +49,14 @@ public class TwitterService {
     		return null;
     	}
 				
-		log.info("Twittering: " + twit);
 		try {
 			if (geoLocation != null) {
+				log.info("Twittering with geolocation: " + twit);
 				return twitter.updateStatus(twit, geoLocation);
-			}
+			}			
+			log.info("Twittering: " + twit);
 			return twitter.updateStatus(twit);
+			
 		} catch (TwitterException e) {
         	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
 		}
