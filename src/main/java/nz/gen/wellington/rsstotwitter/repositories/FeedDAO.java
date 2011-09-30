@@ -38,7 +38,7 @@ public class FeedDAO {
 			if (geoModule != null && geoModule.getPosition() != null) {
 				latitude = geoModule.getPosition().getLatitude();
 				longitude = geoModule.getPosition().getLongitude();
-				log.info("Rss item '" + feedItem.getTitle() + "' has position information: " + latitude + "," + latitude);
+				log.info("Rss item '" + feedItem.getTitle() + "' has position information: " + latitude + "," + longitude);
 			}
         	
         	feedItems.add(new FeedItem(feedItem.getTitle(), feedItem.getUri(), feedItem.getLink(), feedItem.getPublishedDate(), feedItem.getAuthor(), latitude, longitude));
