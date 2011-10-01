@@ -32,12 +32,10 @@ public class TwitterLoginHandler implements SigninHandler {
 	private String consumerKey;
 	private String consumerSecret;
 	private Map<String, Token> tokens;
-
 	
 	public TwitterLoginHandler(AccountDAO accountDAO, TwitterService twitterService, OAuthService oauthService) {
 		this.accountDAO = accountDAO;
 		this.twitterService = twitterService;
-		this.oauthService = oauthService;
 		this.tokens = new HashMap<String, Token>();
 	}
 
@@ -53,7 +51,7 @@ public class TwitterLoginHandler implements SigninHandler {
 	public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {			
 			log.info("Getting request token");			
-			OAuthService service = getOauthService();
+			OAuthService service = getOauthService(request);
 			
 			Token requestToken = service.getRequestToken();		
 			if (requestToken != null) {
@@ -88,7 +86,7 @@ public class TwitterLoginHandler implements SigninHandler {
 				
 				log.debug("Exchanging request token for access token");
 				
-				OAuthService service = getOauthService();
+				OAuthService service = getOauthService(request);
 				Token accessToken = service.getAccessToken(requestToken, new Verifier(verifier));
 				
 				if (accessToken != null) {
@@ -132,10 +130,12 @@ public class TwitterLoginHandler implements SigninHandler {
 		account.setId(twitterUser.getId());	// TODO potential issue here - make new column
 	}
 	
-	private OAuthService getOauthService() {
+	private OAuthService getOauthService(HttpServletRequest request) {
 		if (oauthService == null) {
 			log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
-			oauthService = new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback("/oauth/callback").build();
+			final String callBackUrl = request.getRequestURL().toString() + "/callback";
+			log.info("Oauth callback url is: " + callBackUrl);
+			oauthService = new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build();
 		}
 		return oauthService;
 	}

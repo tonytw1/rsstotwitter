@@ -144,8 +144,7 @@
  		</property> 		
 	</bean>
 
-	<bean id="homepageController"
-		class="nz.gen.wellington.rsstotwitter.controllers.HomepageController">
+	<bean id="homepageController" class="nz.gen.wellington.rsstotwitter.controllers.HomepageController">
 		<property name="methodNameResolver">
 			<bean
 				class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
@@ -156,13 +155,40 @@
 				</property>
 			</bean>
 		</property>
-
+	</bean>
+	
+	<bean id="loggedInUserFilter" class="nz.gen.wellington.rsstotwitter.controllers.signin.LoggedInUserFilter" />
+	
+	<bean id="signinHandler" class="nz.gen.wellington.rsstotwitter.controllers.signin.TwitterLoginHandler">
+		<constructor-arg ref="accountDAO" />
+		<constructor-arg ref="twitterService" />
+		<property name="consumerKey" value="${consumer.key}" />
+		<property name="consumerSecret" value="${consumer.secret}" />		
+	</bean>
+	
+	<bean id="signinController" class="nz.gen.wellington.rsstotwitter.controllers.signin.SigninController">
+		<constructor-arg ref="accountDAO" />
+		<constructor-arg ref="signinHandler" />
+		<constructor-arg ref="loggedInUserFilter" />	
+		<property name="methodNameResolver">
+			<bean
+				class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+				<property name="mappings">
+					<props>
+						<prop key="/oauth/login">login</prop>
+						<prop key="/oauth/callback">callback</prop>						
+					</props>
+				</property>
+			</bean>
+		</property>
 	</bean>
 		
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     	<property name="mappings">
             <props>
-	             <prop key="/">homepageController</prop>          
+	           	<prop key="/">homepageController</prop>
+	           	<prop key="/oauth/login">signinController</prop>
+	           	<prop key="/oauth/callback">signinController</prop>	                    
             </props>
         </property>
     </bean>
