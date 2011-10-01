@@ -20,6 +20,7 @@ import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TweetFromFeedItemBuilder;
 import nz.gen.wellington.twitter.TwitterService;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -94,8 +95,7 @@ public class TwitterUpdateServiceTest {
 	@Test
 	public void shouldNotTweetFeedItemsOlderThanOneWeek() throws Exception {
 		List<FeedItem> feedItems = new ArrayList<FeedItem>();
-		Date oldDate = Calendar.getInstance().getTime();
-		oldDate.setYear(90);
+		final Date oldDate = new DateTime().minusDays(10).toDate();
 		FeedItem feedItem = new FeedItem("title", "guid", "link", oldDate, "author", null, null);
 		feedItems.add(feedItem);
 		when(feedDAO.loadFeedItems(FIRST_FEED_URL)).thenReturn(feedItems);
