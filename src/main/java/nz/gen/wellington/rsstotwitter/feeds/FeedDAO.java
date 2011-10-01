@@ -1,4 +1,4 @@
-package nz.gen.wellington.rsstotwitter.repositories;
+package nz.gen.wellington.rsstotwitter.feeds;
 
 import java.net.URL;
 import java.util.ArrayList;

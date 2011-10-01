@@ -7,8 +7,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.gen.wellington.rsstotwitter.feeds.FeedDAO;
 import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
-import nz.gen.wellington.rsstotwitter.repositories.FeedDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
 
 import org.junit.Before;
