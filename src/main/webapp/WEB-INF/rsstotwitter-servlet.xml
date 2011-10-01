@@ -6,7 +6,7 @@
 	<!-- This bean substitutes variables from the env properties file -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
-			<value>file:conf/rsstotwitter.properties</value>
+			<value>classpath:rsstotwitter.properties</value>
 		</property>
 	</bean>
 		
@@ -142,6 +142,54 @@
  		<property name="maxIdle">
    			<value>5</value>
  		</property> 		
-	</bean> 
-	        
+	</bean>
+
+	<bean id="homepageController"
+		class="nz.gen.wellington.rsstotwitter.controllers.HomepageController">
+		<property name="methodNameResolver">
+			<bean
+				class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+				<property name="mappings">
+					<props>
+						<prop key="/">homepage</prop>
+					</props>
+				</property>
+			</bean>
+		</property>
+
+	</bean>
+		
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    	<property name="mappings">
+            <props>
+	             <prop key="/">homepageController</prop>          
+            </props>
+        </property>
+    </bean>
+    
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+    	<property name="resourceLoaderPath" value="/WEB-INF/velocity"/>
+	</bean>
+
+	<bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+	   <property name="velocityProperties">
+	     	<props>
+    	 		<prop key="output.encoding">UTF-8</prop>
+         		<prop key="input.encoding">UTF-8</prop>
+			</props>
+		</property>
+   		<property name="resourceLoaderPath" value="/WEB-INF/velocity"/>
+	</bean>
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+   		<property name="cache" value="true"/>
+   		<property name="prefix" value=""/>
+   		<property name="suffix" value=".vm"/>
+   		<property name="contentType"><value>text/html;charset=UTF-8</value></property>
+   		<property name="attributesMap">
+		<map>
+		</map>
+		</property>
+	</bean>
+	    	        
 </beans>
