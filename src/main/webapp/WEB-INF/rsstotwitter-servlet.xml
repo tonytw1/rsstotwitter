@@ -163,7 +163,8 @@
 		<constructor-arg ref="accountDAO" />
 		<constructor-arg ref="twitterService" />
 		<property name="consumerKey" value="${consumer.key}" />
-		<property name="consumerSecret" value="${consumer.secret}" />		
+		<property name="consumerSecret" value="${consumer.secret}" />
+		<property name="callBackUrl" value="${callback.url}" />		
 	</bean>
 	
 	<bean id="signinController" class="nz.gen.wellington.rsstotwitter.controllers.signin.SigninController">
