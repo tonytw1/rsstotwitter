@@ -1,51 +1,44 @@
-package nz.gen.wellington.rsstotwitter.timers;
+package nz.gen.wellington.rsstotwitter.twitter;
 
 import java.util.List;
 
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
-import nz.gen.wellington.rsstotwitter.repositories.FeedDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
-import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
-import nz.gen.wellington.rsstotwitter.twitter.TweetFromFeedItemBuilder;
+import nz.gen.wellington.rsstotwitter.timers.UpdateService;
+import nz.gen.wellington.rsstotwitter.timers.Updater;
 import nz.gen.wellington.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-public class TwitterUpdateService {
-    
-    private static final int MAX_TWITS_PER_DAY = 30;
-	private static final int MAX_PUBLISHER_TWITS_PER_DAY = 5;
-    
-	Logger log = Logger.getLogger(TwitterUpdateService.class);
+public class TwitterUpdater implements Updater {
+	
+	private static Logger log = Logger.getLogger(UpdateService.class);
 
-	private FeedDAO feedDAO;
+	private static final int MAX_TWITS_PER_DAY = 30;
+	private static final int MAX_PUBLISHER_TWITS_PER_DAY = 5;
+	
 	private TwitterHistoryDAO twitterHistoryDAO;
 	private TwitterService twitterService;
-    private TwitteredFeedDAO twitteredFeedDAO;
     private TweetDAO tweetDAO;
     private TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
-     
-	public TwitterUpdateService(FeedDAO feedDAO, TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TwitteredFeedDAO twitteredFeedDAO, TweetDAO tweetDAO, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
-		this.feedDAO = feedDAO;		
+    
+	public TwitterUpdater(TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetDAO tweetDAO, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
 		this.twitterHistoryDAO = twitterHistoryDAO;
-        this.twitterService = twitterService;
-        this.twitteredFeedDAO = twitteredFeedDAO;
-        this.tweetDAO = tweetDAO;
-        this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
+		this.twitterService = twitterService;
+		this.tweetDAO = tweetDAO;
+		this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
 	}
-    
-    public void run() {       
-        List<TwitteredFeed> feeds = twitteredFeedDAO.getAllFeeds();
-        for (TwitteredFeed feed : feeds) {
-            updateFeed(feed);            
-        }
-    }
-    
-   	public void updateFeed(TwitteredFeed feed) {
+
+	public void updateFeed(TwitteredFeed feed, List<FeedItem> feedItems) {
+		if (feedItems == null) {
+			log.warn("Could not load feed from url: " + feed.getUrl());
+			return;
+		}
+		
         log.info("Running twitter update for: " + feed.getUrl());
                 
         int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);
@@ -54,11 +47,6 @@ public class TwitterUpdateService {
         	return;
         }
         
-        List<FeedItem> feedItems = feedDAO.loadFeedItems(feed.getUrl());
-        if (feedItems == null) {
-        	log.warn("Could not load feed from url: " + feed.getUrl());
-        	return;
-        }
         
         for (FeedItem feedItem : feedItems) {
 			if (hasExceededFeedRateLimit(tweetsSent)) {
@@ -116,5 +104,5 @@ public class TwitterUpdateService {
         final DateTime sevenDaysAgo = new DateTime().minusDays(7);
         return new DateTime(feedItem.getPublishedDate()).isAfter(sevenDaysAgo);        
     }
-    
+
 }

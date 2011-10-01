@@ -41,24 +41,28 @@
 	<bean id="tweetFromFeedItemBuilder" class="nz.gen.wellington.rsstotwitter.twitter.TweetFromFeedItemBuilder">
 		<constructor-arg ref="twitTextBuilderService" />
 	</bean>
-		
-	<bean id="twitterUpdateService" class="nz.gen.wellington.rsstotwitter.timers.TwitterUpdateService">
-		<constructor-arg ref="feedDAO" />
+	
+	<bean id="twitterUpdater" class="nz.gen.wellington.rsstotwitter.twitter.TwitterUpdater">
 		<constructor-arg ref="twitterHistoryDAO" />
 		<constructor-arg ref="twitterService" />
-		<constructor-arg ref="twitteredFeedDAO" />
 		<constructor-arg ref="tweetDAO" />
-		<constructor-arg ref="twitTextBuilderService" />
+		<constructor-arg ref="tweetFromFeedItemBuilder" />	
+	</bean>
+			
+	<bean id="updateService" class="nz.gen.wellington.rsstotwitter.timers.UpdateService">
+		<constructor-arg ref="twitteredFeedDAO" />
+		<constructor-arg ref="feedDAO" />
+		<constructor-arg ref="twitterUpdater" />		
 	</bean>
 	
-	<bean id="twitterUpdateServiceRunner" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-  		<property name="targetObject" ref="twitterUpdateService" />
+	<bean id="updateServiceRunner" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+  		<property name="targetObject" ref="updateService" />
   		<property name="targetMethod" value="run" />
   		<property name="concurrent" value="false" />
 	</bean>
 	
-	<bean id="twitterUpdateServiceTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-   		<property name="jobDetail" ref="twitterUpdateServiceRunner" />
+	<bean id="updateServiceTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+   		<property name="jobDetail" ref="updateServiceRunner" />
     	<property name="startDelay" value="10000" />
     	<property name="repeatInterval" value="600000" />
 	</bean>
@@ -85,7 +89,7 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<ref bean="twitterUpdateServiceTrigger"/>
+				<ref bean="updateServiceTrigger"/>
 				<ref bean="twitterArchiverTrigger"/>
 			</list>
 		</property>

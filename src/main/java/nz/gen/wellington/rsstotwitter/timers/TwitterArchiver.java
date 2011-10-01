@@ -18,7 +18,7 @@ import twitter4j.Status;
 
 public class TwitterArchiver {
 
-	Logger log = Logger.getLogger(TwitterUpdateService.class);
+	Logger log = Logger.getLogger(UpdateService.class);
 
 	private TwitterService twitterService;
 	private TweetDAO tweetDAO;
