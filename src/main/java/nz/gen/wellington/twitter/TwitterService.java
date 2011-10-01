@@ -45,8 +45,9 @@ public class TwitterService {
 				return null;
 			}						
 		}
-			        	        	
-		Twitter twitter = getAuthenticatedApiForAccount(account);		
+		
+		AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
+		Twitter twitter = getAuthenticatedApiForAccount(accessToken);
 		if (twitter == null) {
 			log.error("Failed to get authenticated twitter connection for account: " + account.getUsername());
     		return null;
@@ -78,7 +79,8 @@ public class TwitterService {
     }
     
     public List<Status> getReplies(TwitterAccount account) {
-    	Twitter twitter = getAuthenticatedApiForAccount(account);
+		AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
+    	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
     	if (twitter == null) {
     		return null;
     	}
@@ -101,17 +103,18 @@ public class TwitterService {
 		return all;
 	}
     
-    
-	private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
-		boolean accountHasAccessToken = account.getToken() != null && account.getTokenSecret() != null;
-		if (!accountHasAccessToken) {
-			log.warn("Could connect to account '" + account.getUsername()
-					+ "' as there is no access token available");
+    public twitter4j.User getTwitteUserCredentials(AccessToken accessToken) {
+		Twitter twitterApi = getAuthenticatedApiForAccount(accessToken);
+		try {
+			return twitterApi.verifyCredentials();
+		} catch (TwitterException e) {
+			log.warn("Failed up obtain twitter user details due to Twitter exception: " + e.getMessage());
 			return null;
 		}
-
-		return new TwitterFactory().getOAuthAuthorizedInstance(new AccessToken(
-				account.getToken(), account.getTokenSecret()));
+	}
+    
+	private Twitter getAuthenticatedApiForAccount(AccessToken accessToken) {		
+		return new TwitterFactory().getOAuthAuthorizedInstance(accessToken);
 	}
     
 }

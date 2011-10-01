@@ -184,6 +184,11 @@
 <version>2.0</version>
 </dependency>
 
+   <dependency>
+                  <groupId>org.scribe</groupId>
+                  <artifactId>scribe</artifactId>
+                  <version>1.2.1</version>
+                </dependency>
   	
   </dependencies>
 </project>
