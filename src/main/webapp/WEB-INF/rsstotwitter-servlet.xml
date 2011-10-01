@@ -157,7 +157,7 @@
 		</property>
 	</bean>
 	
-	<bean id="loggedInUserFilter" class="nz.gen.wellington.rsstotwitter.controllers.signin.LoggedInUserFilter" />
+	<bean id="loggedInUserFilter" class="nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter" />
 	
 	<bean id="signinHandler" class="nz.gen.wellington.rsstotwitter.controllers.signin.TwitterLoginHandler">
 		<constructor-arg ref="accountDAO" />

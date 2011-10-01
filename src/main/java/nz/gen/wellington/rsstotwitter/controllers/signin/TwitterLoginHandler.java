@@ -31,12 +31,15 @@ public class TwitterLoginHandler implements SigninHandler {
 	
 	private String consumerKey;
 	private String consumerSecret;
-	private Map<String, Token> tokens;
 	
-	public TwitterLoginHandler(AccountDAO accountDAO, TwitterService twitterService, OAuthService oauthService) {
+	private Map<String, Token> requestTokens;
+	private Map<Integer, Token> accessTokens;
+	
+	public TwitterLoginHandler(AccountDAO accountDAO, TwitterService twitterService) {
 		this.accountDAO = accountDAO;
 		this.twitterService = twitterService;
-		this.tokens = new HashMap<String, Token>();
+		this.requestTokens = new HashMap<String, Token>();
+		this.accessTokens = new HashMap<Integer, Token>();
 	}
 
 	public void setConsumerKey(String consumerKey) {
@@ -56,7 +59,7 @@ public class TwitterLoginHandler implements SigninHandler {
 			Token requestToken = service.getRequestToken();		
 			if (requestToken != null) {
 				log.info("Got request token: " + requestToken.getToken());
-				tokens.put(requestToken.getToken(), requestToken);
+				requestTokens.put(requestToken.getToken(), requestToken);
 				
 				final String authorizeUrl = service.getAuthorizationUrl(requestToken);		
 				log.info("Redirecting user to authorize url : " + authorizeUrl);
@@ -80,7 +83,7 @@ public class TwitterLoginHandler implements SigninHandler {
 			log.info("oauth_verifier: " + verifier);
 			
 			log.info("Looking for request token: " + token);
-			Token requestToken = tokens.get(token);
+			Token requestToken = requestTokens.get(token);
 			if (requestToken != null) {
 				log.info("Found stored request token: " + requestToken.getToken());
 				
@@ -91,12 +94,14 @@ public class TwitterLoginHandler implements SigninHandler {
 				
 				if (accessToken != null) {
 					log.info("Got access token: '" + accessToken.getToken() + "', '" + accessToken.getSecret() + "'");
-					tokens.remove(requestToken.getToken());
+					requestTokens.remove(requestToken.getToken());
 					
 					log.debug("Using access token to lookup twitter user details");
 					twitter4j.User twitterUser = twitterService.getTwitteUserCredentials(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
 					if (twitterUser != null) {
+						accessTokens.put(twitterUser.getId(), accessToken);
 						return twitterUser;
+						
 					} else {
 						log.warn("Failed up obtain twitter user details");
 					}
@@ -127,13 +132,14 @@ public class TwitterLoginHandler implements SigninHandler {
 			final String twitterScreenName = twitterUser.getScreenName();
 			account.setUsername(twitterScreenName);			
 		}
-		account.setId(twitterUser.getId());	// TODO potential issue here - make new column
+		account.setToken(accessTokens.get(twitterUser.getId()).getToken());
+		account.setTokenSecret(accessTokens.get(twitterUser.getId()).getSecret());
 	}
 	
 	private OAuthService getOauthService(HttpServletRequest request) {
 		if (oauthService == null) {
 			log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
-			final String callBackUrl = request.getRequestURL().toString() + "/callback";
+			final String callBackUrl = request.getRequestURL().toString().replace("login", "callback");
 			log.info("Oauth callback url is: " + callBackUrl);
 			oauthService = new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build();
 		}
