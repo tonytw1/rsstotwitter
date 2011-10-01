@@ -6,7 +6,6 @@ public class TwitterAccount {
 
 	private int id;
 	private String username;
-	private String password;
 	
 	private String token;
 	private String tokenSecret;
@@ -16,10 +15,9 @@ public class TwitterAccount {
 	public TwitterAccount() {
 	}
 
-	public TwitterAccount(int id, String username, String password) {
+	public TwitterAccount(int id, String username) {
 		this.id = id;
 		this.username = username;
-		this.password = password;
 	}
 		
 	public int getId() {
@@ -36,14 +34,6 @@ public class TwitterAccount {
 	
 	public void setUsername(String username) {
 		this.username = username;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	
 	public Set<Tweet> getMentions() {

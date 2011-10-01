@@ -9,9 +9,8 @@
 	  	<id name="id">
             <generator class="native" />
     	</id>
-		<property name="username" type="string" />		
-        <property name="password" type="string" />
-                
+		<property name="username" type="string" />
+		                
      	<property name="token" type="string" />
     	<property name="tokenSecret" type="string" column="token_secret" />
      	        
