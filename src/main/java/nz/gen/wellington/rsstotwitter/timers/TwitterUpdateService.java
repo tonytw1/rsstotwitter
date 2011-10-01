@@ -9,7 +9,7 @@ import nz.gen.wellington.rsstotwitter.repositories.FeedDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
-import nz.gen.wellington.twitter.TwitBuilderService;
+import nz.gen.wellington.twitter.TwitTextBuilderService;
 import nz.gen.wellington.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
@@ -27,12 +27,12 @@ public class TwitterUpdateService {
 
 	private FeedDAO feedDAO;
 	private TwitterHistoryDAO twitterHistoryDAO;
-	private TwitBuilderService twitBuilderService;
+	private TwitTextBuilderService twitBuilderService;
 	private TwitterService twitterService;
     private TwitteredFeedDAO twitteredFeedDAO;
     private TweetDAO tweetDAO;
      
-	public TwitterUpdateService(FeedDAO feedDAO, TwitterHistoryDAO twitterHistoryDAO, TwitBuilderService twitBuilderService, TwitterService twitterService, TwitteredFeedDAO twitteredFeedDAO, TweetDAO tweetDAO) {
+	public TwitterUpdateService(FeedDAO feedDAO, TwitterHistoryDAO twitterHistoryDAO, TwitTextBuilderService twitBuilderService, TwitterService twitterService, TwitteredFeedDAO twitteredFeedDAO, TweetDAO tweetDAO) {
 		this.feedDAO = feedDAO;		
 		this.twitterHistoryDAO = twitterHistoryDAO;
         this.twitBuilderService = twitBuilderService;

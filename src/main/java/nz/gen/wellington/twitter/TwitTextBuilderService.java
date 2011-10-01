@@ -3,11 +3,11 @@ package nz.gen.wellington.twitter;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.tinyurl.TinyUrlService;
 
-public class TwitBuilderService {
+public class TwitTextBuilderService {
 
     private TinyUrlService tinyUrlService;
     
-    public TwitBuilderService(TinyUrlService tinyUrlService) {       
+    public TwitTextBuilderService(TinyUrlService tinyUrlService) {       
         this.tinyUrlService = tinyUrlService;
     }
 

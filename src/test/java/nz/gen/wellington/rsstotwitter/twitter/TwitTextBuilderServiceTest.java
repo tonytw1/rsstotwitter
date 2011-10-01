@@ -1,8 +1,8 @@
-package nz.gen.wellington.rsstotwitter.timers;
+package nz.gen.wellington.rsstotwitter.twitter;
 
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.tinyurl.TinyUrlService;
-import nz.gen.wellington.twitter.TwitBuilderService;
+import nz.gen.wellington.twitter.TwitTextBuilderService;
 import nz.gen.wellington.twitter.TwitterService;
 
 import org.junit.Before;
@@ -15,23 +15,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class TwitBuilderServiceTest {
+public class TwitTextBuilderServiceTest {
 
     private static final String PUBLISHER_NAME = "A Publisher";
 	private static final String TITLE = "The quick brown fox";
     private static final String LONG_URL = "http://www.longurl/etc";
     private static final String LONG_TITLE = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 	private static final String REALLY_LONG_TITLE = LONG_TITLE + "12345";
+	
     @Mock TinyUrlService tinyUrlService;
-    TwitBuilderService service;
-
+    TwitTextBuilderService service;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         tinyUrlService = mock(TinyUrlService.class);
         when(tinyUrlService.makeTinyUrl(LONG_URL)).thenReturn("http://tinyurl/1");
-        service = new TwitBuilderService(tinyUrlService);
+        service = new TwitTextBuilderService(tinyUrlService);
     }
 
     @Test

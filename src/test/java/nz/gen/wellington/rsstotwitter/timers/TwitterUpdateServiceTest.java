@@ -15,7 +15,7 @@ import nz.gen.wellington.rsstotwitter.repositories.FeedDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
-import nz.gen.wellington.twitter.TwitBuilderService;
+import nz.gen.wellington.twitter.TwitTextBuilderService;
 import nz.gen.wellington.twitter.TwitterService;
 
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class TwitterUpdateServiceTest {
 	
 	@Mock TwitterHistoryDAO twitterHistoryDAO;
 	@Mock FeedDAO feedDAO;
-	@Mock TwitBuilderService twitBuilderService;
+	@Mock TwitTextBuilderService twitBuilderService;
 	@Mock TwitterService twitterService;
 	@Mock TweetDAO tweetDAO;
 	@Mock TwitteredFeed feed;

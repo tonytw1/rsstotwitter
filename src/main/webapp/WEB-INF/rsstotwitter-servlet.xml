@@ -9,18 +9,15 @@
 			<value>file:conf/rsstotwitter.properties</value>
 		</property>
 	</bean>
-
-	
+		
 	<bean id="tinyUrlService" class="nz.gen.wellington.tinyurl.TinyUrlService" />
 	<bean id="twitterService" class="nz.gen.wellington.twitter.TwitterService" />
 	<bean id="feedDAO" class="nz.gen.wellington.rsstotwitter.repositories.FeedDAO" />
-	
-	<bean id="twitBuilderService" class="nz.gen.wellington.twitter.TwitBuilderService">
+		
+	<bean id="twitTextBuilderService" class="nz.gen.wellington.twitter.TwitTextBuilderService">
 		<constructor-arg ref="tinyUrlService" />
 	</bean>
-	
-	
-		
+			
 	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
 		<constructor-arg ref="sessionFactory" />
 	</bean>
