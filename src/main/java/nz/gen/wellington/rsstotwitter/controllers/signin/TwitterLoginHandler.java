@@ -31,9 +31,11 @@ public class TwitterLoginHandler implements SigninHandler {
 	
 	private String consumerKey;
 	private String consumerSecret;
+	private String callBackUrl;
 	
 	private Map<String, Token> requestTokens;
 	private Map<Integer, Token> accessTokens;
+
 	
 	public TwitterLoginHandler(AccountDAO accountDAO, TwitterService twitterService) {
 		this.accountDAO = accountDAO;
@@ -50,6 +52,10 @@ public class TwitterLoginHandler implements SigninHandler {
 		this.consumerSecret = consumerSecret;
 	}
 	
+	public void setCallBackUrl(String callBackUrl) {
+		this.callBackUrl = callBackUrl;
+	}
+
 	@Override
 	public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {			
@@ -139,7 +145,6 @@ public class TwitterLoginHandler implements SigninHandler {
 	private OAuthService getOauthService(HttpServletRequest request) {
 		if (oauthService == null) {
 			log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
-			final String callBackUrl = request.getRequestURL().toString().replace("login", "callback");
 			log.info("Oauth callback url is: " + callBackUrl);
 			oauthService = new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build();
 		}
