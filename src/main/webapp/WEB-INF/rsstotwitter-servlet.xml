@@ -38,14 +38,17 @@
 		<constructor-arg ref="hibernateTemplate" />
 	</bean>
 	
-			
+	<bean id="tweetFromFeedItemBuilder" class="nz.gen.wellington.rsstotwitter.twitter.TweetFromFeedItemBuilder">
+		<constructor-arg ref="twitTextBuilderService" />
+	</bean>
+		
 	<bean id="twitterUpdateService" class="nz.gen.wellington.rsstotwitter.timers.TwitterUpdateService">
 		<constructor-arg ref="feedDAO" />
 		<constructor-arg ref="twitterHistoryDAO" />
-		<constructor-arg ref="twitBuilderService" />
 		<constructor-arg ref="twitterService" />
 		<constructor-arg ref="twitteredFeedDAO" />
 		<constructor-arg ref="tweetDAO" />
+		<constructor-arg ref="twitTextBuilderService" />
 	</bean>
 	
 	<bean id="twitterUpdateServiceRunner" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -59,9 +62,7 @@
     	<property name="startDelay" value="10000" />
     	<property name="repeatInterval" value="600000" />
 	</bean>
-	
-	
-	
+		
 	<bean id="twitterArchiver" class="nz.gen.wellington.rsstotwitter.timers.TwitterArchiver">
 		<constructor-arg ref="twitterService" />
 		<constructor-arg ref="twitteredFeedDAO" />

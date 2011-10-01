@@ -2,6 +2,7 @@ package nz.gen.wellington.rsstotwitter.repositories;
 
 import java.util.List;
 
+import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterEvent;
 import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
@@ -42,8 +43,8 @@ public class TwitterHistoryDAO {
         return hibernateTemplate.loadAll(TwitterEvent.class);
     }
 
-    public void markAsTwittered(String guid, String twit, String publisher, TwitteredFeed feed, Tweet sentTweet) {
-        TwitterEvent newEvent = new TwitterEvent(guid, twit, new DateTime().toDate(), publisher, feed, sentTweet);
+    public void markAsTwittered(FeedItem feedItem, TwitteredFeed feed, Tweet sentTweet) {
+        TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(), feed, sentTweet);
         saveTwitterEvent(newEvent);
     }
     

@@ -3,11 +3,11 @@ package nz.gen.wellington.twitter;
 import java.util.ArrayList;
 import java.util.List;
 
+import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
 import org.apache.log4j.Logger;
 
-import twitter4j.GeoLocation;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -22,17 +22,19 @@ public class TwitterService {
     
 	private static Logger log = Logger.getLogger(TwitterService.class);
 	
-    public Status twitter(String twit, GeoLocation geoLocation, TwitterAccount account) {
-		log.info("Attempting to tweet: " + twit);
-		if (!(twit.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
-			log.warn("Message too long to twitter; not twittered: " + twit);
+    public Tweet twitter(Tweet tweet, TwitterAccount account) {
+		String tweetText = tweet.getText();
+		
+		log.info("Attempting to tweet: " + tweetText);
+		if (!(tweetText.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
+			log.warn("Message too long to twitter; not twittered: " + tweetText);
 			return null;
 		}
 		
 		log.debug("Checking for valid characters.");
-		char[] charArray = twit.toCharArray();
+		char[] charArray = tweetText.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
-			char letter = twit.charAt(i);
+			char letter = tweetText.charAt(i);
 			log.debug(letter + "(" + Character.codePointAt(charArray, i) +"): " + Character.isValidCodePoint(letter));
 			if (!Character.isValidCodePoint(letter)) {
 				log.warn("Message has invalid code point: " + letter);
@@ -46,16 +48,27 @@ public class TwitterService {
 			        	        	
 		Twitter twitter = getAuthenticatedApiForAccount(account);		
 		if (twitter == null) {
+			log.error("Failed to get authenticated twitter connection for account: " + account.getUsername());
     		return null;
     	}
 				
 		try {
-			if (geoLocation != null) {
-				log.info("Twittering with geolocation: " + twit);
-				return twitter.updateStatus(twit, geoLocation);
+			if (tweet.getGeoLocation() != null) {
+				log.info("Twittering with geolocation: " + tweetText);
+				Status updateStatus = twitter.updateStatus(tweetText, tweet.getGeoLocation());
+				if (updateStatus != null) {
+					return new Tweet(updateStatus);
+				}
+				return null;
+								
 			}			
-			log.info("Twittering: " + twit);
-			return twitter.updateStatus(twit);
+			
+			log.info("Twittering: " + tweet.getText());
+			Status updateStatus = twitter.updateStatus(tweet.getText());
+			if (updateStatus != null) {
+				return new Tweet(updateStatus);
+			}
+			return null;
 			
 		} catch (TwitterException e) {
         	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());

@@ -9,14 +9,11 @@ import nz.gen.wellington.rsstotwitter.repositories.FeedDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
-import nz.gen.wellington.twitter.TwitTextBuilderService;
+import nz.gen.wellington.rsstotwitter.twitter.TweetFromFeedItemBuilder;
 import nz.gen.wellington.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-
-import twitter4j.GeoLocation;
-import twitter4j.Status;
 
 public class TwitterUpdateService {
     
@@ -27,18 +24,18 @@ public class TwitterUpdateService {
 
 	private FeedDAO feedDAO;
 	private TwitterHistoryDAO twitterHistoryDAO;
-	private TwitTextBuilderService twitBuilderService;
 	private TwitterService twitterService;
     private TwitteredFeedDAO twitteredFeedDAO;
     private TweetDAO tweetDAO;
+    private TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
      
-	public TwitterUpdateService(FeedDAO feedDAO, TwitterHistoryDAO twitterHistoryDAO, TwitTextBuilderService twitBuilderService, TwitterService twitterService, TwitteredFeedDAO twitteredFeedDAO, TweetDAO tweetDAO) {
+	public TwitterUpdateService(FeedDAO feedDAO, TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TwitteredFeedDAO twitteredFeedDAO, TweetDAO tweetDAO, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
 		this.feedDAO = feedDAO;		
 		this.twitterHistoryDAO = twitterHistoryDAO;
-        this.twitBuilderService = twitBuilderService;
         this.twitterService = twitterService;
         this.twitteredFeedDAO = twitteredFeedDAO;
         this.tweetDAO = tweetDAO;
+        this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
 	}
     
     public void run() {       
@@ -81,27 +78,19 @@ public class TwitterUpdateService {
         	
         log.info("Twitter update completed for feed: " + feed.getUrl());
 	}
-
-	
+   	
 	private boolean processItem(TwitteredFeed feed, FeedItem feedItem) {
 		final String guid = feedItem.getGuid();
-		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {
-
-			final String twit = twitBuilderService.buildTwitForItem(feedItem, feed.getTwitterTag());	// TODO return type should be the whole tweet.
-			GeoLocation geoLocation = null;
-			if (feedItem.isGeocoded()) {
-				geoLocation = new GeoLocation(feedItem.getLatitude(), feedItem.getLongitude());
-			}
-			Status sentPost = twitterService.twitter(twit, geoLocation, feed.getAccount());
-			
-			if (sentPost != null) {
-				Tweet sentTweet = new Tweet(sentPost);
+		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {			
+			Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, feed.getTwitterTag());
+			Tweet sentTweet = twitterService.twitter(tweet, feed.getAccount());
+			if (sentTweet != null) {
 				tweetDAO.saveTweet(sentTweet);
-				twitterHistoryDAO.markAsTwittered(guid, twit, feedItem.getAuthor(), feed, sentTweet);				
+				twitterHistoryDAO.markAsTwittered(feedItem, feed, sentTweet);
 				return true;
 				
 			} else {
-				log.warn("Failed to twitter: " + twit);
+				log.warn("Failed to twitter: " + tweet.getText());
 			}
 			
 		} else {
@@ -109,13 +98,11 @@ public class TwitterUpdateService {
 		}
 		return false;
 	}
-
 	
 	private boolean hasExceededFeedRateLimit(int tweetsSent) {
 		return tweetsSent >= MAX_TWITS_PER_DAY;
 	}
-
-    
+	
     private boolean isPublisherRateLimitExceed(TwitteredFeed feed, String publisher) {
     	if (publisher != null && !publisher.isEmpty()) {
     		final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher);

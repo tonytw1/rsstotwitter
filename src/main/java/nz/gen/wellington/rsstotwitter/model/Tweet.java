@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.joda.time.DateTime;
 
+import twitter4j.GeoLocation;
 import twitter4j.Status;
 
 
@@ -15,12 +16,15 @@ public class Tweet {
 	private String text;
 	private String author;
 	private long inReplyToUserId;
-	
-	
+	private GeoLocation geoLocation;
+		
 	public Tweet() {
-		super();
 	}
-
+	
+	public Tweet(String text) {
+		this.text = text;
+	}
+	
 	public Tweet(Status status) {
 		this.id = status.getId();
 		this.userId = status.getUser().getId();
@@ -80,5 +84,13 @@ public class Tweet {
 	public void setInReplyToUserId(long inReplyToUserId) {
 		this.inReplyToUserId = inReplyToUserId;
 	}
-		
+
+	public GeoLocation getGeoLocation() {
+		return geoLocation;
+	}
+
+	public void setGeoLocation(GeoLocation geoLocation) {
+		this.geoLocation = geoLocation;
+	}
+	
 }
