@@ -2,10 +2,11 @@ package nz.gen.wellington.rsstotwitter.repositories;
 
 import java.util.List;
 
-import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
+import nz.gen.wellington.rsstotwitter.model.Feed;
 
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+// TODO Rename to FeedDAO
 public class TwitteredFeedDAO {
 
     private HibernateTemplate hibernateTemplate;
@@ -15,8 +16,8 @@ public class TwitteredFeedDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<TwitteredFeed> getAllFeeds() {       
-        return hibernateTemplate.loadAll(TwitteredFeed.class);
+    public List<Feed> getAllFeeds() {       
+        return hibernateTemplate.loadAll(Feed.class);
     }
 
 }

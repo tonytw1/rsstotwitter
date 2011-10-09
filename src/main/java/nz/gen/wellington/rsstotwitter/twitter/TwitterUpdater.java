@@ -2,9 +2,10 @@ package nz.gen.wellington.rsstotwitter.twitter;
 
 import java.util.List;
 
+import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
+import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.UpdateService;
@@ -17,7 +18,7 @@ import org.joda.time.DateTime;
 public class TwitterUpdater implements Updater {
 	
 	private static Logger log = Logger.getLogger(UpdateService.class);
-
+	
 	private static final int MAX_TWITS_PER_DAY = 50;
 	private static final int MAX_PUBLISHER_TWITS_PER_DAY = MAX_TWITS_PER_DAY;
 	
@@ -33,7 +34,7 @@ public class TwitterUpdater implements Updater {
 		this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
 	}
 
-	public void updateFeed(TwitteredFeed feed, List<FeedItem> feedItems) {
+	public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account, String tag) {
 		if (feedItems == null) {
 			log.warn("Could not load feed from url: " + feed.getUrl());
 			return;
@@ -41,7 +42,7 @@ public class TwitterUpdater implements Updater {
 		
         log.info("Running twitter update for: " + feed.getUrl());
                 
-        int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);
+        int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);	// TODO rate limit should really be about the twitter account, not the feed.
         if (hasExceededFeedRateLimit(tweetsSent)) {
         	log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; skipping");
         	return;
@@ -55,7 +56,7 @@ public class TwitterUpdater implements Updater {
 		        			
         	boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
         	if (!publisherRateLimitExceeded) {        				
-	        	if (processItem(feed, feedItem)) {
+	        	if (processItem(feed, feedItem, account, tag)) {
 	        		tweetsSent++;
 	        	}
 	        			                                             	        			
@@ -67,11 +68,11 @@ public class TwitterUpdater implements Updater {
         log.info("Twitter update completed for feed: " + feed.getUrl());
 	}
    	
-	private boolean processItem(TwitteredFeed feed, FeedItem feedItem) {
+	private boolean processItem(Feed feed, FeedItem feedItem, TwitterAccount account, String tag) {
 		final String guid = feedItem.getGuid();
 		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {			
-			Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, feed.getTwitterTag());
-			Tweet sentTweet = twitterService.twitter(tweet, feed.getAccount());
+			Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, tag);
+			Tweet sentTweet = twitterService.twitter(tweet, account);
 			if (sentTweet != null) {
 				tweetDAO.saveTweet(sentTweet);
 				twitterHistoryDAO.markAsTwittered(feedItem, feed, sentTweet);
@@ -91,7 +92,7 @@ public class TwitterUpdater implements Updater {
 		return tweetsSent >= MAX_TWITS_PER_DAY;
 	}
 	
-    private boolean isPublisherRateLimitExceed(TwitteredFeed feed, String publisher) {
+    private boolean isPublisherRateLimitExceed(Feed feed, String publisher) {
     	if (publisher != null && !publisher.isEmpty()) {
     		final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher);
     		log.info("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");

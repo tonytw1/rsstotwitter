@@ -9,14 +9,14 @@ public class TwitterEvent {
     private Date date;
     private String twit;
     private String publisher;
-    private TwitteredFeed feed;
+    private Feed feed;
     private Tweet tweet;
 
         
     public TwitterEvent() {		
 	}
 
-	public TwitterEvent(String guid, String twit, Date date, String publisher, TwitteredFeed feed, Tweet tweet) {
+	public TwitterEvent(String guid, String twit, Date date, String publisher, Feed feed, Tweet tweet) {
         this.id = 0;
         this.guid = guid;
         this.twit = twit;
@@ -61,11 +61,11 @@ public class TwitterEvent {
 		this.publisher = publisher;
 	}
 
-	public TwitteredFeed getFeed() {
+	public Feed getFeed() {
         return feed;
     }
 
-    public void setFeed(TwitteredFeed feed) {
+    public void setFeed(Feed feed) {
         this.feed = feed;
     }
 

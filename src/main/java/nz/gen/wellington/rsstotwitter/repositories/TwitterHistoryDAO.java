@@ -5,7 +5,7 @@ import java.util.List;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterEvent;
-import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
+import nz.gen.wellington.rsstotwitter.model.Feed;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.DetachedCriteria;
@@ -43,25 +43,25 @@ public class TwitterHistoryDAO {
         return hibernateTemplate.loadAll(TwitterEvent.class);
     }
 
-    public void markAsTwittered(FeedItem feedItem, TwitteredFeed feed, Tweet sentTweet) {
+    public void markAsTwittered(FeedItem feedItem, Feed feed, Tweet sentTweet) {
         TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(), feed, sentTweet);
         saveTwitterEvent(newEvent);
     }
     
-	public int getNumberOfTwitsInLastTwentyFourHours(TwitteredFeed feed) {				
+	public int getNumberOfTwitsInLastTwentyFourHours(Feed feed) {				
 		DetachedCriteria lastTwentyFourHoursCriteria = makeFeedLastTwentyFourHoursCriteria(feed);
 		int result = hibernateTemplate.findByCriteria(lastTwentyFourHoursCriteria).size();
     	log.info("Feed '" + feed.getUrl() + "' has made " + result + " twits in the last 24 hours");
 		return result;
 	}
 
-	public int getNumberOfTwitsInLastTwentyFourHours(TwitteredFeed feed, String publisher) {		
+	public int getNumberOfTwitsInLastTwentyFourHours(Feed feed, String publisher) {		
 		DetachedCriteria publisherLastTwentyFourHoursCriteria = makeFeedLastTwentyFourHoursCriteria(feed);
 		publisherLastTwentyFourHoursCriteria.add( Restrictions.eq("publisher", publisher));						
 		return hibernateTemplate.findByCriteria(publisherLastTwentyFourHoursCriteria).size();
 	}
 	
-	private DetachedCriteria makeFeedLastTwentyFourHoursCriteria(TwitteredFeed feed) {
+	private DetachedCriteria makeFeedLastTwentyFourHoursCriteria(Feed feed) {
 		DateTime twentyFourHoursAgo = new DateTime().minusDays(1);
 		DetachedCriteria lastTwentyFourHoursCriteria = DetachedCriteria.forClass(TwitterEvent.class).
 			add( Restrictions.eq( "feed", feed )).

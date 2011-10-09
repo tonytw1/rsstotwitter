@@ -1,15 +1,11 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.model.TwitteredFeed;
 import nz.gen.wellington.rsstotwitter.repositories.AccountDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
-import nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO;
 import nz.gen.wellington.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
@@ -18,33 +14,27 @@ import twitter4j.Status;
 
 public class TwitterArchiver {
 
-	Logger log = Logger.getLogger(UpdateService.class);
+	private static Logger log = Logger.getLogger(UpdateService.class);
 
 	private TwitterService twitterService;
 	private TweetDAO tweetDAO;
-	private TwitteredFeedDAO twitteredFeedDAO;
 	private AccountDAO accountDAO;
-	
-		
-	public TwitterArchiver(TwitterService twitterService, TwitteredFeedDAO twitteredFeedDAO, TweetDAO tweetDAO, AccountDAO accountDAO) {
+			
+	public TwitterArchiver(TwitterService twitterService, TweetDAO tweetDAO, AccountDAO accountDAO) {
 		this.twitterService = twitterService;
-		this.twitteredFeedDAO = twitteredFeedDAO;
 		this.tweetDAO = tweetDAO;
 		this.accountDAO = accountDAO;
 	}
 
-
 	public void run() {
-		Set<TwitterAccount> accountsToArchive = new HashSet<TwitterAccount>();		
-		for (TwitteredFeed feed : twitteredFeedDAO.getAllFeeds()) {
-			accountsToArchive.add(feed.getAccount());
-	    }
-		
-		for (TwitterAccount account : accountsToArchive) {
-			archiveMentions(account);
+		for (TwitterAccount account : accountDAO.getAllTwitterAccounts()) {
+			try {
+				archiveMentions(account);
+			} catch (Exception e) {
+				log.error("Unexpected error while attempting to archive mentions for twitter account: " + account.getUsername());
+			}
 		}
 	}
-	
 	
 	private void archiveMentions(TwitterAccount account) {
         log.info("Running mention archiver for: " + account.getUsername());        
@@ -57,8 +47,7 @@ public class TwitterArchiver {
         		tweetDAO.saveTweet(mentionTweet);
         		account.addMention(mentionTweet);
         	}
-        }
-        
+        }        
         accountDAO.saveAccount(account);        		
         log.info("Finished mention archiver run for: " + account.getUsername());
 	}
