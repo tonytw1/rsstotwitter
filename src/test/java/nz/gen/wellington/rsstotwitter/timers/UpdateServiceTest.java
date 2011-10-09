@@ -31,14 +31,14 @@ public class UpdateServiceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);				
+		MockitoAnnotations.initMocks(this);
+		feedToTwitterJobs = new ArrayList<TweetFeedJob>();
 		service = new UpdateService(tweetFeedJobDAO, feedDAO, twitterUpdater);
 	}
 	
 	@Test
-	public void shouldGracefullyDoNothingIfFeedFailsToLoad() throws Exception {
-		List<Feed> feeds = new ArrayList<Feed>();
-		feeds.add(new Feed(FIRST_FEED_URL));
+	public void shouldGracefullyDoNothingIfFeedFailsToLoad() throws Exception {		
+		feedToTwitterJobs.add(new TweetFeedJob(new Feed(FIRST_FEED_URL), null, null));
 		when(tweetFeedJobDAO.getAllTweetFeedJobs()).thenReturn(feedToTwitterJobs);
 		when(feedDAO.loadFeedItems(FIRST_FEED_URL)).thenReturn(null);
 		
