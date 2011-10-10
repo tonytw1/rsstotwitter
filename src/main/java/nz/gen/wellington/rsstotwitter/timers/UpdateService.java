@@ -28,7 +28,7 @@ public class UpdateService {
         List<FeedToTwitterJob> jobs = feedToTwitterJobDAO.getAllTweetFeedJobs();
         for (FeedToTwitterJob job : jobs) {
         	final Feed feed = job.getFeed();
-			log.info("Running feed to twitter job: " + feed + ":" + job.getAccount());
+			log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
         	List<FeedItem> feedItems = feedDAO.loadFeedItems(feed.getUrl());
         	if (feedItems != null) {
         		twitterUpdater.updateFeed(feed, feedItems, job.getAccount(), job.getTag());
