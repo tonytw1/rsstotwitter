@@ -60,7 +60,7 @@ public class TwitTextBuilderServiceTest {
     }
 
     @Test
-    public void shouldNotIncludeChannelButOnlyIfThereIsRoom() throws Exception {
+    public void shouldIncludeChannelButOnlyIfThereIsRoom() throws Exception {
         final String twit = service.buildTwitForItem(new FeedItem(TITLE, LONG_URL, LONG_URL, null, null, null, null), "testtag");      
         assertTrue(twit.length() <= TwitterService.MAXIMUM_TWITTER_MESSAGE_LENGTH);      
         assertEquals(TITLE + " http://tinyurl/1 #testtag", twit);
