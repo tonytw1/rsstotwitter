@@ -2,17 +2,17 @@ package nz.gen.wellington.rsstotwitter.repositories;
 
 import java.util.List;
 
-import nz.gen.wellington.rsstotwitter.model.TweetFeedJob;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-public class TweetFeedJobDAO {
+public class FeedToTwitterJobDAO {
 	
     private HibernateTemplate hibernateTemplate;
     
 	@SuppressWarnings("unchecked")
-	public List<TweetFeedJob> getAllTweetFeedJobs() {
-		return hibernateTemplate.loadAll(TweetFeedJob.class);
+	public List<FeedToTwitterJob> getAllTweetFeedJobs() {
+		return hibernateTemplate.loadAll(FeedToTwitterJob.class);
 	}
 
 }

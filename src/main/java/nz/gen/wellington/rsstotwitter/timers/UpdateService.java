@@ -5,8 +5,8 @@ import java.util.List;
 import nz.gen.wellington.rsstotwitter.feeds.FeedDAO;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.TweetFeedJob;
-import nz.gen.wellington.rsstotwitter.repositories.TweetFeedJobDAO;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
+import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
 
 import org.apache.log4j.Logger;
 
@@ -14,19 +14,19 @@ public class UpdateService {
 	
 	private static Logger log = Logger.getLogger(UpdateService.class);
 
-    private TweetFeedJobDAO tweetFeedJobDAO;
+    private FeedToTwitterJobDAO feedToTwitterJobDAO;
     private FeedDAO feedDAO;
     private Updater twitterUpdater;
     
-	public UpdateService(TweetFeedJobDAO tweetFeedJobDAO, FeedDAO feedDAO, Updater twitterUpdater) {
-		this.tweetFeedJobDAO = tweetFeedJobDAO;
+	public UpdateService(FeedToTwitterJobDAO tweetFeedJobDAO, FeedDAO feedDAO, Updater twitterUpdater) {
+		this.feedToTwitterJobDAO = tweetFeedJobDAO;
 		this.feedDAO = feedDAO;
 		this.twitterUpdater = twitterUpdater;
 	}
 	
 	public void run() {       
-        List<TweetFeedJob> jobs = tweetFeedJobDAO.getAllTweetFeedJobs();
-        for (TweetFeedJob job : jobs) {
+        List<FeedToTwitterJob> jobs = feedToTwitterJobDAO.getAllTweetFeedJobs();
+        for (FeedToTwitterJob job : jobs) {
         	final Feed feed = job.getFeed();
 			log.info("Running feed to twitter job: " + feed + ":" + job.getAccount());
         	List<FeedItem> feedItems = feedDAO.loadFeedItems(feed.getUrl());

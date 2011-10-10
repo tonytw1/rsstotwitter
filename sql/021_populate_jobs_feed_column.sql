@@ -1,0 +1,1 @@
+update twittered_feed set feed = (SELECT id from feed where url = twittered_feed.url);

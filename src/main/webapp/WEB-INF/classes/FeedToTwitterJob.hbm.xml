@@ -1,12 +1,12 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="true" package="nz.gen.wellington.rsstotwitter.model">
-    <class name="TwitteredFeed" table="twittered_feed">
+    <class name="FeedToTwitterJob" table="twittered_feed">
         <id name="id">
             <generator class="native" />
-        </id>
-   		<property name="url"/>
-   		<property name="twitterTag" column="twitter_tag"/>
+        </id>       
+       	<many-to-one name="account" class="nz.gen.wellington.rsstotwitter.model.Feed" column="feed" />        
    		<many-to-one name="account" class="nz.gen.wellington.rsstotwitter.model.TwitterAccount" column="account" />   		
+   		<property name="twitterTag" column="twitter_tag"/>
 	</class>
 </hibernate-mapping>
