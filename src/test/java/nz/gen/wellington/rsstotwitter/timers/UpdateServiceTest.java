@@ -56,7 +56,7 @@ public class UpdateServiceTest {
 
 		service.run();
 		
-		verify(twitterUpdater).updateFeed(feed, feedItems, account, tag);
+		verify(twitterUpdater).updateFeed(feedItems, account, tag);
 	}
 	
 	@Test

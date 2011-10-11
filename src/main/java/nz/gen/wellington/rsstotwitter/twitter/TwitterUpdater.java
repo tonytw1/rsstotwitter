@@ -35,7 +35,7 @@ public class TwitterUpdater implements Updater {
 	}
 
 	public void updateFeed(List<FeedItem> feedItems, TwitterAccount account, String tag) {
-		Feed feed = feedItems.get(0).getFeed();	// TODO Meh - drops out when we move to account rate limiting.		
+		Feed feed = feedItems.get(0).getFeed();	// TODO Meh - drops out when we move to account rate limiting.
         int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);	// TODO rate limit should really be about the twitter account, not the feed.
         if (hasExceededFeedRateLimit(tweetsSent)) {
         	log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; skipping");

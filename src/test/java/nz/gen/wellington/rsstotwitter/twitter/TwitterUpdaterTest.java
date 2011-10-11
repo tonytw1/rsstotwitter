@@ -39,34 +39,34 @@ public class TwitterUpdaterTest {
 
 	private List<FeedItem> feedItems;
 	private String tag = null;
+	private FeedItem feedItem;
 	
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);			
 		when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed)).thenReturn(2);
+		feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null, null);
 		feedItems = new ArrayList<FeedItem>();
+		feedItems.add(feedItem);
 		
 		service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetDAO, tweetFromFeedItemBuilder);
 	}
 			
 	@Test
 	public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() throws Exception {
-		List<FeedItem> feedItems = new ArrayList<FeedItem>();
-		when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed)).thenReturn(35);
+		when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed)).thenReturn(55);
 		
-		service.updateFeed(feed, feedItems, account, tag);
+		service.updateFeed(feedItems, account, tag);
 		
 		verifyNoMoreInteractions(twitterService);
 	}
 	
 	@Test
 	public void shouldTweetFeedItems() throws Exception {
-		FeedItem feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null, null);
-		feedItems.add(feedItem);
 		when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, null)).thenReturn(tweetToSend);
 		when(twitterService.twitter(tweetToSend, account)).thenReturn(sentTweet);
 		
-		service.updateFeed(feed, feedItems, account, tag);
+		service.updateFeed(feedItems, account, tag);
 		
 		verify(twitterService).twitter(tweetToSend, account);
 		verify(tweetDAO).saveTweet(sentTweet);
@@ -76,10 +76,11 @@ public class TwitterUpdaterTest {
 	@Test
 	public void shouldNotTweetFeedItemsOlderThanOneWeek() throws Exception {
 		final Date oldDate = new DateTime().minusDays(10).toDate();
-		FeedItem feedItem = new FeedItem(feed, "title", "guid", "link", oldDate, "author", null, null);
-		feedItems.add(feedItem);
+		FeedItem oldFeedItem = new FeedItem(feed, "title", "guid", "link", oldDate, "author", null, null);
+		feedItems.clear();
+		feedItems.add(oldFeedItem);
 		
-		service.updateFeed(feed, feedItems, account, tag);
+		service.updateFeed(feedItems, account, tag);
 		
 		verifyNoMoreInteractions(tweetFromFeedItemBuilder);
 		verifyNoMoreInteractions(twitterService);
