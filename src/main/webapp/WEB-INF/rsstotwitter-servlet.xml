@@ -101,7 +101,8 @@
 	    		<value>Tweet.hbm.xml</value>
 	    		<value>TwitterAccount.hbm.xml</value>	    		  
         		<value>TwitterEvent.hbm.xml</value>
-       			<value>TwitteredFeed.hbm.xml</value>  	
+       			<value>Feed.hbm.xml</value>
+       			<value>FeedToTwitterJob.hbm.xml</value>       			
   	 		</list>
   		</property>
   		<property name="hibernateProperties">

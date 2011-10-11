@@ -2,6 +2,7 @@ package nz.gen.wellington.rsstotwitter.model;
 
 public class FeedToTwitterJob {
 
+	private int id;
 	private Feed feed;
 	private TwitterAccount account;
 	private String tag;
@@ -11,7 +12,15 @@ public class FeedToTwitterJob {
 		this.account = account;
 		this.tag = tag;
 	}
-
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public Feed getFeed() {
 		return feed;
 	}
