@@ -24,7 +24,8 @@ public class UpdateService {
 		this.twitterUpdater = twitterUpdater;
 	}
 	
-	public void run() {       
+	public void run() {
+		log.info("Starting feed to twitter update.");
         List<FeedToTwitterJob> jobs = feedToTwitterJobDAO.getAllTweetFeedJobs();
         for (FeedToTwitterJob job : jobs) {
         	final Feed feed = job.getFeed();

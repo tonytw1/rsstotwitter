@@ -7,6 +7,9 @@ public class FeedToTwitterJob {
 	private TwitterAccount account;
 	private String tag;
 	
+	public FeedToTwitterJob() {
+	}
+	
 	public FeedToTwitterJob(Feed feed, TwitterAccount account, String tag) {
 		this.feed = feed;
 		this.account = account;
