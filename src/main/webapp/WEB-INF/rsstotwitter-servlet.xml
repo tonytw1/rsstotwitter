@@ -26,7 +26,7 @@
 		<constructor-arg ref="hibernateTemplate" />
 	</bean>
 	
-	<bean id="twitteredFeedDAO" class="nz.gen.wellington.rsstotwitter.repositories.TwitteredFeedDAO">
+	<bean id="feedToTwitterJobDAO" class="nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO">
 		<constructor-arg ref="hibernateTemplate" />
 	</bean>
 	
@@ -50,7 +50,7 @@
 	</bean>
 			
 	<bean id="updateService" class="nz.gen.wellington.rsstotwitter.timers.UpdateService">
-		<constructor-arg ref="twitteredFeedDAO" />
+		<constructor-arg ref="feedToTwitterJobDAO" />
 		<constructor-arg ref="feedDAO" />
 		<constructor-arg ref="twitterUpdater" />		
 	</bean>
@@ -69,7 +69,6 @@
 		
 	<bean id="twitterArchiver" class="nz.gen.wellington.rsstotwitter.timers.TwitterArchiver">
 		<constructor-arg ref="twitterService" />
-		<constructor-arg ref="twitteredFeedDAO" />
 		<constructor-arg ref="tweetDAO" />
 		<constructor-arg ref="accountDAO" />
 	</bean>

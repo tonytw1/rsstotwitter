@@ -5,8 +5,8 @@
         <id name="id">
             <generator class="native" />
         </id>       
-       	<many-to-one name="account" class="nz.gen.wellington.rsstotwitter.model.Feed" column="feed" />        
+       	<many-to-one name="feed" class="nz.gen.wellington.rsstotwitter.model.Feed" column="feed" />        
    		<many-to-one name="account" class="nz.gen.wellington.rsstotwitter.model.TwitterAccount" column="account" />   		
-   		<property name="twitterTag" column="twitter_tag"/>
+   		<property name="tag" column="twitter_tag"/>
 	</class>
 </hibernate-mapping>

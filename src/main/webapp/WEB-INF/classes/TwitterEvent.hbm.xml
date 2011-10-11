@@ -9,7 +9,7 @@
    		<property name="twit"/>
    		<property name="date"/>
    		<property name="publisher"/>   		   	
-   		<many-to-one name="feed" class="TwitteredFeed" column="feed" lazy="false" />
+   		<many-to-one name="feed" class="Feed" column="feed" lazy="false" />
    		<many-to-one name="tweet" class="nz.gen.wellington.rsstotwitter.model.Tweet" column="tweet" cascade="" />
    		
 	</class>

@@ -10,6 +10,10 @@ public class FeedToTwitterJobDAO {
 	
     private HibernateTemplate hibernateTemplate;
     
+	public FeedToTwitterJobDAO(HibernateTemplate hibernateTemplate) {
+		this.hibernateTemplate = hibernateTemplate;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<FeedToTwitterJob> getAllTweetFeedJobs() {
 		return hibernateTemplate.loadAll(FeedToTwitterJob.class);
