@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class FeedItem {
 
+	private Feed feed;
 	private String title;
 	private String uri;
 	private String link;
@@ -11,8 +12,9 @@ public class FeedItem {
 	private String author;
 	private Double latitude;
 	private Double longitude;
-
-	public FeedItem(String title, String uri, String link, Date publishedDate, String author, Double latitude, Double longitude) {
+	
+	public FeedItem(Feed feed, String title, String uri, String link, Date publishedDate, String author, Double latitude, Double longitude) {
+		this.feed = feed;
 		this.title = title;
 		this.uri = uri;
 		this.link = link;
@@ -21,7 +23,11 @@ public class FeedItem {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
-
+	
+	public Feed getFeed() {
+		return feed;
+	}
+	
 	public String getTitle() {
 		return title;
 	}

@@ -34,20 +34,13 @@ public class TwitterUpdater implements Updater {
 		this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
 	}
 
-	public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account, String tag) {
-		if (feedItems == null) {
-			log.warn("Could not load feed from url: " + feed.getUrl());
-			return;
-		}
-		
-        log.info("Running twitter update for: " + feed.getUrl());
-                
+	public void updateFeed(List<FeedItem> feedItems, TwitterAccount account, String tag) {
+		Feed feed = feedItems.get(0).getFeed();	// TODO Meh - drops out when we move to account rate limiting.		
         int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);	// TODO rate limit should really be about the twitter account, not the feed.
         if (hasExceededFeedRateLimit(tweetsSent)) {
         	log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; skipping");
         	return;
         }
-        
         
         for (FeedItem feedItem : feedItems) {
 			if (hasExceededFeedRateLimit(tweetsSent)) {
@@ -56,7 +49,7 @@ public class TwitterUpdater implements Updater {
 		        			
         	boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
         	if (!publisherRateLimitExceeded) {        				
-	        	if (processItem(feed, feedItem, account, tag)) {
+	        	if (processItem(feedItem, account, tag)) {
 	        		tweetsSent++;
 	        	}
 	        			                                             	        			
@@ -68,14 +61,14 @@ public class TwitterUpdater implements Updater {
         log.info("Twitter update completed for feed: " + feed.getUrl());
 	}
    	
-	private boolean processItem(Feed feed, FeedItem feedItem, TwitterAccount account, String tag) {
+	private boolean processItem(FeedItem feedItem, TwitterAccount account, String tag) {
 		final String guid = feedItem.getGuid();
 		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {			
 			Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, tag);
 			Tweet sentTweet = twitterService.twitter(tweet, account);
 			if (sentTweet != null) {
 				tweetDAO.saveTweet(sentTweet);
-				twitterHistoryDAO.markAsTwittered(feedItem, feed, sentTweet);
+				twitterHistoryDAO.markAsTwittered(feedItem, sentTweet);
 				return true;
 				
 			} else {

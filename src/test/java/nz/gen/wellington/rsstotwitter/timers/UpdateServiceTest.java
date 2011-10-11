@@ -52,7 +52,7 @@ public class UpdateServiceTest {
 	
 	@Test
 	public void shouldFetchFeedItemsAndPassThemToTheTwitterUpdaterForTweeting() throws Exception {
-		when(feedDAO.loadFeedItems(FEED_URL)).thenReturn(feedItems);
+		when(feedDAO.loadFeedItems(feed)).thenReturn(feedItems);
 
 		service.run();
 		
@@ -61,11 +61,11 @@ public class UpdateServiceTest {
 	
 	@Test
 	public void shouldGracefullyDoNothingIfFeedFailsToLoad() throws Exception {		
-		when(feedDAO.loadFeedItems(FEED_URL)).thenReturn(null);
+		when(feedDAO.loadFeedItems(feed)).thenReturn(null);
 		
 		service.run();
 		
-		verify(feedDAO).loadFeedItems(FEED_URL);
+		verify(feedDAO).loadFeedItems(feed);
 		verifyNoMoreInteractions(twitterUpdater);
 	}
 

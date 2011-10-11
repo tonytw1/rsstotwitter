@@ -29,12 +29,12 @@ public class UpdateService {
         for (FeedToTwitterJob job : jobs) {
         	final Feed feed = job.getFeed();
 			log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
-        	List<FeedItem> feedItems = feedDAO.loadFeedItems(feed.getUrl());
-        	if (feedItems != null) {
-        		twitterUpdater.updateFeed(feed, feedItems, job.getAccount(), job.getTag());
+        	List<FeedItem> feedItems = feedDAO.loadFeedItems(feed);
+        	if (feedItems != null && !feedItems.isEmpty()) {
+        		twitterUpdater.updateFeed(feedItems, job.getAccount(), job.getTag());
         		
         	} else {
-        		log.warn("Failed to load feed items from feed url: " + feed.getUrl());
+        		log.warn("Failed to load feed items from feed url or feed contained no items: " + feed.getUrl());
         	}
         }
     }

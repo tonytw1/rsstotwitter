@@ -61,7 +61,7 @@ public class TwitterUpdaterTest {
 	
 	@Test
 	public void shouldTweetFeedItems() throws Exception {
-		FeedItem feedItem = new FeedItem("title", "guid", "link", Calendar.getInstance().getTime(), "author", null, null);
+		FeedItem feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null, null);
 		feedItems.add(feedItem);
 		when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, null)).thenReturn(tweetToSend);
 		when(twitterService.twitter(tweetToSend, account)).thenReturn(sentTweet);
@@ -70,13 +70,13 @@ public class TwitterUpdaterTest {
 		
 		verify(twitterService).twitter(tweetToSend, account);
 		verify(tweetDAO).saveTweet(sentTweet);
-		verify(twitterHistoryDAO).markAsTwittered(feedItem, feed, sentTweet);
+		verify(twitterHistoryDAO).markAsTwittered(feedItem, sentTweet);
 	}
 		
 	@Test
 	public void shouldNotTweetFeedItemsOlderThanOneWeek() throws Exception {
 		final Date oldDate = new DateTime().minusDays(10).toDate();
-		FeedItem feedItem = new FeedItem("title", "guid", "link", oldDate, "author", null, null);
+		FeedItem feedItem = new FeedItem(feed, "title", "guid", "link", oldDate, "author", null, null);
 		feedItems.add(feedItem);
 		
 		service.updateFeed(feed, feedItems, account, tag);
