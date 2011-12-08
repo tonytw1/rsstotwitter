@@ -63,7 +63,15 @@ public class TwitterUpdater implements Updater {
    	
 	private boolean processItem(FeedItem feedItem, TwitterAccount account, String tag) {
 		final String guid = feedItem.getGuid();
-		if (isLessThanOneWeekOld(feedItem) && !twitterHistoryDAO.hasAlreadyBeenTwittered(guid)) {			
+		
+		final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
+		if (!isLessThanOneWeekOld) {
+			log.info("Not tweeting as the item's publication date is more than one week old: " + guid);
+			return false;
+		}
+		
+		final boolean hasAlreadyBeenTwittered = twitterHistoryDAO.hasAlreadyBeenTwittered(guid);
+		if (!hasAlreadyBeenTwittered) {			
 			Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, tag);
 			Tweet sentTweet = twitterService.twitter(tweet, account);
 			if (sentTweet != null) {
@@ -73,11 +81,13 @@ public class TwitterUpdater implements Updater {
 				
 			} else {
 				log.warn("Failed to twitter: " + tweet.getText());
+				return false;
 			}
 			
 		} else {
-			log.info("Not twittering as guid has already been twittered or is more than a week old: " + guid);
+			log.info("Not twittering as guid has already been twittered: " + guid);
 		}
+		
 		return false;
 	}
 	
