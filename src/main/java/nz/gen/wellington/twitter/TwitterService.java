@@ -8,6 +8,7 @@ import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
 import org.apache.log4j.Logger;
 
+import twitter4j.IDs;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -102,6 +103,21 @@ public class TwitterService {
 		}
 		return all;
 	}
+    
+    public IDs getFollowers(TwitterAccount account) {
+		AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
+    	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
+    	IDs followersIDs;
+		try {
+			followersIDs = twitter.getFollowersIDs(account.getUsername());
+			log.info("Found " + followersIDs.getIDs().length + " follower ids");
+			return followersIDs;
+			
+		} catch (TwitterException e) {
+			log.error("Error while fetching follows of '" + account.getUsername() + "'", e);
+		}
+		return null;
+    }
     
     public twitter4j.User getTwitteUserCredentials(AccessToken accessToken) {
 		Twitter twitterApi = getAuthenticatedApiForAccount(accessToken);
