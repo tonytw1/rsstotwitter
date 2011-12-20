@@ -52,11 +52,11 @@ public class TwitterAccount {
 		return token;
 	}
 
-	public void setToken(String token) {
+	public void setToken(String token) {	// TODO rename to accessToken
 		this.token = token;
 	}
 
-	public String getTokenSecret() {
+	public String getTokenSecret() {	// TODO rename to accessTokenSecret
 		return tokenSecret;
 	}
 
