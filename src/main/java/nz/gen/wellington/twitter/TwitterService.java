@@ -1,11 +1,13 @@
 package nz.gen.wellington.twitter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 
 import twitter4j.IDs;
@@ -104,19 +106,38 @@ public class TwitterService {
 		return all;
 	}
     
-    public IDs getFollowers(TwitterAccount account) {
-		AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
-    	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
+    public List<Integer> getFollowers(TwitterAccount account) {
+    	Twitter twitter = new TwitterFactory().getInstance();
     	IDs followersIDs;
 		try {
 			followersIDs = twitter.getFollowersIDs(account.getUsername());
 			log.info("Found " + followersIDs.getIDs().length + " follower ids");
-			return followersIDs;
+			return Arrays.asList(ArrayUtils.toObject(followersIDs.getIDs()));
 			
 		} catch (TwitterException e) {
 			log.error("Error while fetching follows of '" + account.getUsername() + "'", e);
 		}
 		return null;
+    }
+    
+    public List<Integer> getFriends(TwitterAccount account) {
+    	Twitter twitter = new TwitterFactory().getInstance();
+    	IDs friendIds;
+		try {
+			friendIds = twitter.getFriendsIDs((account.getUsername()));
+			log.info("Found " + friendIds.getIDs().length + " follower ids");
+			return Arrays.asList(ArrayUtils.toObject(friendIds.getIDs()));
+			
+		} catch (TwitterException e) {
+			log.error("Error while fetching friends of '" + account.getUsername() + "'", e);
+		}
+		return null;
+    }
+    
+    public void follow(TwitterAccount account, int userId) throws TwitterException {
+    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
+    	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
+    	twitter.createFriendship(userId, true);
     }
     
     public twitter4j.User getTwitteUserCredentials(AccessToken accessToken) {
