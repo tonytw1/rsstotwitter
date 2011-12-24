@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
-public class TwitterArchiver {
+public class TwitterArchiver implements Runnable {
 
 	private static Logger log = Logger.getLogger(UpdateService.class);
 
@@ -30,9 +30,12 @@ public class TwitterArchiver {
 		this.tweetDAO = tweetDAO;
 		this.accountDAO = accountDAO;
 	}
-
+	
 	public void run() {
-		for (TwitterAccount account : accountDAO.getAllTwitterAccounts()) {
+		log.info("Starting tweet archiver job");
+		List<TwitterAccount> allAccounts = accountDAO.getAllTwitterAccounts();
+		log.info("Found " + allAccounts.size() + " accounts");
+		for (TwitterAccount account : allAccounts) {
 			try {
 				archiveMentions(account);
 			} catch (Exception e) {
@@ -50,12 +53,12 @@ public class TwitterArchiver {
         		Tweet mentionTweet = new Tweet(status);
         		log.info("Saving new mention tweet: " + mentionTweet.getText());
         		tweetDAO.saveTweet(mentionTweet);
-        		account.addMention(mentionTweet);
+        		account.addMention(mentionTweet);	// TODO Should add from the other side of the relationship
         	}
         }        
-        accountDAO.saveAccount(account);        		
-        log.info("Finished mention archiver run for: " + account.getUsername());
+        accountDAO.saveAccount(account);
         
+        log.info("Finished mention archiver run for: " + account.getUsername());
         
         if (account.getUsername().equals("wellynews")) {
         	log.info("Running auto follower");
