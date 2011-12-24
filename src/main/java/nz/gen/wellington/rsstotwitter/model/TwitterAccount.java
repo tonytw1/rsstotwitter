@@ -6,6 +6,7 @@ public class TwitterAccount {
 
 	private int id;
 	private String username;
+	private boolean autoFollow;
 	
 	private String token;
 	private String tokenSecret;
@@ -62,6 +63,14 @@ public class TwitterAccount {
 
 	public void setTokenSecret(String tokenSecret) {
 		this.tokenSecret = tokenSecret;
+	}
+
+	public boolean isAutoFollow() {
+		return autoFollow;
+	}
+
+	public void setAutoFollow(boolean autoFollow) {
+		this.autoFollow = autoFollow;
 	}
 	
 }

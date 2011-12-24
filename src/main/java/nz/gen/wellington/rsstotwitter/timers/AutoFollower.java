@@ -31,10 +31,8 @@ public class AutoFollower implements Runnable {
 		List<TwitterAccount> allAccounts = accountDAO.getAllTwitterAccounts();
 		log.info("Found " + allAccounts.size() + " accounts");
 		for (TwitterAccount account : allAccounts) {
-			
-	        if (account.getUsername().equals("wellynews")) {
-	        	autoFollowForAccount(account);
-			}
+			log.info("Account '" + account.getUsername() + "' is auto follower: " + account.isAutoFollow());
+			autoFollowForAccount(account);			
 		}
 		log.info("Finished auto follower");
 	}

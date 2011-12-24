@@ -1,0 +1,1 @@
+ alter table account add column auto_follow int(1) default 0;
