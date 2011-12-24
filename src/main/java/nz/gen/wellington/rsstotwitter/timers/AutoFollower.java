@@ -30,15 +30,17 @@ public class AutoFollower implements Runnable {
 		log.info("Starting auto follow job");
 		List<TwitterAccount> allAccounts = accountDAO.getAllTwitterAccounts();
 		log.info("Found " + allAccounts.size() + " accounts");
-		for (TwitterAccount account : allAccounts) {			
+		for (TwitterAccount account : allAccounts) {
+			
 	        if (account.getUsername().equals("wellynews")) {
 	        	autoFollowForAccount(account);
 			}
 		}
+		log.info("Finished auto follower");
 	}
 	
 	private void autoFollowForAccount(TwitterAccount account) {
-		log.info("Running auto follower");
+		log.info("Running auto follower for: " + account.getUsername());
 		    		
 		Set<Integer> followers = new HashSet<Integer>(twitterService.getFollowers(account));
 		log.info("Found follows: " + followers.size());
@@ -59,7 +61,8 @@ public class AutoFollower implements Runnable {
 				log.error(e);
 			}
 		}
-		log.info("Finished auto follower");
+		
+		log.info("Finished auto follower for: " + account.getUsername());
 	}
 	
 }
