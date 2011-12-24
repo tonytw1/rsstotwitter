@@ -1,9 +1,6 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
@@ -11,11 +8,9 @@ import nz.gen.wellington.rsstotwitter.repositories.AccountDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.twitter.TwitterService;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import twitter4j.Status;
-import twitter4j.TwitterException;
 
 public class TwitterArchiver implements Runnable {
 
@@ -56,34 +51,8 @@ public class TwitterArchiver implements Runnable {
         		account.addMention(mentionTweet);	// TODO Should add from the other side of the relationship
         	}
         }        
-        accountDAO.saveAccount(account);
-        
-        log.info("Finished mention archiver run for: " + account.getUsername());
-        
-        if (account.getUsername().equals("wellynews")) {
-        	log.info("Running auto follower");
-        	    		
-    		Set<Integer> followers = new HashSet<Integer>(twitterService.getFollowers(account));
-    		log.info("Found follows: " + followers.size());
-
-    		List<Integer> friends = twitterService.getFriends(account);
-    		log.info("Found friends: " + friends.size());
-    		
-    		Collection<Integer> toFollow = CollectionUtils.subtract(followers, friends);
-    		log.info("Followers whom we don't follow back: " + toFollow);
-    		
-    		if (!toFollow.isEmpty()) {
-    			try {
-    				Integer follow = toFollow.iterator().next();
-    				log.info("Attempting to follow: " + Integer.toString(follow));
-					twitterService.follow(account, follow);
-					
-				} catch (TwitterException e) {
-					log.error(e);
-				}
-    		}
-        	log.info("Finished auto follower");
-        }
+        accountDAO.saveAccount(account);        
+        log.info("Finished mention archiver run for: " + account.getUsername());       
 	}
 		
 }

@@ -84,16 +84,34 @@
     	<property name="startDelay" value="60000" />
     	<property name="repeatInterval" value="86400000" />
 	</bean>
-			
+	
+	<bean id="autoFollower" class="nz.gen.wellington.rsstotwitter.timers.AutoFollower">
+		<constructor-arg ref="twitterService" />
+		<constructor-arg ref="accountDAO" />
+	</bean>
+	
+	<bean id="autoFollowerRunner" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+  		<property name="targetObject" ref="autoFollower" />
+  		<property name="targetMethod" value="run" />
+  		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="autoFollowerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+   		<property name="jobDetail" ref="autoFollowerRunner" />
+    	<property name="startDelay" value="60000" />
+    	<property name="repeatInterval" value="600000" />
+	</bean>
+	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="updateServiceTrigger"/>
 				<ref bean="twitterArchiverTrigger"/>
+				<ref bean="autoFollowerTrigger"/>				
 			</list>
 		</property>
 	</bean>
-		
+	
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" lazy-init="false">
   		<property name="mappingResources">
     		<list>
@@ -118,8 +136,7 @@
     		<ref bean="dataSource"/>
 		</property>
 	</bean>
-	
-	
+		
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName">
    			<value>com.mysql.jdbc.Driver</value>
@@ -197,7 +214,7 @@
 	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
     	<property name="resourceLoaderPath" value="/WEB-INF/velocity"/>
 	</bean>
-
+	
 	<bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
 	   <property name="velocityProperties">
 	     	<props>
@@ -207,7 +224,7 @@
 		</property>
    		<property name="resourceLoaderPath" value="/WEB-INF/velocity"/>
 	</bean>
-
+	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
    		<property name="cache" value="true"/>
    		<property name="prefix" value=""/>
