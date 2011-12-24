@@ -27,7 +27,7 @@ public class TwitterHistoryDAO {
     public boolean hasAlreadyBeenTwittered(String guid) {            
         DetachedCriteria previousEventsCriteria = DetachedCriteria.forClass( TwitterEvent.class ).add( Restrictions.eq( "guid", guid ));        
         List<TwitterEvent> previousEvents = hibernateTemplate.findByCriteria(previousEventsCriteria);
-        log.info("Found " + previousEvents.size() + " previous events for guid: " + guid);
+        log.debug("Found " + previousEvents.size() + " previous events for guid: " + guid);
         if (previousEvents.size() > 0) {
             return true;
         }
