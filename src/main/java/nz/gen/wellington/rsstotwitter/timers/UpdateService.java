@@ -10,7 +10,7 @@ import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
 
 import org.apache.log4j.Logger;
 
-public class UpdateService {
+public class UpdateService implements Runnable {
 	
 	private static Logger log = Logger.getLogger(UpdateService.class);
 
