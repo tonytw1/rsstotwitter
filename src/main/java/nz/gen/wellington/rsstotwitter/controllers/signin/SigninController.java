@@ -19,12 +19,17 @@ public class SigninController extends MultiActionController {
 	
 	private AccountDAO accountDAO;
 	private SigninHandler signinHandler;
-	private LoggedInUserFilter loggedInUserFilter;
+	private LoggedInUserFilter loggedInUserFilter;	
+	private String homePageUrl;
 	
 	public SigninController(AccountDAO accountDAO, SigninHandler signinHandler, LoggedInUserFilter loggedInUserFilter) {
 		this.accountDAO = accountDAO;
 		this.signinHandler = signinHandler;
 		this.loggedInUserFilter = loggedInUserFilter;
+	}
+	
+	public void setHomePageUrl(String homePageUrl) {
+		this.homePageUrl = homePageUrl;
 	}
 	
 	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -59,7 +64,7 @@ public class SigninController extends MultiActionController {
 	}
 	
 	private ModelAndView signinErrorView(HttpServletRequest request) {
-		return new ModelAndView(new RedirectView("/"));	// TODO implement something meaningful
+		return new ModelAndView(new RedirectView(homePageUrl));
 	}
 		
 	private TwitterAccount createNewUser(Object externalIdentifier) {
