@@ -42,7 +42,6 @@ public class SigninController extends MultiActionController {
 			log.info("External user identifier is: " + externalIdentifier.toString());			
 			
 			TwitterAccount account = signinHandler.getUserByExternalIdentifier(externalIdentifier);
-			signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
 			
 			final boolean localAccountAlreadyExistsForThisUser = account != null;
 			if (!localAccountAlreadyExistsForThisUser) {
@@ -50,6 +49,7 @@ public class SigninController extends MultiActionController {
 				account = createNewUser(externalIdentifier);				
 			} else {
 				log.info("Existing local account found for external identifier: " + externalIdentifier.toString());
+				signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
 			}
 			
 			loggedInUserFilter.setLoggedInUser(request, account);

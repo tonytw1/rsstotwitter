@@ -11,7 +11,10 @@
 	</bean>
 		
 	<bean id="tinyUrlService" class="nz.gen.wellington.tinyurl.TinyUrlService" />
-	<bean id="twitterService" class="nz.gen.wellington.twitter.TwitterService" />
+	<bean id="twitterService" class="nz.gen.wellington.twitter.TwitterService">
+		<property name="consumerKey" value="${consumer.key}" />
+		<property name="consumerSecret" value="${consumer.secret}" />
+	</bean>
 	<bean id="feedDAO" class="nz.gen.wellington.rsstotwitter.feeds.FeedDAO" />
 		
 	<bean id="twitTextBuilderService" class="nz.gen.wellington.twitter.TwitTextBuilderService">
@@ -104,9 +107,7 @@
 	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
-			<list>
-				<ref bean="updateServiceTrigger"/>
-				<ref bean="twitterArchiverTrigger"/>
+			<list>			
 				<ref bean="autoFollowerTrigger"/>				
 			</list>
 		</property>
