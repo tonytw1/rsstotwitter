@@ -16,16 +16,31 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.User;
 import twitter4j.http.AccessToken;
 
 public class TwitterService {
     
+	private static Logger log = Logger.getLogger(TwitterService.class);
+	
     public static final int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
 	private static final int REPLY_PAGES_TO_FETCH = 1;
     
-	private static Logger log = Logger.getLogger(TwitterService.class);
+	private String consumerKey;
+	private String consumerSecret;
 	
-    public Tweet twitter(Tweet tweet, TwitterAccount account) {
+    public TwitterService() {
+	}
+    
+	public void setConsumerKey(String consumerKey) {
+		this.consumerKey = consumerKey;
+	}
+	
+	public void setConsumerSecret(String consumerSecret) {
+		this.consumerSecret = consumerSecret;
+	}
+	
+	public Tweet twitter(Tweet tweet, TwitterAccount account) {
 		String tweetText = tweet.getText();
 		
 		log.info("Attempting to tweet: " + tweetText);
@@ -125,23 +140,30 @@ public class TwitterService {
     	IDs friendIds;
 		try {
 			friendIds = twitter.getFriendsIDs((account.getUsername()));
-			log.info("Found " + friendIds.getIDs().length + " follower ids");
+			log.info("Found " + friendIds.getIDs().length + " friend ids");
 			return Arrays.asList(ArrayUtils.toObject(friendIds.getIDs()));
 			
 		} catch (TwitterException e) {
-			log.error("Error while fetching friends of '" + account.getUsername() + "'", e);
+			log.error("Error while fetching friends of '" + account.getUsername() + "'" + e.getMessage());
 		}
 		return null;
     }
     
-    public void follow(TwitterAccount account, int userId) throws TwitterException {
+    public boolean follow(TwitterAccount account, int userId) throws TwitterException {
     	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
     	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
     	try {
-    		twitter.createFriendship(userId, true);
+    		User followed = twitter.createFriendship(userId, true);
+    		if (followed != null) {
+    			log.info("Followed: " + followed);
+    			return true;
+    		} else {
+    			log.warn("Failed to follow");
+    		}
     	} catch (Exception e) {
-    		log.error("Error while attempting to follow", e);
+    		log.error("Error while attempting to follow: " + e.getMessage());
     	}
+    	return false;
     }
     
     public twitter4j.User getTwitteUserCredentials(AccessToken accessToken) {
@@ -154,8 +176,8 @@ public class TwitterService {
 		}
 	}
     
-	private Twitter getAuthenticatedApiForAccount(AccessToken accessToken) {		
-		return new TwitterFactory().getOAuthAuthorizedInstance(accessToken);
+	private Twitter getAuthenticatedApiForAccount(AccessToken accessToken) {
+		return new TwitterFactory().getOAuthAuthorizedInstance(consumerKey, consumerSecret, accessToken);
 	}
     
 }
