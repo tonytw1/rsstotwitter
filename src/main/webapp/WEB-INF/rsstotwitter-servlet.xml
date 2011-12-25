@@ -108,7 +108,9 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>			
-				<ref bean="autoFollowerTrigger"/>				
+				<ref bean="autoFollowerTrigger"/>
+				<ref bean="updateServiceTrigger" />
+				<ref bean="twitterArchiverTrigger" />		
 			</list>
 		</property>
 	</bean>
