@@ -137,7 +137,11 @@ public class TwitterService {
     public void follow(TwitterAccount account, int userId) throws TwitterException {
     	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
     	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
-    	twitter.createFriendship(userId, true);
+    	try {
+    		twitter.createFriendship(userId, true);
+    	} catch (Exception e) {
+    		log.error("Error while attempting to follow", e);
+    	}
     }
     
     public twitter4j.User getTwitteUserCredentials(AccessToken accessToken) {
