@@ -30,7 +30,11 @@ public class AutoFollower implements Runnable {
 		log.info("Found " + allAccounts.size() + " accounts");
 		for (TwitterAccount account : allAccounts) {
 			log.info("Account '" + account.getUsername() + "' is auto follower: " + account.isAutoFollow());
-			autoFollowForAccount(account);	
+			if (account.isAutoFollow()) {
+				autoFollowForAccount(account);
+			} else {
+				log.info("Account is not set to auto follow; skipping");
+			}
 		}
 		log.info("Finished auto follower");
 	}
