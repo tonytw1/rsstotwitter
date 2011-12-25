@@ -191,7 +191,7 @@
 		<constructor-arg ref="accountDAO" />
 		<constructor-arg ref="signinHandler" />
 		<constructor-arg ref="loggedInUserFilter" />
-		<property name="homePageUrl" value="${homepage.url}" />		
+		<property name="homePageUrl" value="${homepage.url}" />	
 		<property name="methodNameResolver">
 			<bean
 				class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
