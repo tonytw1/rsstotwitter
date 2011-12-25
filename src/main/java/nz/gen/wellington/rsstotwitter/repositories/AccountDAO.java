@@ -2,7 +2,6 @@ package nz.gen.wellington.rsstotwitter.repositories;
 
 import java.util.List;
 
-import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
 import org.hibernate.criterion.DetachedCriteria;
@@ -29,10 +28,10 @@ public class AccountDAO {
         }
         return null;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public List<TwitterAccount> getAllTwitterAccounts() {
-		return hibernateTemplate.loadAll(Feed.class);
+		return hibernateTemplate.loadAll(TwitterAccount.class);
 	}
 
 }
