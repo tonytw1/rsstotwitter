@@ -12,8 +12,6 @@ import nz.gen.wellington.twitter.TwitterService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
-import twitter4j.TwitterException;
-
 public class AutoFollower implements Runnable {
 
 	private static Logger log = Logger.getLogger(AutoFollower.class);
@@ -32,12 +30,12 @@ public class AutoFollower implements Runnable {
 		log.info("Found " + allAccounts.size() + " accounts");
 		for (TwitterAccount account : allAccounts) {
 			log.info("Account '" + account.getUsername() + "' is auto follower: " + account.isAutoFollow());
-			autoFollowForAccount(account);			
+			autoFollowForAccount(account);	
 		}
 		log.info("Finished auto follower");
 	}
 	
-	private void autoFollowForAccount(TwitterAccount account) {
+	public void autoFollowForAccount(TwitterAccount account) {
 		log.info("Running auto follower for: " + account.getUsername());
 		    		
 		Set<Integer> followers = new HashSet<Integer>(twitterService.getFollowers(account));
@@ -53,9 +51,13 @@ public class AutoFollower implements Runnable {
 			try {
 				Integer follow = toFollow.iterator().next();
 				log.info("Attempting to follow: " + Integer.toString(follow));
-				twitterService.follow(account, follow);
+				if (twitterService.follow(account, follow)) {
+					log.info("Successfully followed");
+				} else {
+					log.warn("Failed to follow");
+				}
 				
-			} catch (TwitterException e) {
+			} catch (Exception e) {
 				log.error(e);
 			}
 		}
