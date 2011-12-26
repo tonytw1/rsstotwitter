@@ -1,1 +1,7 @@
 RSS to Twitter
+
+#if($account) 
+	$account.username
+#else
+	<a href="oauth/login">Sign in</a>
+#end

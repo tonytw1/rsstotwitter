@@ -165,6 +165,7 @@
 	</bean>
 
 	<bean id="homepageController" class="nz.gen.wellington.rsstotwitter.controllers.HomepageController">
+		<constructor-arg ref="loggedInUserFilter" />	
 		<property name="methodNameResolver">
 			<bean
 				class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
