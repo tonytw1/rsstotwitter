@@ -176,20 +176,20 @@ public class TwitterService {
 		}
 	}
     
-	private Twitter getAuthenticatedApiForAccount(AccessToken accessToken) {
-		return new TwitterFactory().getOAuthAuthorizedInstance(consumerKey, consumerSecret, accessToken);
-	}
-
-	public ResponseList<User> getUserDetails(List<Integer> toFollow, TwitterAccount account) throws TwitterException {
-		AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
+    public ResponseList<User> getUserDetails(List<Integer> toFollow, TwitterAccount account) throws TwitterException {
+    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
     	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
     	
     	int[] array = new int[toFollow.size()];
     	for (int i = 0; i < toFollow.size(); i++) {
-			array[i] = toFollow.get(i);			
-		}
-    	
+    		array[i] = toFollow.get(i);			
+    	}    	
     	return twitter.lookupUsers(array);		
+    }
+    
+	private Twitter getAuthenticatedApiForAccount(AccessToken accessToken) {
+		return new TwitterFactory().getOAuthAuthorizedInstance(consumerKey, consumerSecret, accessToken);
 	}
+
     
 }
