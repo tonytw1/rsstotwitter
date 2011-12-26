@@ -35,7 +35,6 @@ public class TwitterLoginHandler implements SigninHandler {
 	
 	private Map<String, Token> requestTokens;
 	private Map<Integer, Token> accessTokens;
-
 	
 	public TwitterLoginHandler(AccountDAO accountDAO, TwitterService twitterService) {
 		this.accountDAO = accountDAO;
@@ -134,10 +133,8 @@ public class TwitterLoginHandler implements SigninHandler {
 	@Override
 	public void decorateUserWithExternalSigninIdentifier(TwitterAccount account, Object externalIdentifier) {		
 		twitter4j.User twitterUser = (twitter4j.User) externalIdentifier;
-		if (account.getUsername() == null) {
-			final String twitterScreenName = twitterUser.getScreenName();
-			account.setUsername(twitterScreenName);			
-		}		
+		account.setId(twitterUser.getId());
+		account.setUsername(twitterUser.getScreenName());		
 		account.setToken(accessTokens.get(twitterUser.getId()).getToken());
 		account.setTokenSecret(accessTokens.get(twitterUser.getId()).getSecret());
 		log.info("Tokens set to: " + account.getToken() + ", " + account.getTokenSecret());

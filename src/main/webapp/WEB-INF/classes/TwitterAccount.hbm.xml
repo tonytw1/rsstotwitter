@@ -6,9 +6,7 @@
 <hibernate-mapping>
 
     <class name="nz.gen.wellington.rsstotwitter.model.TwitterAccount" table="account" lazy="false" >		
-	  	<id name="id">
-            <generator class="native" />
-    	</id>
+	  	<id name="id" />
 		<property name="username" type="string" />
 		<property name="autoFollow" type="boolean" column="auto_follow" />
      	<property name="token" type="string" />
