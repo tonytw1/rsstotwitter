@@ -58,8 +58,8 @@ public class SigninController extends MultiActionController {
 			}
 			
 			loggedInUserFilter.setLoggedInUser(request, account);
-			return new ModelAndView(new RedirectView("/"));								
-		}			
+			return new ModelAndView(new RedirectView(homePageUrl));							
+		}
 		return signinErrorView(request);
 	}
 	
