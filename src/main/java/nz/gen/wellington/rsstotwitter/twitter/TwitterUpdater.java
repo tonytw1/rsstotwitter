@@ -8,7 +8,6 @@ import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
-import nz.gen.wellington.rsstotwitter.timers.UpdateService;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
 import nz.gen.wellington.twitter.TwitterService;
 
@@ -17,7 +16,7 @@ import org.joda.time.DateTime;
 
 public class TwitterUpdater implements Updater {
 	
-	private static Logger log = Logger.getLogger(UpdateService.class);
+	private static Logger log = Logger.getLogger(TwitterUpdater.class);
 	
 	private static final int MAX_TWITS_PER_DAY = 50;
 	private static final int MAX_PUBLISHER_TWITS_PER_DAY = MAX_TWITS_PER_DAY;
@@ -66,7 +65,7 @@ public class TwitterUpdater implements Updater {
 		
 		final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
 		if (!isLessThanOneWeekOld) {
-			log.info("Not tweeting as the item's publication date is more than one week old: " + guid);
+			log.debug("Not tweeting as the item's publication date is more than one week old: " + guid);
 			return false;
 		}
 		
@@ -85,7 +84,7 @@ public class TwitterUpdater implements Updater {
 			}
 			
 		} else {
-			log.info("Not twittering as guid has already been twittered: " + guid);
+			log.debug("Not twittering as guid has already been twittered: " + guid);
 		}
 		
 		return false;
