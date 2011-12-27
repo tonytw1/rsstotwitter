@@ -5,3 +5,13 @@ RSS to Twitter
 #else
 	<a href="oauth/login">Sign in</a>
 #end
+
+#if($jobs)
+	<h4>Feeds</h4>
+	<ul>
+        #foreach($job in $jobs)
+        	<li>$job.feed.url</li>
+        #end
+	</ul>
+#end
+

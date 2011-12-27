@@ -11,8 +11,7 @@ public class TwitterEvent {
     private String publisher;
     private Feed feed;
     private Tweet tweet;
-
-        
+    
     public TwitterEvent() {		
 	}
 
