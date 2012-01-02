@@ -64,8 +64,7 @@ public class TwitterService {
 			}						
 		}
 		
-		AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
-		Twitter twitter = getAuthenticatedApiForAccount(accessToken);
+		Twitter twitter = getAuthenticatedApiForAccount(account);
 		if (twitter == null) {
 			log.error("Failed to get authenticated twitter connection for account: " + account.getUsername());
     		return null;
@@ -97,8 +96,7 @@ public class TwitterService {
     }
     
     public List<Status> getReplies(TwitterAccount account) {
-		AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
-    	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
+    	Twitter twitter = getAuthenticatedApiForAccount(account);
     	if (twitter == null) {
     		return null;
     	}
@@ -122,7 +120,7 @@ public class TwitterService {
 	}
     
     public List<Integer> getFollowers(TwitterAccount account) {
-    	Twitter twitter = new TwitterFactory().getInstance();
+    	Twitter twitter = getAuthenticatedApiForAccount(account);
     	IDs followersIDs;
 		try {
 			followersIDs = twitter.getFollowersIDs(account.getUsername());
@@ -136,7 +134,8 @@ public class TwitterService {
     }
     
     public List<Integer> getFriends(TwitterAccount account) {
-    	Twitter twitter = new TwitterFactory().getInstance();
+    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
+    	Twitter twitter = getAuthenticatedApiForAccount(account);
     	IDs friendIds;
 		try {
 			friendIds = twitter.getFriendsIDs((account.getUsername()));
@@ -150,8 +149,7 @@ public class TwitterService {
     }
     
     public boolean follow(TwitterAccount account, int userId) throws TwitterException {
-    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
-    	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
+    	Twitter twitter = getAuthenticatedApiForAccount(account);
     	try {
     		User followed = twitter.createFriendship(userId, true);
     		if (followed != null) {
@@ -167,7 +165,7 @@ public class TwitterService {
     }
     
     public twitter4j.User getTwitteUserCredentials(AccessToken accessToken) {
-		Twitter twitterApi = getAuthenticatedApiForAccount(accessToken);
+		Twitter twitterApi = getAuthenticatedApiForAccessToken(accessToken);
 		try {
 			return twitterApi.verifyCredentials();
 		} catch (TwitterException e) {
@@ -176,9 +174,8 @@ public class TwitterService {
 		}
 	}
     
-    public ResponseList<User> getUserDetails(List<Integer> toFollow, TwitterAccount account) throws TwitterException {
-    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
-    	Twitter twitter = getAuthenticatedApiForAccount(accessToken);
+	public ResponseList<User> getUserDetails(List<Integer> toFollow, TwitterAccount account) throws TwitterException {
+    	Twitter twitter = getAuthenticatedApiForAccount(account);
     	
     	int[] array = new int[toFollow.size()];
     	for (int i = 0; i < toFollow.size(); i++) {
@@ -187,9 +184,13 @@ public class TwitterService {
     	return twitter.lookupUsers(array);		
     }
     
-	private Twitter getAuthenticatedApiForAccount(AccessToken accessToken) {
-		return new TwitterFactory().getOAuthAuthorizedInstance(consumerKey, consumerSecret, accessToken);
+	private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
+    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
+    	return getAuthenticatedApiForAccessToken(accessToken);
 	}
 
-    
+	 private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
+		 return new TwitterFactory().getOAuthAuthorizedInstance(consumerKey, consumerSecret, accessToken);		
+	}
+	 
 }
