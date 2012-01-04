@@ -102,7 +102,7 @@
 	<bean id="autoFollowerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
    		<property name="jobDetail" ref="autoFollowerRunner" />
     	<property name="startDelay" value="60000" />
-    	<property name="repeatInterval" value="3600000" />
+    	<property name="repeatInterval" value="14400000" />
 	</bean>
 	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
