@@ -97,7 +97,7 @@ public class TwitterUpdater implements Updater {
     private boolean isPublisherRateLimitExceed(Feed feed, String publisher) {
     	if (publisher != null && !publisher.isEmpty()) {
     		final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher);
-    		log.info("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
+    		log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
     		return numberOfPublisherTwitsInLastTwentyFourHours >= MAX_PUBLISHER_TWITS_PER_DAY;
     	}    	
 		return false;

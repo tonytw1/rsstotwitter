@@ -51,7 +51,7 @@ public class TwitterHistoryDAO {
 	public int getNumberOfTwitsInLastTwentyFourHours(Feed feed) {				
 		DetachedCriteria lastTwentyFourHoursCriteria = makeFeedLastTwentyFourHoursCriteria(feed);
 		int result = hibernateTemplate.findByCriteria(lastTwentyFourHoursCriteria).size();
-    	log.info("Feed '" + feed.getUrl() + "' has made " + result + " twits in the last 24 hours");
+    	log.debug("Feed '" + feed.getUrl() + "' has made " + result + " twits in the last 24 hours");
 		return result;
 	}
 
