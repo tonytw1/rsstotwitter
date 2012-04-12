@@ -24,6 +24,7 @@ public class UpdateServiceTest {
 	private static final String TWITTER_USERNAME = "testuser";
 
 	private static final String FEED_URL = "http://localhost/rss";
+	private static final String SECOND_FEED_URL = "http://localhost/2/rss";
 	
 	@Mock FeedToTwitterJobDAO tweetFeedJobDAO;
 	@Mock FeedDAO feedDAO;
@@ -34,8 +35,11 @@ public class UpdateServiceTest {
 	private List<FeedToTwitterJob> feedToTwitterJobs;
 	
 	Feed feed;
-	@Mock List<FeedItem> feedItems;
+	Feed secondFeed;
 	TwitterAccount account;
+	TwitterAccount secondAccount;
+	@Mock List<FeedItem> feedItems;
+	@Mock private List<FeedItem> secondFeedItems;
 	private String tag;
 	
 	@Before
@@ -46,7 +50,11 @@ public class UpdateServiceTest {
 
 		feed = new Feed(FEED_URL);
 		account = new TwitterAccount(1, TWITTER_USERNAME);
+		secondFeed = new Feed(SECOND_FEED_URL);
+		secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
 		feedToTwitterJobs.add(new FeedToTwitterJob(feed, account, tag));
+		feedToTwitterJobs.add(new FeedToTwitterJob(secondFeed, secondAccount, tag));
+
 		when(tweetFeedJobDAO.getAllTweetFeedJobs()).thenReturn(feedToTwitterJobs);	
 	}
 	
@@ -65,8 +73,17 @@ public class UpdateServiceTest {
 		
 		service.run();
 		
-		verify(feedDAO).loadFeedItems(feed);
 		verifyNoMoreInteractions(twitterUpdater);
+	}
+	
+	@Test
+	public void shouldContinueProcessingRemainingFeedsIfOneFailsToLoad() throws Exception {
+		when(feedDAO.loadFeedItems(feed)).thenReturn(null);
+		when(feedDAO.loadFeedItems(secondFeed)).thenReturn(secondFeedItems);
+		
+		service.run();
+		
+		verify(twitterUpdater).updateFeed(secondFeedItems, secondAccount, tag);
 	}
 
 }

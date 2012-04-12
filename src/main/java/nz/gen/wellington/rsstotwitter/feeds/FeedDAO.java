@@ -23,12 +23,13 @@ public class FeedDAO {
 
     @SuppressWarnings("unchecked")
 	public List<FeedItem> loadFeedItems(Feed feed) {
+    	List<FeedItem> feedItems = new ArrayList<FeedItem>();
     	SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(feed.getUrl());
     	if (syndfeed == null) {
-    		log.warn("Could not load syndfeed from url: " + feed.getUrl());    		
+    		log.warn("Could not load syndfeed from url: " + feed.getUrl() + ". Returning empty list of items");
+    		return null;
     	}
     	
-    	List<FeedItem> feedItems = new ArrayList<FeedItem>();
         Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
         while (feedItemsIterator.hasNext()) {        	
         	SyndEntry feedItem = (SyndEntry) feedItemsIterator.next();
