@@ -69,16 +69,16 @@ public class AutoFollower implements Runnable {
 	}
 
 	private ResponseList<User> getToFollow(TwitterAccount account) {
-		Set<Integer> followers = new HashSet<Integer>(twitterService.getFollowers(account));
+		Set<Long> followers = new HashSet<Long>(twitterService.getFollowers(account));
 		log.info("Found follows: " + followers.size());
 
-		List<Integer> friends = twitterService.getFriends(account);
+		List<Long> friends = twitterService.getFriends(account);
 		log.info("Found friends: " + friends.size());
 		
-		Collection<Integer> toFollow = CollectionUtils.subtract(followers, friends);
+		Collection<Long> toFollow = CollectionUtils.subtract(followers, friends);
 		log.info("Followers whom we don't follow back: " + toFollow);
 		
-		List<Integer> arrayList = new ArrayList<Integer>(toFollow);
+		List<Long> arrayList = new ArrayList<Long>(toFollow);
 		if (arrayList.size() > MAX_TO_FOLLOW) {
 			arrayList = arrayList.subList(0, MAX_TO_FOLLOW);
 		}

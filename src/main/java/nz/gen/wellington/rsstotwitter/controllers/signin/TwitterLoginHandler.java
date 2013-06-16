@@ -19,7 +19,7 @@ import org.scribe.oauth.OAuthService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import twitter4j.http.AccessToken;
+import twitter4j.auth.AccessToken;
 
 public class TwitterLoginHandler implements SigninHandler {
 
@@ -34,13 +34,13 @@ public class TwitterLoginHandler implements SigninHandler {
 	private String callBackUrl;
 	
 	private Map<String, Token> requestTokens;
-	private Map<Integer, Token> accessTokens;
+	private Map<Long, Token> accessTokens;
 	
 	public TwitterLoginHandler(AccountDAO accountDAO, TwitterService twitterService) {
 		this.accountDAO = accountDAO;
 		this.twitterService = twitterService;
 		this.requestTokens = new HashMap<String, Token>();
-		this.accessTokens = new HashMap<Integer, Token>();
+		this.accessTokens = new HashMap<Long, Token>();
 	}
 
 	public void setConsumerKey(String consumerKey) {

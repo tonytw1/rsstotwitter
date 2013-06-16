@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class TwitterAccount {
 
-	private int id;
+	private long id;
 	private String username;
 	private boolean autoFollow;
 	
@@ -16,16 +16,16 @@ public class TwitterAccount {
 	public TwitterAccount() {
 	}
 
-	public TwitterAccount(int id, String username) {
+	public TwitterAccount(long id, String username) {
 		this.id = id;
 		this.username = username;
 	}
 		
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	

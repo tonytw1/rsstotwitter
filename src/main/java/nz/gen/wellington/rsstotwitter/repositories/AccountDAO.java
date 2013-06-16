@@ -21,7 +21,7 @@ public class AccountDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public TwitterAccount getUserByTwitterId(int id) {
+	public TwitterAccount getUserByTwitterId(long id) {
         List<TwitterAccount> accounts = hibernateTemplate.findByCriteria(DetachedCriteria.forClass( TwitterAccount.class ).add( Restrictions.eq( "id", id)));
         if (!accounts.isEmpty()) {
         	return accounts.get(0);

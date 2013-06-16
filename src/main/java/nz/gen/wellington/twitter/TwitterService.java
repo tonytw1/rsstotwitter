@@ -17,7 +17,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
-import twitter4j.http.AccessToken;
+import twitter4j.auth.AccessToken;
 
 public class TwitterService {
     
@@ -119,7 +119,7 @@ public class TwitterService {
 		return all;
 	}
     
-    public List<Integer> getFollowers(TwitterAccount account) {
+    public List<Long> getFollowers(TwitterAccount account) {
     	Twitter twitter = getAuthenticatedApiForAccount(account);
     	IDs followersIDs;
 		try {
@@ -133,7 +133,7 @@ public class TwitterService {
 		return null;
     }
     
-    public List<Integer> getFriends(TwitterAccount account) {
+    public List<Long> getFriends(TwitterAccount account) {
     	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
     	Twitter twitter = getAuthenticatedApiForAccount(account);
     	IDs friendIds;
@@ -148,7 +148,7 @@ public class TwitterService {
 		return null;
     }
     
-    public boolean follow(TwitterAccount account, int userId) throws TwitterException {
+    public boolean follow(TwitterAccount account, long userId) throws TwitterException {
     	Twitter twitter = getAuthenticatedApiForAccount(account);
     	try {
     		User followed = twitter.createFriendship(userId, true);
@@ -174,10 +174,10 @@ public class TwitterService {
 		}
 	}
     
-	public ResponseList<User> getUserDetails(List<Integer> toFollow, TwitterAccount account) throws TwitterException {
+	public ResponseList<User> getUserDetails(List<Long> toFollow, TwitterAccount account) throws TwitterException {
     	Twitter twitter = getAuthenticatedApiForAccount(account);
     	
-    	int[] array = new int[toFollow.size()];
+    	long[] array = new long[toFollow.size()];
     	for (int i = 0; i < toFollow.size(); i++) {
     		array[i] = toFollow.get(i);			
     	}    	
