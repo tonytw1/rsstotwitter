@@ -13,11 +13,13 @@ import org.apache.log4j.Logger;
 import twitter4j.IDs;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
+import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterService {
     
@@ -70,10 +72,14 @@ public class TwitterService {
     		return null;
     	}
 				
-		try {
+		try {			
+			// TODO duplicate can be eliminated how that geolocation does not require a seperate method call.
 			if (tweet.getGeoLocation() != null) {
 				log.info("Twittering with geolocation: " + tweetText);
-				Status updateStatus = twitter.updateStatus(tweetText, tweet.getGeoLocation());
+				StatusUpdate statusUpdate = new StatusUpdate(tweetText);
+				tweet.setGeoLocation(tweet.getGeoLocation());
+				Status updateStatus = twitter.updateStatus(statusUpdate);
+								
 				if (updateStatus != null) {
 					return new Tweet(updateStatus);
 				}
@@ -120,10 +126,9 @@ public class TwitterService {
 	}
     
     public List<Long> getFollowers(TwitterAccount account) {
-    	Twitter twitter = getAuthenticatedApiForAccount(account);
-    	IDs followersIDs;
+    	final Twitter twitter = getAuthenticatedApiForAccount(account);
 		try {
-			followersIDs = twitter.getFollowersIDs(account.getUsername());
+			IDs followersIDs = twitter.getFollowersIDs(account.getId());
 			log.info("Found " + followersIDs.getIDs().length + " follower ids");
 			return Arrays.asList(ArrayUtils.toObject(followersIDs.getIDs()));
 			
@@ -134,11 +139,9 @@ public class TwitterService {
     }
     
     public List<Long> getFriends(TwitterAccount account) {
-    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
-    	Twitter twitter = getAuthenticatedApiForAccount(account);
-    	IDs friendIds;
-		try {
-			friendIds = twitter.getFriendsIDs((account.getUsername()));
+    	final Twitter twitter = getAuthenticatedApiForAccount(account);
+		try {			
+			IDs friendIds = twitter.getFriendsIDs((account.getId()));
 			log.info("Found " + friendIds.getIDs().length + " friend ids");
 			return Arrays.asList(ArrayUtils.toObject(friendIds.getIDs()));
 			
@@ -175,7 +178,7 @@ public class TwitterService {
 	}
     
 	public ResponseList<User> getUserDetails(List<Long> toFollow, TwitterAccount account) throws TwitterException {
-    	Twitter twitter = getAuthenticatedApiForAccount(account);
+    	final Twitter twitter = getAuthenticatedApiForAccount(account);
     	
     	long[] array = new long[toFollow.size()];
     	for (int i = 0; i < toFollow.size(); i++) {
@@ -189,8 +192,9 @@ public class TwitterService {
     	return getAuthenticatedApiForAccessToken(accessToken);
 	}
 
-	 private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
-		 return new TwitterFactory().getOAuthAuthorizedInstance(consumerKey, consumerSecret, accessToken);		
+	private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
+		ConfigurationBuilder configBuilder = new ConfigurationBuilder().setOAuthConsumerKey(consumerKey).setOAuthConsumerSecret(consumerSecret);
+		return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
 	}
-	 
+	
 }
