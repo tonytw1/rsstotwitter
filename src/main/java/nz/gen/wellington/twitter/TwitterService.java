@@ -193,7 +193,11 @@ public class TwitterService {
 	}
 
 	private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
-		ConfigurationBuilder configBuilder = new ConfigurationBuilder().setOAuthConsumerKey(consumerKey).setOAuthConsumerSecret(consumerSecret);
+		final ConfigurationBuilder configBuilder = new ConfigurationBuilder().
+			setUseSSL(true).
+			setOAuthConsumerKey(consumerKey).
+			setOAuthConsumerSecret(consumerSecret);
+		
 		return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
 	}
 	
