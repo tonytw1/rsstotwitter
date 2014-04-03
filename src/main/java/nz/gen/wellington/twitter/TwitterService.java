@@ -114,7 +114,7 @@ public class TwitterService {
 		for (int i = 1; i <= REPLY_PAGES_TO_FETCH; i++) {
 			ResponseList<Status> mentions;
 			try {
-				mentions = twitter.getMentions();
+				mentions = twitter.getMentionsTimeline();
 				for (Status status : mentions) {
 					all.add(status);
 				}
@@ -194,10 +194,8 @@ public class TwitterService {
 
 	private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
 		final ConfigurationBuilder configBuilder = new ConfigurationBuilder().
-			setUseSSL(true).
 			setOAuthConsumerKey(consumerKey).
-			setOAuthConsumerSecret(consumerSecret);
-		
+			setOAuthConsumerSecret(consumerSecret);		
 		return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
 	}
 	
