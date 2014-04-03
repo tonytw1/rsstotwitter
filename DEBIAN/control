@@ -1,0 +1,12 @@
+Package: rsstotwitter
+Version: %VERSION%
+Depends: tomcat7
+Section: rsstotwitter
+Priority: optional
+Architecture: all
+Essential: no
+Installed-Size: 1024
+Maintainer: Tony McCrae [tony@eelpieconsulting.co.uk]
+Provides: rsstotwitter
+Description: RSS to Twitter
+
