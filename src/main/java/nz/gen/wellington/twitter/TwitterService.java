@@ -167,18 +167,6 @@ public class TwitterService {
     	}    	
     	return twitter.lookupUsers(array);		
     }
-    
-	private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
-    	AccessToken accessToken = new AccessToken(account.getToken(), account.getTokenSecret());
-    	return getAuthenticatedApiForAccessToken(accessToken);
-	}
-
-	private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
-		final ConfigurationBuilder configBuilder = new ConfigurationBuilder().
-			setOAuthConsumerKey(consumerKey).
-			setOAuthConsumerSecret(consumerSecret);		
-		return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
-	}
 	
 	private Status updateStatus(Tweet tweet, Twitter twitter) throws TwitterException {
 		log.info("Twittering: " + tweet.getText());
@@ -187,6 +175,17 @@ public class TwitterService {
 			statusUpdate.setLocation(tweet.getGeoLocation());					
 		}
 		return twitter.updateStatus(statusUpdate);
+	}
+	
+	private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
+    	return getAuthenticatedApiForAccessToken(new AccessToken(account.getToken(), account.getTokenSecret()));
+	}
+
+	private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
+		final ConfigurationBuilder configBuilder = new ConfigurationBuilder().
+			setOAuthConsumerKey(consumerKey).
+			setOAuthConsumerSecret(consumerSecret);		
+		return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
 	}
 	
 }
