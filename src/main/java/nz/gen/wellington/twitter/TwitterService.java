@@ -1,6 +1,5 @@
 package nz.gen.wellington.twitter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 
 import twitter4j.IDs;
+import twitter4j.Paging;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -20,6 +20,8 @@ import twitter4j.TwitterFactory;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
+
+import com.google.common.collect.Lists;
 
 public class TwitterService {
     
@@ -93,16 +95,10 @@ public class TwitterService {
     	}
     	
 		log.info("Getting twitter replies from live api");
-        List<Status> all = new ArrayList<Status>();
-        
-        // TODO how to paginate this correctly?
+        List<Status> all = Lists.newArrayList();       
 		for (int i = 1; i <= REPLY_PAGES_TO_FETCH; i++) {
-			ResponseList<Status> mentions;
 			try {
-				mentions = twitter.getMentionsTimeline();
-				for (Status status : mentions) {
-					all.add(status);
-				}
+				all.addAll(twitter.getMentionsTimeline(new Paging(i)));		
 			} catch (TwitterException e) {
        		 	log.warn("A TwitterException occured while trying to fetch mentions: " + e.getMessage());
 			}
