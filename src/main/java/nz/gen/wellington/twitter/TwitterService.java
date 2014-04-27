@@ -161,7 +161,7 @@ public class TwitterService {
     
 	public ResponseList<User> getUserDetails(List<Long> toFollow, TwitterAccount account) throws TwitterException {
     	final Twitter twitter = getAuthenticatedApiForAccount(account);    	
-    	return twitter.lookupUsers(listToArray(toFollow));	
+    	return twitter.lookupUsers(ArrayUtils.toPrimitive(toFollow.toArray(new Long[toFollow.size()])));	
     }
 	
 	private Status updateStatus(Tweet tweet, Twitter twitter) throws TwitterException {
@@ -182,14 +182,6 @@ public class TwitterService {
 			setOAuthConsumerKey(consumerKey).
 			setOAuthConsumerSecret(consumerSecret);		
 		return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
-	}
-	
-	private long[] listToArray(List<Long> list) {	// TODO Is there really no easier way todo this in Java?
-		long[] array = new long[list.size()];
-    	for (int i = 0; i < list.size(); i++) {
-    		array[i] = list.get(i);			
-    	}
-		return array;
 	}
 	
 }
