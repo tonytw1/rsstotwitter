@@ -51,11 +51,10 @@ public class TwitterUpdater implements Updater {
         	if (!publisherRateLimitExceeded) {        				
 	        	if (processItem(feedItem, account, tag)) {
 	        		tweetsSent++;
-	        	}
-	        			                                             	        			
+	        	}	        			                                             	        			
         	} else {
         		log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit");
-        	}        			
+        	}
         }
         	
         log.info("Twitter update completed for feed: " + feed.getUrl());

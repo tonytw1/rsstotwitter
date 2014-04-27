@@ -73,22 +73,7 @@ public class TwitterService {
     	}
 				
 		try {			
-			// TODO duplicate can be eliminated how that geolocation does not require a seperate method call.
-			if (tweet.getGeoLocation() != null) {
-				log.info("Twittering with geolocation: " + tweetText);
-				StatusUpdate statusUpdate = new StatusUpdate(tweetText);
-				tweet.setGeoLocation(tweet.getGeoLocation());
-				Status updateStatus = twitter.updateStatus(statusUpdate);
-								
-				if (updateStatus != null) {
-					return new Tweet(updateStatus);
-				}
-				return null;
-								
-			}			
-			
-			log.info("Twittering: " + tweet.getText());
-			Status updateStatus = twitter.updateStatus(tweet.getText());
+			final Status updateStatus = updateStatus(tweet, twitter);
 			if (updateStatus != null) {
 				return new Tweet(updateStatus);
 			}
@@ -100,7 +85,7 @@ public class TwitterService {
         	
 		return null;
     }
-    
+	
     public List<Status> getReplies(TwitterAccount account) {
     	Twitter twitter = getAuthenticatedApiForAccount(account);
     	if (twitter == null) {
@@ -197,6 +182,15 @@ public class TwitterService {
 			setOAuthConsumerKey(consumerKey).
 			setOAuthConsumerSecret(consumerSecret);		
 		return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
+	}
+	
+	private Status updateStatus(Tweet tweet, Twitter twitter) throws TwitterException {
+		log.info("Twittering: " + tweet.getText());
+		StatusUpdate statusUpdate = new StatusUpdate(tweet.getText());
+		if (tweet.getGeoLocation() != null) {
+			statusUpdate.setLocation(tweet.getGeoLocation());					
+		}
+		return twitter.updateStatus(statusUpdate);
 	}
 	
 }

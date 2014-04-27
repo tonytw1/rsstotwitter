@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 public class UpdateService implements Runnable {
 	
-	private static Logger log = Logger.getLogger(UpdateService.class);
+	private final static Logger log = Logger.getLogger(UpdateService.class);
 
     private FeedToTwitterJobDAO feedToTwitterJobDAO;
     private FeedDAO feedDAO;
