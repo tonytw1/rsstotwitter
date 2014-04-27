@@ -32,7 +32,7 @@ public class UpdateService implements Runnable {
 			log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
         	List<FeedItem> feedItems = feedDAO.loadFeedItems(feed);
         	if (feedItems != null && !feedItems.isEmpty()) {
-        		twitterUpdater.updateFeed(feedItems, job.getAccount(), job.getTag());
+        		twitterUpdater.updateFeed(feedItems, job.getAccount());
         		
         	} else {
         		log.warn("Failed to load feed items from feed url or feed contained no items: " + feed.getUrl());

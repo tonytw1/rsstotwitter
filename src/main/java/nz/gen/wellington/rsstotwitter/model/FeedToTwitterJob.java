@@ -5,15 +5,13 @@ public class FeedToTwitterJob {
 	private int id;
 	private Feed feed;
 	private TwitterAccount account;
-	private String tag;
 	
 	public FeedToTwitterJob() {
 	}
 	
-	public FeedToTwitterJob(Feed feed, TwitterAccount account, String tag) {
+	public FeedToTwitterJob(Feed feed, TwitterAccount account) {
 		this.feed = feed;
 		this.account = account;
-		this.tag = tag;
 	}
 	
 	public int getId() {
@@ -38,14 +36,6 @@ public class FeedToTwitterJob {
 
 	public void setAccount(TwitterAccount account) {
 		this.account = account;
-	}
-
-	public String getTag() {
-		return tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
 	}
 	
 }

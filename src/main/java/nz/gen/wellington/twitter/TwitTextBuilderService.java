@@ -12,16 +12,13 @@ public class TwitTextBuilderService {
         this.tinyUrlService = tinyUrlService;
     }
 
-    public String buildTwitForItem(FeedItem feedItem, String tag) {
+    public String buildTwitForItem(FeedItem feedItem) {
         StringBuffer twit = new StringBuffer();
         twit.append(feedItem.getTitle());
         if (feedItem.getLink() != null) {
             final String tinyUrlLink = tinyUrlService.makeTinyUrl(feedItem.getLink());            
             twit.append(" ");
             twit.append(tinyUrlLink);
-        }
-        if (tag != null && !tag.isEmpty()) {
-            appendTag(tag, twit);
         }
         
         if (feedItem.getAuthor() != null && !feedItem.getAuthor().isEmpty()) {
@@ -41,13 +38,5 @@ public class TwitTextBuilderService {
     	}
     	return twit.toString();
 	}
-
-	private void appendTag(String tag, StringBuffer twit) {
-        boolean tagWillFit = (twit.length() + (2 + tag.length())) <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH;
-        if (tagWillFit) {
-            twit.append(" #");
-            twit.append(tag);
-        }
-    }
-
+    
 }

@@ -33,7 +33,7 @@ public class TwitterUpdater implements Updater {
 		this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
 	}
 
-	public void updateFeed(List<FeedItem> feedItems, TwitterAccount account, String tag) {
+	public void updateFeed(List<FeedItem> feedItems, TwitterAccount account) {
 		log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
 		Feed feed = feedItems.get(0).getFeed();	// TODO Meh - drops out when we move to account rate limiting.
         int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);	// TODO rate limit should really be about the twitter account, not the feed.
@@ -49,7 +49,7 @@ public class TwitterUpdater implements Updater {
 		        			
         	boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
         	if (!publisherRateLimitExceeded) {        				
-	        	if (processItem(feedItem, account, tag)) {
+	        	if (processItem(feedItem, account)) {
 	        		tweetsSent++;
 	        	}	        			                                             	        			
         	} else {
@@ -60,7 +60,7 @@ public class TwitterUpdater implements Updater {
         log.info("Twitter update completed for feed: " + feed.getUrl());
 	}
    	
-	private boolean processItem(FeedItem feedItem, TwitterAccount account, String tag) {
+	private boolean processItem(FeedItem feedItem, TwitterAccount account) {
 		final String guid = feedItem.getGuid();
 		
 		final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
@@ -72,14 +72,14 @@ public class TwitterUpdater implements Updater {
 		final boolean hasAlreadyBeenTwittered = twitterHistoryDAO.hasAlreadyBeenTwittered(guid);
 		if (!hasAlreadyBeenTwittered) {			
 			try {
-				final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, tag);
+				final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
 				final Tweet updatedStatus = twitterService.tweet(tweet, account);
 				tweetDAO.saveTweet(updatedStatus);
 				twitterHistoryDAO.markAsTwittered(feedItem, updatedStatus);
 				return true;
 				
 			} catch (Exception e) {
-				log.warn("Failed to twitter: " + tweet.getText(), e);
+				log.warn("Failed to twitter: " + feedItem.getTitle(), e);
 				return false;
 			}
 			

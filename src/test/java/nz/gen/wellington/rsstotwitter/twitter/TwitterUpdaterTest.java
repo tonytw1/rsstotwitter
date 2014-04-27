@@ -38,7 +38,6 @@ public class TwitterUpdaterTest {
 	TwitterUpdater service;
 
 	private List<FeedItem> feedItems;
-	private String tag = null;
 	private FeedItem feedItem;
 	
 	@Before
@@ -56,17 +55,17 @@ public class TwitterUpdaterTest {
 	public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() throws Exception {
 		when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed)).thenReturn(55);
 		
-		service.updateFeed(feedItems, account, tag);
+		service.updateFeed(feedItems, account);
 		
 		verifyNoMoreInteractions(twitterService);
 	}
 	
 	@Test
 	public void shouldTweetFeedItems() throws Exception {
-		when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, null)).thenReturn(tweetToSend);
+		when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem)).thenReturn(tweetToSend);
 		when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
 		
-		service.updateFeed(feedItems, account, tag);
+		service.updateFeed(feedItems, account);
 		
 		verify(twitterService).tweet(tweetToSend, account);
 		verify(tweetDAO).saveTweet(sentTweet);
@@ -80,7 +79,7 @@ public class TwitterUpdaterTest {
 		feedItems.clear();
 		feedItems.add(oldFeedItem);
 		
-		service.updateFeed(feedItems, account, tag);
+		service.updateFeed(feedItems, account);
 		
 		verifyNoMoreInteractions(tweetFromFeedItemBuilder);
 		verifyNoMoreInteractions(twitterService);

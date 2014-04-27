@@ -40,7 +40,6 @@ public class UpdateServiceTest {
 	TwitterAccount secondAccount;
 	@Mock List<FeedItem> feedItems;
 	@Mock private List<FeedItem> secondFeedItems;
-	private String tag;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -52,8 +51,8 @@ public class UpdateServiceTest {
 		account = new TwitterAccount(1, TWITTER_USERNAME);
 		secondFeed = new Feed(SECOND_FEED_URL);
 		secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
-		feedToTwitterJobs.add(new FeedToTwitterJob(feed, account, tag));
-		feedToTwitterJobs.add(new FeedToTwitterJob(secondFeed, secondAccount, tag));
+		feedToTwitterJobs.add(new FeedToTwitterJob(feed, account));
+		feedToTwitterJobs.add(new FeedToTwitterJob(secondFeed, secondAccount));
 
 		when(tweetFeedJobDAO.getAllTweetFeedJobs()).thenReturn(feedToTwitterJobs);	
 	}
@@ -64,7 +63,7 @@ public class UpdateServiceTest {
 
 		service.run();
 		
-		verify(twitterUpdater).updateFeed(feedItems, account, tag);
+		verify(twitterUpdater).updateFeed(feedItems, account);
 	}
 	
 	@Test
@@ -83,7 +82,7 @@ public class UpdateServiceTest {
 		
 		service.run();
 		
-		verify(twitterUpdater).updateFeed(secondFeedItems, secondAccount, tag);
+		verify(twitterUpdater).updateFeed(secondFeedItems, secondAccount);
 	}
 
 }

@@ -20,8 +20,8 @@ public class TweetFromFeedItemBuilder {
 		this.twitBuilderService = twitBuilderService;
 	}
 	
-	public Tweet buildTweetFromFeedItem(FeedItem feedItem, String tag) {
-		final String tweetText = twitBuilderService.buildTwitForItem(feedItem, tag);
+	public Tweet buildTweetFromFeedItem(FeedItem feedItem) {
+		final String tweetText = twitBuilderService.buildTwitForItem(feedItem);
 		validateTweet(tweetText);
 		
 		Tweet tweet = new Tweet(tweetText);
