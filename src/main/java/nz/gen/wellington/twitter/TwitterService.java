@@ -25,10 +25,11 @@ import com.google.common.collect.Lists;
 
 public class TwitterService {
     
-	private static Logger log = Logger.getLogger(TwitterService.class);
+	public final static int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
 	
-    public static final int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
-	private static final int REPLY_PAGES_TO_FETCH = 1;
+	private final static Logger log = Logger.getLogger(TwitterService.class);
+	
+	private final static int REPLY_PAGES_TO_FETCH = 1;
     
 	private String consumerKey;
 	private String consumerSecret;
@@ -36,7 +37,7 @@ public class TwitterService {
     public TwitterService() {
 	}
     
-	public void setConsumerKey(String consumerKey) {
+	public void setConsumerKey(String consumerKey) {	// TODO migrate to constructor injections
 		this.consumerKey = consumerKey;
 	}
 	
