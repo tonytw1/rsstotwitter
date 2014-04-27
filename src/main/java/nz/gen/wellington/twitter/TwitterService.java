@@ -44,7 +44,7 @@ public class TwitterService {
 		this.consumerSecret = consumerSecret;
 	}
 	
-	public Tweet twitter(Tweet tweet, TwitterAccount account) {
+	public Tweet tweet(Tweet tweet, TwitterAccount account) {
 		String tweetText = tweet.getText();
 		
 		log.info("Attempting to tweet: " + tweetText);

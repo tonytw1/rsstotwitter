@@ -72,7 +72,7 @@ public class TwitterUpdater implements Updater {
 		final boolean hasAlreadyBeenTwittered = twitterHistoryDAO.hasAlreadyBeenTwittered(guid);
 		if (!hasAlreadyBeenTwittered) {			
 			Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, tag);
-			Tweet sentTweet = twitterService.twitter(tweet, account);
+			Tweet sentTweet = twitterService.tweet(tweet, account);
 			if (sentTweet != null) {
 				tweetDAO.saveTweet(sentTweet);
 				twitterHistoryDAO.markAsTwittered(feedItem, sentTweet);

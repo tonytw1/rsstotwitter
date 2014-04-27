@@ -64,11 +64,11 @@ public class TwitterUpdaterTest {
 	@Test
 	public void shouldTweetFeedItems() throws Exception {
 		when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, null)).thenReturn(tweetToSend);
-		when(twitterService.twitter(tweetToSend, account)).thenReturn(sentTweet);
+		when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
 		
 		service.updateFeed(feedItems, account, tag);
 		
-		verify(twitterService).twitter(tweetToSend, account);
+		verify(twitterService).tweet(tweetToSend, account);
 		verify(tweetDAO).saveTweet(sentTweet);
 		verify(twitterHistoryDAO).markAsTwittered(feedItem, sentTweet);
 	}
