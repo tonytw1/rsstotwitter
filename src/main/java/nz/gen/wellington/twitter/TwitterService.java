@@ -29,20 +29,14 @@ public class TwitterService {
 	
 	private final static int REPLY_PAGES_TO_FETCH = 1;
     
-	private String consumerKey;
-	private String consumerSecret;
+	private final String consumerKey;
+	private final String consumerSecret;
 	
-    public TwitterService() {
-	}
-    
-	public void setConsumerKey(String consumerKey) {	// TODO migrate to constructor injections
+    public TwitterService(String consumerKey, String consumerSecret) {
 		this.consumerKey = consumerKey;
-	}
-	
-	public void setConsumerSecret(String consumerSecret) {
 		this.consumerSecret = consumerSecret;
 	}
-	
+    
 	public Tweet tweet(Tweet tweet, TwitterAccount account) {
 		log.info("Attempting to tweet: " + tweet.getText());		
 		final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);			
