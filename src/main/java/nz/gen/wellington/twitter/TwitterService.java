@@ -56,13 +56,9 @@ public class TwitterService {
     }
 	
     public List<Status> getReplies(TwitterAccount account) {
-    	Twitter twitter = getAuthenticatedApiForAccount(account);
-    	if (twitter == null) {
-    		return null;
-    	}
-    	
 		log.info("Getting twitter replies from live api");
-        List<Status> all = Lists.newArrayList();       
+		final Twitter twitter = getAuthenticatedApiForAccount(account);
+        final List<Status> all = Lists.newArrayList();       
 		for (int i = 1; i <= REPLY_PAGES_TO_FETCH; i++) {
 			try {
 				all.addAll(twitter.getMentionsTimeline(new Paging(i)));		
