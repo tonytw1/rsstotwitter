@@ -1,6 +1,7 @@
 package nz.gen.wellington.twitter;
 
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
+import nz.gen.wellington.rsstotwitter.twitter.TweetFromFeedItemBuilder;
 import nz.gen.wellington.tinyurl.TinyUrlService;
 
 public class TwitTextBuilderService {
@@ -30,7 +31,7 @@ public class TwitTextBuilderService {
     }
 
     private String prependPublisher(String publisher, StringBuffer twit) {
-    	boolean willFit = (twit.length() + (3 + publisher.length())) <= TwitterService.MAXIMUM_TWITTER_MESSAGE_LENGTH;
+    	boolean willFit = (twit.length() + (3 + publisher.length())) <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH;
     	if (willFit) {
     		StringBuilder published = new StringBuilder();
     		published.append(publisher);
@@ -42,7 +43,7 @@ public class TwitTextBuilderService {
 	}
 
 	private void appendTag(String tag, StringBuffer twit) {
-        boolean tagWillFit = (twit.length() + (2 + tag.length())) <= TwitterService.MAXIMUM_TWITTER_MESSAGE_LENGTH;
+        boolean tagWillFit = (twit.length() + (2 + tag.length())) <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH;
         if (tagWillFit) {
             twit.append(" #");
             twit.append(tag);

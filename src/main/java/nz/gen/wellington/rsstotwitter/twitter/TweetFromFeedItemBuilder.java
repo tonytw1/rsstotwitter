@@ -3,9 +3,16 @@ package nz.gen.wellington.rsstotwitter.twitter;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.twitter.TwitTextBuilderService;
+
+import org.apache.log4j.Logger;
+
 import twitter4j.GeoLocation;
 
 public class TweetFromFeedItemBuilder {
+	
+	public final static int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
+
+	private final static Logger log = Logger.getLogger(TweetFromFeedItemBuilder.class);
 	
 	private TwitTextBuilderService twitBuilderService;
 	
@@ -15,6 +22,8 @@ public class TweetFromFeedItemBuilder {
 	
 	public Tweet buildTweetFromFeedItem(FeedItem feedItem, String tag) {
 		final String tweetText = twitBuilderService.buildTwitForItem(feedItem, tag);
+		validateTweet(tweetText);
+		
 		Tweet tweet = new Tweet(tweetText);
 		if (feedItem.isGeocoded()) {
 			tweet.setGeoLocation(new GeoLocation(feedItem.getLatitude(), feedItem.getLongitude()));
@@ -22,5 +31,26 @@ public class TweetFromFeedItemBuilder {
 		return tweet;
 	}
 	
-
+	private void validateTweet(String tweetText) {
+		if (!(tweetText.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
+			log.warn("Message too long to tweet; not tweeted: " + tweetText);
+			throw new RuntimeException("Message to long to tweet");
+		}
+		
+		log.debug("Checking for valid characters.");
+		char[] charArray = tweetText.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			char letter = tweetText.charAt(i);
+			log.debug(letter + "(" + Character.codePointAt(charArray, i) +"): " + Character.isValidCodePoint(letter));
+			if (!Character.isValidCodePoint(letter)) {
+				log.warn("Message has invalid code point: " + letter);
+				throw new RuntimeException("Message has invalid code point: " + letter);
+			}
+			if (65533 == Character.codePointAt(charArray, i)) {
+				log.warn("Message has problem code point 65533: " + letter);
+				throw new RuntimeException("Message has problem code point 65533: " + letter);
+			}
+		}
+	}
+	
 }

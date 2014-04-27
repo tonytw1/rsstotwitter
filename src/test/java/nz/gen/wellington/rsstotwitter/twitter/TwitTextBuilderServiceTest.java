@@ -1,20 +1,20 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.tinyurl.TinyUrlService;
 import nz.gen.wellington.twitter.TwitTextBuilderService;
-import nz.gen.wellington.twitter.TwitterService;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
 
 public class TwitTextBuilderServiceTest {
 
@@ -65,11 +65,11 @@ public class TwitTextBuilderServiceTest {
     @Test
     public void shouldIncludeChannelButOnlyIfThereIsRoom() throws Exception {
         final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, null, null), "testtag");      
-        assertTrue(twit.length() <= TwitterService.MAXIMUM_TWITTER_MESSAGE_LENGTH);      
+        assertTrue(twit.length() <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH);      
         assertEquals(TITLE + " http://tinyurl/1 #testtag", twit);
         
         final String longTwit = service.buildTwitForItem(new FeedItem(feed, REALLY_LONG_TITLE, LONG_URL, LONG_URL, null, null, null, null), "testtag");       
-        assertTrue(longTwit.length() <= TwitterService.MAXIMUM_TWITTER_MESSAGE_LENGTH);
+        assertTrue(longTwit.length() <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH);
         assertFalse(longTwit.endsWith("#testtag"));       
     }
 

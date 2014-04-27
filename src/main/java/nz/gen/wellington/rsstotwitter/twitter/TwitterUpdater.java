@@ -71,22 +71,21 @@ public class TwitterUpdater implements Updater {
 		
 		final boolean hasAlreadyBeenTwittered = twitterHistoryDAO.hasAlreadyBeenTwittered(guid);
 		if (!hasAlreadyBeenTwittered) {			
-			Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, tag);
-			Tweet sentTweet = twitterService.tweet(tweet, account);
-			if (sentTweet != null) {
-				tweetDAO.saveTweet(sentTweet);
-				twitterHistoryDAO.markAsTwittered(feedItem, sentTweet);
+			try {
+				final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem, tag);
+				final Tweet updatedStatus = twitterService.tweet(tweet, account);
+				tweetDAO.saveTweet(updatedStatus);
+				twitterHistoryDAO.markAsTwittered(feedItem, updatedStatus);
 				return true;
 				
-			} else {
-				log.warn("Failed to twitter: " + tweet.getText());
+			} catch (Exception e) {
+				log.warn("Failed to twitter: " + tweet.getText(), e);
 				return false;
 			}
 			
 		} else {
 			log.debug("Not twittering as guid has already been twittered: " + guid);
-		}
-		
+		}		
 		return false;
 	}
 	

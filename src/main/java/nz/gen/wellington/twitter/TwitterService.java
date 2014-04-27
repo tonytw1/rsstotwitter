@@ -24,9 +24,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import com.google.common.collect.Lists;
 
 public class TwitterService {
-    
-	public final static int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
-	
+    	
 	private final static Logger log = Logger.getLogger(TwitterService.class);
 	
 	private final static int REPLY_PAGES_TO_FETCH = 1;
@@ -46,46 +44,14 @@ public class TwitterService {
 	}
 	
 	public Tweet tweet(Tweet tweet, TwitterAccount account) {
-		String tweetText = tweet.getText();
-		
-		log.info("Attempting to tweet: " + tweetText);
-		if (!(tweetText.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
-			log.warn("Message too long to twitter; not twittered: " + tweetText);
-			return null;
-		}
-		
-		log.debug("Checking for valid characters.");
-		char[] charArray = tweetText.toCharArray();
-		for (int i = 0; i < charArray.length; i++) {
-			char letter = tweetText.charAt(i);
-			log.debug(letter + "(" + Character.codePointAt(charArray, i) +"): " + Character.isValidCodePoint(letter));
-			if (!Character.isValidCodePoint(letter)) {
-				log.warn("Message has invalid code point: " + letter);
-				return null;
-			}
-			if (65533 == Character.codePointAt(charArray, i)) {
-				log.warn("Message has problem code point 65533: " + letter);
-				return null;
-			}						
-		}
-		
-		Twitter twitter = getAuthenticatedApiForAccount(account);
-		if (twitter == null) {
-			log.error("Failed to get authenticated twitter connection for account: " + account.getUsername());
-    		return null;
-    	}
-				
-		try {			
-			final Status updateStatus = updateStatus(tweet, twitter);
-			if (updateStatus != null) {
-				return new Tweet(updateStatus);
-			}
-			return null;
-			
+		log.info("Attempting to tweet: " + tweet.getText());		
+		final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);			
+		try {
+			final Status updatedStatus = updateStatus(tweet, twitterApiForAccount);
+			return new Tweet(updatedStatus);						
 		} catch (TwitterException e) {
         	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
-		}
-        	
+		}        	
 		return null;
     }
 	
@@ -174,7 +140,11 @@ public class TwitterService {
 	}
 	
 	private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
-    	return getAuthenticatedApiForAccessToken(new AccessToken(account.getToken(), account.getTokenSecret()));
+    	Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(new AccessToken(account.getToken(), account.getTokenSecret()));
+    	if (twitterApiForAccount == null) {
+			throw new RuntimeException("Could not get api instance for account: " + account.getUsername());	// TODO is a null return really what twitter4j returns?
+		}
+		return twitterApiForAccount;
 	}
 
 	private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
