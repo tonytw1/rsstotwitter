@@ -6,7 +6,7 @@ import nz.gen.wellington.rsstotwitter.model.Tweet;
 
 public class TweetDAO {
 	
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
 
        
 	public TweetDAO(HibernateTemplate hibernateTemplate) {

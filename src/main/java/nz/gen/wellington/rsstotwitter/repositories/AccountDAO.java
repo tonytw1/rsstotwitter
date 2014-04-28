@@ -10,7 +10,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 public class AccountDAO {
 	
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
     
 	public AccountDAO(HibernateTemplate hibernateTemplate) {	
 		this.hibernateTemplate = hibernateTemplate;

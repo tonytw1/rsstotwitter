@@ -11,7 +11,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 public class FeedToTwitterJobDAO {
 	
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
     
 	public FeedToTwitterJobDAO(HibernateTemplate hibernateTemplate) {
 		this.hibernateTemplate = hibernateTemplate;

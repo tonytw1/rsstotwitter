@@ -15,9 +15,9 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 public class TwitterHistoryDAO {
     
-    Logger log = Logger.getLogger(TwitterHistoryDAO.class);
+    private final static Logger log = Logger.getLogger(TwitterHistoryDAO.class);
 
-    private HibernateTemplate hibernateTemplate;
+    private final HibernateTemplate hibernateTemplate;
     
     public TwitterHistoryDAO(HibernateTemplate hibernateTemplate) {        
         this.hibernateTemplate = hibernateTemplate;
