@@ -63,7 +63,7 @@ public class UpdateServiceTest {
 
 		service.run();
 		
-		verify(twitterUpdater).updateFeed(feedItems, account);
+		verify(twitterUpdater).updateFeed(feed, feedItems, account);
 	}
 	
 	@Test
@@ -82,7 +82,7 @@ public class UpdateServiceTest {
 		
 		service.run();
 		
-		verify(twitterUpdater).updateFeed(secondFeedItems, secondAccount);
+		verify(twitterUpdater).updateFeed(secondFeed, secondFeedItems, secondAccount);
 	}
 
 }

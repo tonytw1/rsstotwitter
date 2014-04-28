@@ -21,10 +21,10 @@ public class TwitterUpdater implements Updater {
 	private static final int MAX_TWITS_PER_DAY = 50;
 	private static final int MAX_PUBLISHER_TWITS_PER_DAY = MAX_TWITS_PER_DAY;
 	
-	private TwitterHistoryDAO twitterHistoryDAO;
-	private TwitterService twitterService;
-    private TweetDAO tweetDAO;
-    private TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
+	private final TwitterHistoryDAO twitterHistoryDAO;
+	private final TwitterService twitterService;
+    private final TweetDAO tweetDAO;
+    private final TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
     
 	public TwitterUpdater(TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetDAO tweetDAO, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
 		this.twitterHistoryDAO = twitterHistoryDAO;
@@ -33,34 +33,30 @@ public class TwitterUpdater implements Updater {
 		this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
 	}
 
-	public void updateFeed(List<FeedItem> feedItems, TwitterAccount account) {
+	public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account) {
 		log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
-		Feed feed = feedItems.get(0).getFeed();	// TODO Meh - drops out when we move to account rate limiting. Should be past as a direct argument or dealt with at a higher level?
-        int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);	// TODO rate limit should really be about the twitter account, not the feed.
-        if (hasExceededFeedRateLimit(tweetsSent)) {
-        	log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; skipping");
-        	return;
-        }
-        
+		int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);	// TODO rate limit should really be about the twitter account, not the feed.
+		
         for (FeedItem feedItem : feedItems) {
 			if (hasExceededFeedRateLimit(tweetsSent)) {
+				log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; aborting");
 				return;
 			}
 		        			
         	boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());        			      			
         	if (!publisherRateLimitExceeded) {        				
-	        	if (processItem(feedItem, account)) {
+	        	if (processItem(account, feedItem)) {
 	        		tweetsSent++;
 	        	}	        			                                             	        			
         	} else {
-        		log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit");
+        		log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feeditem from this publisher");
         	}
         }
-        	
+        
         log.info("Twitter update completed for feed: " + feed.getUrl());
 	}
    	
-	private boolean processItem(FeedItem feedItem, TwitterAccount account) {
+	private boolean processItem(TwitterAccount account, FeedItem feedItem) {
 		final String guid = feedItem.getGuid();
 		
 		final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
