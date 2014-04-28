@@ -41,7 +41,7 @@ public class TwitterService {
 		log.info("Attempting to tweet: " + tweet.getText());		
 		final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);			
 		try {
-			final Status updatedStatus = updateStatus(tweet, twitterApiForAccount);
+			final Status updatedStatus = updateStatus(twitterApiForAccount, tweet);
 			return new Tweet(updatedStatus);						
 		} catch (TwitterException e) {
         	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
@@ -115,12 +115,12 @@ public class TwitterService {
 		}
 	}
     
-	public ResponseList<User> getUserDetails(List<Long> toFollow, TwitterAccount account) throws TwitterException {
+	public ResponseList<User> getUserDetails(List<Long> userIds, TwitterAccount account) throws TwitterException {
     	final Twitter twitter = getAuthenticatedApiForAccount(account);    	
-    	return twitter.lookupUsers(ArrayUtils.toPrimitive(toFollow.toArray(new Long[toFollow.size()])));	
+    	return twitter.lookupUsers(ArrayUtils.toPrimitive(userIds.toArray(new Long[userIds.size()])));	
     }
 	
-	private Status updateStatus(Tweet tweet, Twitter twitter) throws TwitterException {
+	private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
 		log.info("Twittering: " + tweet.getText() + ", location: " + tweet.getGeoLocation());
 		StatusUpdate statusUpdate = new StatusUpdate(tweet.getText());		
 		if (tweet.getGeoLocation() != null) {
