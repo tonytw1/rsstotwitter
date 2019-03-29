@@ -2,7 +2,7 @@ package nz.gen.wellington.rsstotwitter.timers;
 
 import java.util.List;
 
-import nz.gen.wellington.rsstotwitter.feeds.FeedDAO;
+import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
@@ -19,13 +19,13 @@ public class UpdateService implements Runnable {
 	private final static Logger log = Logger.getLogger(UpdateService.class);
 
     private FeedToTwitterJobDAO feedToTwitterJobDAO;
-    private FeedDAO feedDAO;
+    private FeedService feedService;
     private Updater twitterUpdater;
 
     @Autowired
-	public UpdateService(FeedToTwitterJobDAO tweetFeedJobDAO, FeedDAO feedDAO, Updater twitterUpdater) {
+	public UpdateService(FeedToTwitterJobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
 		this.feedToTwitterJobDAO = tweetFeedJobDAO;
-		this.feedDAO = feedDAO;
+		this.feedService = feedService;
 		this.twitterUpdater = twitterUpdater;
 	}
 
@@ -40,7 +40,7 @@ public class UpdateService implements Runnable {
 	private void processJob(FeedToTwitterJob job) {
 		final Feed feed = job.getFeed();
 		log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
-		List<FeedItem> feedItems = feedDAO.loadFeedItems(feed);        
+		List<FeedItem> feedItems = feedService.loadFeedItems(feed);
 		if (feedItems != null && !feedItems.isEmpty()) {
 			twitterUpdater.updateFeed(feed, feedItems, job.getAccount());
 			

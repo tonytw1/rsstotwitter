@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import nz.gen.wellington.rsstotwitter.feeds.FeedDAO;
+import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
@@ -27,7 +27,8 @@ public class UpdateServiceTest {
 	private static final String SECOND_FEED_URL = "http://localhost/2/rss";
 	
 	@Mock FeedToTwitterJobDAO tweetFeedJobDAO;
-	@Mock FeedDAO feedDAO;
+	@Mock
+    FeedService feedService;
 	@Mock Updater twitterUpdater;
 
 	private UpdateService service;
@@ -45,7 +46,7 @@ public class UpdateServiceTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		feedToTwitterJobs = new ArrayList<FeedToTwitterJob>();
-		service = new UpdateService(tweetFeedJobDAO, feedDAO, twitterUpdater);
+		service = new UpdateService(tweetFeedJobDAO, feedService, twitterUpdater);
 
 		feed = new Feed(FEED_URL);
 		account = new TwitterAccount(1, TWITTER_USERNAME);
@@ -59,7 +60,7 @@ public class UpdateServiceTest {
 	
 	@Test
 	public void shouldFetchFeedItemsAndPassThemToTheTwitterUpdaterForTweeting() throws Exception {
-		when(feedDAO.loadFeedItems(feed)).thenReturn(feedItems);
+		when(feedService.loadFeedItems(feed)).thenReturn(feedItems);
 
 		service.run();
 		
@@ -68,7 +69,7 @@ public class UpdateServiceTest {
 	
 	@Test
 	public void shouldGracefullyDoNothingIfFeedFailsToLoad() throws Exception {		
-		when(feedDAO.loadFeedItems(feed)).thenReturn(null);
+		when(feedService.loadFeedItems(feed)).thenReturn(null);
 		
 		service.run();
 		
@@ -77,8 +78,8 @@ public class UpdateServiceTest {
 	
 	@Test
 	public void shouldContinueProcessingRemainingFeedsIfOneFailsToLoad() throws Exception {
-		when(feedDAO.loadFeedItems(feed)).thenReturn(null);
-		when(feedDAO.loadFeedItems(secondFeed)).thenReturn(secondFeedItems);
+		when(feedService.loadFeedItems(feed)).thenReturn(null);
+		when(feedService.loadFeedItems(secondFeed)).thenReturn(secondFeedItems);
 		
 		service.run();
 		

@@ -17,9 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 
 @Component
-public class FeedDAO {	// TODO not really a database DAO - rename
+public class FeedService {
 
-    private final static Logger log = Logger.getLogger(FeedDAO.class);
+    private final static Logger log = Logger.getLogger(FeedService.class);
 
     @SuppressWarnings("unchecked")
 	public List<FeedItem> loadFeedItems(Feed feed) {
