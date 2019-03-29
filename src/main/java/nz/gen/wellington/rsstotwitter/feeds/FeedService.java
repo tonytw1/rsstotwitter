@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -29,18 +28,15 @@ public class FeedService {
     		log.warn("Could not load syndfeed from url: " + feed.getUrl() + ". Returning empty list of items");
     		return null;
     	}
-    	
-        final Iterator<SyndEntry> feedItemsIterator = syndfeed.getEntries().iterator();
-        while (feedItemsIterator.hasNext()) {        	
-        	feedItems.add(mapFeedItem(feed, (SyndEntry) feedItemsIterator.next()));
+
+        for (SyndEntry syndEntry : (Iterable<SyndEntry>) syndfeed.getEntries()) {
+            feedItems.add(mapFeedItem(feed, syndEntry));
         }
         return feedItems;
     }
     
     private SyndFeed loadSyndFeedWithFeedFetcher(String feedUrl) {
         log.info("Loading SyndFeed from url: " + feedUrl);
-    
-        ;
         try {
             URL url = new URL(feedUrl);
             FeedFetcher fetcher = new HttpURLFeedFetcher();
@@ -59,7 +55,7 @@ public class FeedService {
 		if (geoModule != null && geoModule.getPosition() != null) {
 			latitude = geoModule.getPosition().getLatitude();
 			longitude = geoModule.getPosition().getLongitude();
-			log.debug("Rss item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
+			log.debug("Feed item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
 		}		
 		return new FeedItem(feed, syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getLink(), syndEntry.getPublishedDate(), syndEntry.getAuthor(), latitude, longitude);
 	}
