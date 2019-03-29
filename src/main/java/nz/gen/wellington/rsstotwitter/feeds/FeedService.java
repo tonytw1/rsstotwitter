@@ -55,7 +55,7 @@ public class FeedService {
     private FeedItem mapFeedItem(Feed feed, SyndEntry syndEntry) {
 		Double latitude = null;
 		Double longitude = null;
-		GeoRSSModule geoModule = (GeoRSSModule) GeoRSSUtils.getGeoRSS(syndEntry);
+		GeoRSSModule geoModule = GeoRSSUtils.getGeoRSS(syndEntry);
 		if (geoModule != null && geoModule.getPosition() != null) {
 			latitude = geoModule.getPosition().getLatitude();
 			longitude = geoModule.getPosition().getLongitude();
