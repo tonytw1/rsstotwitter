@@ -1,13 +1,16 @@
-package nz.gen.wellington.twitter;
+package nz.gen.wellington.rsstotwitter.twitter;
 
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.twitter.TweetFromFeedItemBuilder;
-import nz.gen.wellington.tinyurl.TinyUrlService;
+import nz.gen.wellington.rsstotwitter.tinyurl.TinyUrlService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TwitTextBuilderService {
 
-    private TinyUrlService tinyUrlService;
-    
+    private final TinyUrlService tinyUrlService;
+
+    @Autowired
     public TwitTextBuilderService(TinyUrlService tinyUrlService) {       
         this.tinyUrlService = tinyUrlService;
     }

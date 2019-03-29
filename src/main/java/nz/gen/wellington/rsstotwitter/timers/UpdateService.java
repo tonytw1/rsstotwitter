@@ -9,7 +9,11 @@ import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UpdateService implements Runnable {
 	
 	private final static Logger log = Logger.getLogger(UpdateService.class);
@@ -17,13 +21,15 @@ public class UpdateService implements Runnable {
     private FeedToTwitterJobDAO feedToTwitterJobDAO;
     private FeedDAO feedDAO;
     private Updater twitterUpdater;
-    
+
+    @Autowired
 	public UpdateService(FeedToTwitterJobDAO tweetFeedJobDAO, FeedDAO feedDAO, Updater twitterUpdater) {
 		this.feedToTwitterJobDAO = tweetFeedJobDAO;
 		this.feedDAO = feedDAO;
 		this.twitterUpdater = twitterUpdater;
 	}
-	
+
+	@Scheduled(cron = "0 */5 * * * *")
 	public void run() {
 		log.info("Starting feed to twitter update.");
         for (FeedToTwitterJob job : feedToTwitterJobDAO.getAllTweetFeedJobs()) {

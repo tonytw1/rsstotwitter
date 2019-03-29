@@ -1,32 +1,33 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.AccountDAO;
-import nz.gen.wellington.twitter.TwitterService;
-
+import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import org.apache.log4j.Logger;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
 import twitter4j.auth.AccessToken;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
+
+@Component
 public class TwitterLoginHandler implements SigninHandler {
 
-	private static Logger log = Logger.getLogger(TwitterLoginHandler.class);
+	private final static Logger log = Logger.getLogger(TwitterLoginHandler.class);
 	
 	private AccountDAO accountDAO;
-	private TwitterService twitterService;
+	private TwitterService twitterService = null;
 	private OAuthService oauthService;
 	
 	private String consumerKey;
@@ -35,38 +36,39 @@ public class TwitterLoginHandler implements SigninHandler {
 	
 	private Map<String, Token> requestTokens;
 	private Map<Long, Token> accessTokens;
-	
-	public TwitterLoginHandler(AccountDAO accountDAO, TwitterService twitterService) {
-		this.accountDAO = accountDAO;
-		this.twitterService = twitterService;
-		this.requestTokens = new HashMap<String, Token>();
-		this.accessTokens = new HashMap<Long, Token>();
+
+	public TwitterLoginHandler() {
 	}
 
-	public void setConsumerKey(String consumerKey) {
+	@Autowired
+	public TwitterLoginHandler(AccountDAO accountDAO,
+							   TwitterService twitterService,
+							   @Value("${consumer.key}") String consumerKey,
+							   @Value("${consumer.secret}") String consumerSecret,
+							   @Value("${callback.url}") String callBackUrl) {
+		this.accountDAO = accountDAO;
+		this.twitterService = twitterService;
+
 		this.consumerKey = consumerKey;
-	}
-	
-	public void setConsumerSecret(String consumerSecret) {
 		this.consumerSecret = consumerSecret;
-	}
-	
-	public void setCallBackUrl(String callBackUrl) {
 		this.callBackUrl = callBackUrl;
+
+		this.requestTokens = new HashMap<String, Token>();
+		this.accessTokens = new HashMap<Long, Token>();
+
+		this.oauthService = makeOauthService();
 	}
 
 	@Override
-	public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) {
 		try {			
-			log.info("Getting request token");			
-			OAuthService service = getOauthService(request);
-			
-			Token requestToken = service.getRequestToken();		
+			log.info("Getting request token");
+			Token requestToken = oauthService.getRequestToken();
 			if (requestToken != null) {
 				log.info("Got request token: " + requestToken.getToken());
 				requestTokens.put(requestToken.getToken(), requestToken);
 				
-				final String authorizeUrl = service.getAuthorizationUrl(requestToken);		
+				final String authorizeUrl = oauthService.getAuthorizationUrl(requestToken);
 				log.info("Redirecting user to authorize url : " + authorizeUrl);
 				RedirectView redirectView = new RedirectView(authorizeUrl);
 				return new ModelAndView(redirectView);
@@ -93,9 +95,8 @@ public class TwitterLoginHandler implements SigninHandler {
 				log.info("Found stored request token: " + requestToken.getToken());
 				
 				log.debug("Exchanging request token for access token");
-				
-				OAuthService service = getOauthService(request);
-				Token accessToken = service.getAccessToken(requestToken, new Verifier(verifier));
+
+				Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(verifier));
 				
 				if (accessToken != null) {
 					log.info("Got access token: '" + accessToken.getToken() + "', '" + accessToken.getSecret() + "'");
@@ -140,13 +141,10 @@ public class TwitterLoginHandler implements SigninHandler {
 		log.info("Tokens set to: " + account.getToken() + ", " + account.getTokenSecret());
 	}
 	
-	private OAuthService getOauthService(HttpServletRequest request) {
-		if (oauthService == null) {
-			log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
-			log.info("Oauth callback url is: " + callBackUrl);
-			oauthService = new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build();
-		}
-		return oauthService;
+	private OAuthService makeOauthService() {
+		log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
+		log.info("Oauth callback url is: " + callBackUrl);
+		return new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build();
 	}
 	
 }

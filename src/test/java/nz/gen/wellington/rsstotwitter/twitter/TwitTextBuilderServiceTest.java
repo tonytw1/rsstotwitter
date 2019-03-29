@@ -6,8 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.tinyurl.TinyUrlService;
-import nz.gen.wellington.twitter.TwitTextBuilderService;
+import nz.gen.wellington.rsstotwitter.tinyurl.TinyUrlService;
 
 import org.junit.Before;
 import org.junit.Test;

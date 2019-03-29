@@ -8,6 +8,7 @@ RSS to Twitter
 
 #if($jobs)
 	<h4>Feeds</h4>
+	<p>These feeds will be tweeted to your Twitter account ($account.username).</p>
 	<ul>
         #foreach($job in $jobs)
         	<li>$job.feed.url</li>

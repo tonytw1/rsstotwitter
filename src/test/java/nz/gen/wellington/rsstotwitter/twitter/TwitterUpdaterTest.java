@@ -15,7 +15,6 @@ import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
-import nz.gen.wellington.twitter.TwitterService;
 
 import org.joda.time.DateTime;
 import org.junit.Before;

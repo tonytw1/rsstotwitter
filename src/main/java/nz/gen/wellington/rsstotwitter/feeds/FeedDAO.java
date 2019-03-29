@@ -16,7 +16,9 @@ import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.fetcher.FeedFetcher;
 import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FeedDAO {	// TODO not really a database DAO - rename
 
     public final static Logger log = Logger.getLogger(FeedDAO.class);

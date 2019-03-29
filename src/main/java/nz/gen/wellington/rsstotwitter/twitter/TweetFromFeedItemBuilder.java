@@ -2,20 +2,23 @@ package nz.gen.wellington.rsstotwitter.twitter;
 
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.twitter.TwitTextBuilderService;
 
 import org.apache.log4j.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import twitter4j.GeoLocation;
 
+@Component
 public class TweetFromFeedItemBuilder {
 	
 	public final static int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
 
 	private final static Logger log = Logger.getLogger(TweetFromFeedItemBuilder.class);
 	
-	private TwitTextBuilderService twitBuilderService;
-	
+	private final TwitTextBuilderService twitBuilderService;
+
+	@Autowired
 	public TweetFromFeedItemBuilder(TwitTextBuilderService twitBuilderService) {
 		this.twitBuilderService = twitBuilderService;
 	}

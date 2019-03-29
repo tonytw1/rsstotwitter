@@ -6,7 +6,7 @@ import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.AccountDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
-import nz.gen.wellington.twitter.TwitterService;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
 

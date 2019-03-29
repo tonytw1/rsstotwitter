@@ -3,7 +3,9 @@ package nz.gen.wellington.rsstotwitter.controllers;
 import javax.servlet.http.HttpServletRequest;
 
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LoggedInUserFilter {
 
 	private static final String LOGGED_IN_USER = "loggedInUser";

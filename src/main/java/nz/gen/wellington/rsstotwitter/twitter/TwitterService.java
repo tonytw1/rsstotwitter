@@ -1,51 +1,45 @@
-package nz.gen.wellington.twitter;
+package nz.gen.wellington.rsstotwitter.twitter;
+
+import com.google.common.collect.Lists;
+import nz.gen.wellington.rsstotwitter.model.Tweet;
+import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import twitter4j.*;
+import twitter4j.auth.AccessToken;
+import twitter4j.conf.ConfigurationBuilder;
 
 import java.util.Arrays;
 import java.util.List;
 
-import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
-
-import twitter4j.IDs;
-import twitter4j.Paging;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.StatusUpdate;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
-import twitter4j.conf.ConfigurationBuilder;
-
-import com.google.common.collect.Lists;
-
+@Component
 public class TwitterService {
     	
 	private final static Logger log = Logger.getLogger(TwitterService.class);
 	
 	private final static int REPLY_PAGES_TO_FETCH = 1;
     
-	private final String consumerKey;
-	private final String consumerSecret;
-	
-    public TwitterService(String consumerKey, String consumerSecret) {
+	private String consumerKey;
+	private String consumerSecret;
+
+	@Autowired
+    public TwitterService(@Value("${consumer.key}") String consumerKey, @Value("${consumer.secret}") String consumerSecret) {
 		this.consumerKey = consumerKey;
 		this.consumerSecret = consumerSecret;
 	}
-    
+
 	public Tweet tweet(Tweet tweet, TwitterAccount account) {
 		log.info("Attempting to tweet: " + tweet.getText());		
 		final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);			
-		try {
+		/*try {
 			final Status updatedStatus = updateStatus(twitterApiForAccount, tweet);
-			return new Tweet(updatedStatus);						
+			return new Tweet(updatedStatus);
 		} catch (TwitterException e) {
         	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
-		}        	
+		}*/
 		return null;
     }
 	

@@ -1,4 +1,4 @@
-package nz.gen.wellington.tinyurl;
+package nz.gen.wellington.rsstotwitter.tinyurl;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,10 +10,12 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TinyUrlService {
     
-    Logger log = Logger.getLogger(TinyUrlService.class);
+    private final static Logger log = Logger.getLogger(TinyUrlService.class);
 
     final private static String TINY_URL_API = "http://tinyurl.com/api-create.php?url=";
 

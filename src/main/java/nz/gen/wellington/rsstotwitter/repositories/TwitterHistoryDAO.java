@@ -11,22 +11,26 @@ import org.apache.log4j.Logger;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TwitterHistoryDAO {
     
     private final static Logger log = Logger.getLogger(TwitterHistoryDAO.class);
 
     private final HibernateTemplate hibernateTemplate;
-    
+
+    @Autowired
     public TwitterHistoryDAO(HibernateTemplate hibernateTemplate) {        
         this.hibernateTemplate = hibernateTemplate;
     }
     
     @SuppressWarnings("unchecked")
     public boolean hasAlreadyBeenTwittered(String guid) {            
-        DetachedCriteria previousEventsCriteria = DetachedCriteria.forClass( TwitterEvent.class ).add( Restrictions.eq( "guid", guid ));        
-        List<TwitterEvent> previousEvents = hibernateTemplate.findByCriteria(previousEventsCriteria);
+        DetachedCriteria previousEventsCriteria = DetachedCriteria.forClass( TwitterEvent.class ).add( Restrictions.eq( "guid", guid ));
+        List<TwitterEvent> previousEvents = (List<TwitterEvent>) hibernateTemplate.findByCriteria(previousEventsCriteria);
         log.debug("Found " + previousEvents.size() + " previous events for guid: " + guid);
         if (previousEvents.size() > 0) {
             return true;

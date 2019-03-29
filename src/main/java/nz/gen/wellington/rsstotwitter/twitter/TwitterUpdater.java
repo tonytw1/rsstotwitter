@@ -9,11 +9,13 @@ import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
-import nz.gen.wellington.twitter.TwitterService;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TwitterUpdater implements Updater {
 	
 	private static Logger log = Logger.getLogger(TwitterUpdater.class);
@@ -25,7 +27,8 @@ public class TwitterUpdater implements Updater {
 	private final TwitterService twitterService;
     private final TweetDAO tweetDAO;
     private final TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
-    
+
+    @Autowired
 	public TwitterUpdater(TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetDAO tweetDAO, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
 		this.twitterHistoryDAO = twitterHistoryDAO;
 		this.twitterService = twitterService;
@@ -70,13 +73,14 @@ public class TwitterUpdater implements Updater {
 			try {
 				final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
 				final Tweet updatedStatus = twitterService.tweet(tweet, account);
-				tweetDAO.saveTweet(updatedStatus);
-				twitterHistoryDAO.markAsTwittered(feedItem, updatedStatus);
-				return true;
+				if (updatedStatus != null) {
+                    tweetDAO.saveTweet(updatedStatus);
+                    twitterHistoryDAO.markAsTwittered(feedItem, updatedStatus);
+                    return true;
+                }
 				
 			} catch (Exception e) {
 				log.warn("Failed to twitter: " + feedItem.getTitle(), e);
-				return false;
 			}
 			
 		} else {

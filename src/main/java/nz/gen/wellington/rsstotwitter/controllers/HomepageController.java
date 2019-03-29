@@ -1,29 +1,30 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
-public class HomepageController extends MultiActionController {
+import javax.servlet.http.HttpServletRequest;
+
+@Controller
+public class HomepageController {
 
 	private LoggedInUserFilter loggedInUserFilter;
 	private FeedToTwitterJobDAO feedToTwitterJobDAO;
-	
+
+	@Autowired
 	public HomepageController(LoggedInUserFilter loggedInUserFilter, FeedToTwitterJobDAO feedToTwitterJobDAO) {
 		this.loggedInUserFilter = loggedInUserFilter;
 		this.feedToTwitterJobDAO = feedToTwitterJobDAO;
 	}
-	
-	public ModelAndView homepage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("homepage");
+
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public ModelAndView homepage(HttpServletRequest request) {
+        ModelAndView mv = new ModelAndView("homepage");
         TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
         if (loggedInUser != null) {
         	mv.addObject("account", loggedInUser);
@@ -31,5 +32,5 @@ public class HomepageController extends MultiActionController {
         }
         return mv;
     }
-	
+
 }
