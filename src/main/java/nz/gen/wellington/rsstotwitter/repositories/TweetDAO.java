@@ -24,7 +24,7 @@ public class TweetDAO {
 		hibernateTemplate.save(tweet);
 	}
 
-	public Tweet loadTweet(long id) {
+	private Tweet loadTweet(long id) {
 		return (Tweet) hibernateTemplate.get(Tweet.class, id);
 	}	
 
