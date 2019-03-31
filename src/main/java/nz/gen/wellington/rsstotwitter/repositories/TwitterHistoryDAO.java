@@ -41,12 +41,7 @@ public class TwitterHistoryDAO {
     public void saveTwitterEvent(TwitterEvent event) {
         hibernateTemplate.save(event);
     }
-    
-    @SuppressWarnings("unchecked")
-    public List<TwitterEvent> getAllEvents() {
-        return hibernateTemplate.loadAll(TwitterEvent.class);
-    }
-    
+
     public void markAsTwittered(FeedItem feedItem, Tweet sentTweet) {
         TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(), feedItem.getFeed(), sentTweet);
         saveTwitterEvent(newEvent);
