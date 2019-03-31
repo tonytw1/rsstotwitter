@@ -1,1 +1,0 @@
-alter table twittered_feed add column feed int;

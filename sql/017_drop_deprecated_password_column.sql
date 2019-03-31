@@ -1,1 +1,0 @@
-alter table accounts drop column password;
