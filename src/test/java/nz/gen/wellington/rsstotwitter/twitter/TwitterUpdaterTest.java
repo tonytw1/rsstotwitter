@@ -13,8 +13,8 @@ import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
-import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mysql.MysqlTweetDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mysql.MysqlTwitterHistoryDAO;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -24,10 +24,12 @@ import org.mockito.MockitoAnnotations;
 
 public class TwitterUpdaterTest {
 	
-	@Mock TwitterHistoryDAO twitterHistoryDAO;
+	@Mock
+	MysqlTwitterHistoryDAO twitterHistoryDAO;
 	@Mock TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
 	@Mock TwitterService twitterService;
-	@Mock TweetDAO tweetDAO;
+	@Mock
+    MysqlTweetDAO tweetDAO;
 	@Mock Feed feed;
 	
 	@Mock Tweet tweetToSend;

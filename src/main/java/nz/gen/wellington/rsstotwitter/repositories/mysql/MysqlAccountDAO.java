@@ -1,9 +1,10 @@
-package nz.gen.wellington.rsstotwitter.repositories;
+package nz.gen.wellington.rsstotwitter.repositories.mysql;
 
 import java.util.List;
 
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
+import nz.gen.wellington.rsstotwitter.repositories.AccountDAO;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
