@@ -34,12 +34,12 @@ public class TwitterService {
 	public Tweet tweet(Tweet tweet, TwitterAccount account) {
 		log.info("Attempting to tweet: " + tweet.getText());		
 		final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);			
-		/*try {
+		try {
 			final Status updatedStatus = updateStatus(twitterApiForAccount, tweet);
 			return new Tweet(updatedStatus);
 		} catch (TwitterException e) {
         	 log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
-		}*/
+		}
 		return null;
     }
 	

@@ -1,19 +1,17 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
-import java.util.List;
-
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TwitterUpdater implements Updater {
@@ -25,14 +23,12 @@ public class TwitterUpdater implements Updater {
 	
 	private final TwitterHistoryDAO twitterHistoryDAO;
 	private final TwitterService twitterService;
-    private final TweetDAO tweetDAO;
     private final TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
 
     @Autowired
-	public TwitterUpdater(TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetDAO tweetDAO, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
+	public TwitterUpdater(TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
 		this.twitterHistoryDAO = twitterHistoryDAO;
 		this.twitterService = twitterService;
-		this.tweetDAO = tweetDAO;
 		this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
 	}
 
@@ -41,8 +37,8 @@ public class TwitterUpdater implements Updater {
 		int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);	// TODO rate limit should really be about the twitter account, not the feed.
 		
         for (FeedItem feedItem : feedItems) {
-			if (hasExceededFeedRateLimit(tweetsSent)) {
-				log.info("Feed '" + feed.getUrl() + "' has exceeded rate limit; aborting");
+			if (hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSent)) {
+				log.info("Feed '" + feed.getUrl() + "' has exceeded maximum tweets per day rate limit; aborting");
 				return;
 			}
 		        			
@@ -74,7 +70,6 @@ public class TwitterUpdater implements Updater {
 				final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
 				final Tweet updatedStatus = twitterService.tweet(tweet, account);
 				if (updatedStatus != null) {
-                    tweetDAO.saveTweet(updatedStatus);
                     twitterHistoryDAO.markAsTwittered(feedItem, updatedStatus);
                     return true;
                 }
@@ -84,12 +79,12 @@ public class TwitterUpdater implements Updater {
 			}
 			
 		} else {
-			log.debug("Not twittering as guid has already been twittered: " + guid);
+			log.info("Not twittering as guid has already been twittered: " + guid);
 		}		
 		return false;
 	}
 	
-	private boolean hasExceededFeedRateLimit(int tweetsSent) {
+	private boolean hasExceededMaxTweetsPerDayFeedRateLimit(int tweetsSent) {
 		return tweetsSent >= MAX_TWITS_PER_DAY;
 	}
 	

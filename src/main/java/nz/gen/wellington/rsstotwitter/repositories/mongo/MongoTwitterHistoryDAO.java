@@ -1,10 +1,6 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterEvent;
-import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
+import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -26,7 +22,9 @@ public class MongoTwitterHistoryDAO implements TwitterHistoryDAO {
 
     @Override
     public boolean hasAlreadyBeenTwittered(String guid) {
-        return false;   // TODO
+        return !dataStoreFactory.getDs().
+                find(TwitterEvent.class).
+                filter("guid", guid).asList().isEmpty();
     }
 
     @Override

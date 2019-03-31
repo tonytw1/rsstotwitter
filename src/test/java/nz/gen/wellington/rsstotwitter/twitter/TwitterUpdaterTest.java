@@ -4,7 +4,6 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
 import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -24,7 +23,6 @@ public class TwitterUpdaterTest {
 	@Mock TwitterHistoryDAO twitterHistoryDAO;
 	@Mock TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
 	@Mock TwitterService twitterService;
-	@Mock TweetDAO tweetDAO;
 	@Mock Feed feed;
 	
 	@Mock Tweet tweetToSend;
@@ -44,7 +42,7 @@ public class TwitterUpdaterTest {
 		feedItems = new ArrayList<FeedItem>();
 		feedItems.add(feedItem);
 		
-		service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetDAO, tweetFromFeedItemBuilder);
+		service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder);
 	}
 			
 	@Test
@@ -64,7 +62,6 @@ public class TwitterUpdaterTest {
 		service.updateFeed(feed, feedItems, account);
 		
 		verify(twitterService).tweet(tweetToSend, account);
-		verify(tweetDAO).saveTweet(sentTweet);
 		verify(twitterHistoryDAO).markAsTwittered(feedItem, sentTweet);
 	}
 		
