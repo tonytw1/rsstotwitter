@@ -34,11 +34,5 @@ public class MysqlAccountDAO implements AccountDAO {
         }
         return null;
 	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<TwitterAccount> getAllTwitterAccounts() {
-		return hibernateTemplate.loadAll(TwitterAccount.class);
-	}
 
 }

@@ -16,16 +16,8 @@ public class TweetDAO {
 		this.hibernateTemplate = hibernateTemplate;
 	}
 
-	public boolean isStoredLocally(long id) {
-		return loadTweet(id) != null;
-	}
-
 	public void saveTweet(Tweet tweet) {
 		hibernateTemplate.save(tweet);
 	}
-
-	private Tweet loadTweet(long id) {
-		return (Tweet) hibernateTemplate.get(Tweet.class, id);
-	}	
 
 }
