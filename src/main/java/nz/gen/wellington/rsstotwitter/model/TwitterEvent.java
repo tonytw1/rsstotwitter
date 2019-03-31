@@ -10,7 +10,6 @@ public class TwitterEvent {
     @Id
     ObjectId objectId;
 
-    private int id;
     private String guid;
     private Date date;
     private String twit;
@@ -22,21 +21,12 @@ public class TwitterEvent {
 	}
 
 	public TwitterEvent(String guid, String twit, Date date, String publisher, Feed feed, Tweet tweet) {
-        this.id = 0;
         this.guid = guid;
         this.twit = twit;
         this.date = date;
         this.feed = feed;
         this.publisher = publisher;
         this.tweet = tweet;
-    }
-    
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getGuid() {
@@ -81,5 +71,17 @@ public class TwitterEvent {
 	public void setTweet(Tweet tweet) {
 		this.tweet = tweet;
 	}
-    
+
+    @Override
+    public String toString() {
+        return "TwitterEvent{" +
+                "objectId=" + objectId +
+                ", guid='" + guid + '\'' +
+                ", date=" + date +
+                ", twit='" + twit + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", feed=" + feed +
+                ", tweet=" + tweet +
+                '}';
+    }
 }
