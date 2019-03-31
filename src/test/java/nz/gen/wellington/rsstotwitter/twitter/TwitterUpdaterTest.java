@@ -1,35 +1,30 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
+import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.repositories.mysql.MysqlTweetDAO;
-import nz.gen.wellington.rsstotwitter.repositories.mysql.MysqlTwitterHistoryDAO;
-
+import nz.gen.wellington.rsstotwitter.repositories.TweetDAO;
+import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+
 public class TwitterUpdaterTest {
 	
-	@Mock
-	MysqlTwitterHistoryDAO twitterHistoryDAO;
+	@Mock TwitterHistoryDAO twitterHistoryDAO;
 	@Mock TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
 	@Mock TwitterService twitterService;
-	@Mock
-    MysqlTweetDAO tweetDAO;
+	@Mock TweetDAO tweetDAO;
 	@Mock Feed feed;
 	
 	@Mock Tweet tweetToSend;

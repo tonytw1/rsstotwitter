@@ -9,8 +9,6 @@ public interface TwitterHistoryDAO {
     @SuppressWarnings("unchecked")
     boolean hasAlreadyBeenTwittered(String guid);
 
-    void saveTwitterEvent(TwitterEvent event);
-
     void markAsTwittered(FeedItem feedItem, Tweet sentTweet);
 
     int getNumberOfTwitsInLastTwentyFourHours(Feed feed);

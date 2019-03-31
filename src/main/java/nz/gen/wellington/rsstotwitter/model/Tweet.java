@@ -2,13 +2,17 @@ package nz.gen.wellington.rsstotwitter.model;
 
 import java.util.Date;
 
+import dev.morphia.annotations.Id;
+import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 
 import twitter4j.GeoLocation;
 import twitter4j.Status;
 
-
 public class Tweet {
+
+	@Id
+	ObjectId objectId;
 
 	private Long id;
 	private long userId;

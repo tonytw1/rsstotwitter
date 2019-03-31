@@ -47,7 +47,6 @@ public class SigninController {
 		return signinErrorView(request);		
 	}
 	
-	@Transactional
 	@RequestMapping(value = "/oauth/callback", method = RequestMethod.GET)
 	public ModelAndView callback(HttpServletRequest request) throws Exception {
 		final Object externalIdentifier = signinHandler.getExternalUserIdentifierFromCallbackRequest(request);

@@ -1,9 +1,15 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Id;
+import org.bson.types.ObjectId;
+
 import java.util.Date;
 
 public class TwitterEvent {
-        
+
+    @Id
+    ObjectId objectId;
+
     private int id;
     private String guid;
     private Date date;

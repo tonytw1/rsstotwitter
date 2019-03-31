@@ -1,8 +1,13 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Id;
+import org.bson.types.ObjectId;
+
 public class FeedToTwitterJob {
 
-	private int id;
+	@Id
+	ObjectId objectId;
+
 	private Feed feed;
 	private TwitterAccount account;
 	
@@ -13,15 +18,11 @@ public class FeedToTwitterJob {
 		this.feed = feed;
 		this.account = account;
 	}
-	
-	public int getId() {
-		return id;
+
+	public String getObjectId() {
+		return objectId.toHexString();
 	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-	
+
 	public Feed getFeed() {
 		return feed;
 	}
@@ -37,5 +38,13 @@ public class FeedToTwitterJob {
 	public void setAccount(TwitterAccount account) {
 		this.account = account;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "FeedToTwitterJob{" +
+				"objectId=" + objectId +
+				", feed=" + feed +
+				", account=" + account +
+				'}';
+	}
 }

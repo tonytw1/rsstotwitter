@@ -10,4 +10,8 @@ public interface FeedToTwitterJobDAO {
 
     @SuppressWarnings("unchecked")
     List<FeedToTwitterJob> getJobsForAccount(TwitterAccount account);
+
+    FeedToTwitterJob getByObjectId(String id);
+
+    void save(FeedToTwitterJob job);
 }

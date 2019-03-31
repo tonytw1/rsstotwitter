@@ -1,15 +1,11 @@
-package nz.gen.wellington.rsstotwitter.model;
+package nz.gen.wellington.rsstotwitter.forms;
 
-public class Feed {
+import org.hibernate.validator.constraints.NotBlank;
 
+public class FeedDetails {
+
+    @NotBlank
     private String url;
-
-    public Feed() {
-    }
-
-    public Feed(String url) {
-        this.url = url;
-    }
 
     public String getUrl() {
         return url;
@@ -21,7 +17,7 @@ public class Feed {
 
     @Override
     public String toString() {
-        return "Feed{" +
+        return "FeedDetails{" +
                 "url='" + url + '\'' +
                 '}';
     }
