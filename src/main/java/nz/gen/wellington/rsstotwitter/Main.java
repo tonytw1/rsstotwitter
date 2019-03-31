@@ -82,7 +82,6 @@ public class Main {
 
         sessionFactory.setMappingResources(
                 "Tweet.hbm.xml",
-                "TwitterAccount.hbm.xml",
                 "TwitterEvent.hbm.xml",
                 "Feed.hbm.xml",
                 "FeedToTwitterJob.hbm.xml");

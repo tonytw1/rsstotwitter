@@ -1,8 +1,14 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Id;
+import org.bson.types.ObjectId;
+
 import java.util.Set;
 
 public class TwitterAccount {
+
+	@Id
+	ObjectId objectId;
 
 	private long id;
 	private String username;
