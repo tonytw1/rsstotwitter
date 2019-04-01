@@ -32,9 +32,9 @@ public class DataStoreFactory {
 			addresses.add(new ServerAddress(mongoHost));
 		}
 
-		log.info("Mongo addresses: " + addresses);
-		log.info("Mongo database: " + mongoDatabase);
-		log.info("Mongo credentials: " + "'" + mongoUser + "'" + " / " + "'" + mongoPassword + "'" + " / " + mongoSSL);
+		log.debug("Mongo addresses: " + addresses);
+		log.debug("Mongo database: " + mongoDatabase);
+		log.debug("Mongo credentials: " + "'" + mongoUser + "'" + " / " + "'" + mongoPassword + "'" + " / " + mongoSSL);
 
 		MongoClientOptions mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
 		MongoCredential credential = !Strings.isNullOrEmpty(mongoUser) ? MongoCredential.createScramSha1Credential(mongoUser, mongoDatabase, mongoPassword.toCharArray()) : null;
