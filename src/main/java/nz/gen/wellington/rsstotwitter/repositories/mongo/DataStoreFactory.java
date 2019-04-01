@@ -37,7 +37,7 @@ public class DataStoreFactory {
 		log.info("Mongo credentials: " + "'" + mongoUser + "'" + " / " + "'" + mongoPassword + "'" + " / " + mongoSSL);
 
 		MongoClientOptions mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
-		MongoCredential credential = !Strings.isNullOrEmpty(mongoUser) ? MongoCredential.createMongoCRCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray()) : null;
+		MongoCredential credential = !Strings.isNullOrEmpty(mongoUser) ? MongoCredential.createScramSha1Credential(mongoUser, mongoDatabase, mongoPassword.toCharArray()) : null;
 
 		datastore = createDataStore(addresses, mongoDatabase, credential, mongoClientOptions);
 		datastore.ensureIndexes();
