@@ -25,7 +25,7 @@ public class DataStoreFactory {
 	
 	private final List<MongoCredential> credentials;
 
-	private Datastore datastore;
+	private final Datastore datastore;
 
 	@Autowired
 	public DataStoreFactory(@Value("${mongo.hosts}") String mongoHosts,
@@ -38,18 +38,19 @@ public class DataStoreFactory {
 		for (String mongoHost : mongoHosts.split(",")) {
 			addresses.add(new ServerAddress(mongoHost));
 		}
+
+		log.info("Mongo addresses: " + addresses);
 		this.serverAddresses = addresses;
 
 		this.mongoDatabase = mongoDatabase;
 		this.mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
 		this.credentials = !Strings.isNullOrEmpty(mongoUser) ? Lists.newArrayList(MongoCredential.createMongoCRCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray())) : null;
+
+		datastore = createDataStore(mongoDatabase);
+		datastore.ensureIndexes();
 	}
 	
 	Datastore getDs() {
-		if (datastore == null) {
-			datastore = createDataStore(mongoDatabase);
-			datastore.ensureIndexes();
-		}
 		return datastore;
 	}
 	
