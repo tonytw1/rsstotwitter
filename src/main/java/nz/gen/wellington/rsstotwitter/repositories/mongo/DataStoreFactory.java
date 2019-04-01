@@ -18,12 +18,6 @@ import java.util.List;
 public class DataStoreFactory {
 
 	private static final Logger log = Logger.getLogger(DataStoreFactory.class);
-	    
-	private final List<ServerAddress> serverAddresses;
-	private final String mongoDatabase;
-	private final MongoClientOptions mongoClientOptions;
-	
-	private final List<MongoCredential> credentials;
 
 	private final Datastore datastore;
 
@@ -40,13 +34,12 @@ public class DataStoreFactory {
 		}
 
 		log.info("Mongo addresses: " + addresses);
-		this.serverAddresses = addresses;
+		log.info("Mongo credentials: " + mongoUser + " / " + mongoPassword);
 
-		this.mongoDatabase = mongoDatabase;
-		this.mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
-		this.credentials = !Strings.isNullOrEmpty(mongoUser) ? Lists.newArrayList(MongoCredential.createMongoCRCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray())) : null;
+		MongoClientOptions mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
+		List<MongoCredential> credentials = !Strings.isNullOrEmpty(mongoUser) ? Lists.newArrayList(MongoCredential.createMongoCRCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray())) : null;
 
-		datastore = createDataStore(mongoDatabase);
+		datastore = createDataStore(addresses, mongoDatabase, credentials, mongoClientOptions);
 		datastore.ensureIndexes();
 	}
 	
@@ -54,13 +47,13 @@ public class DataStoreFactory {
 		return datastore;
 	}
 	
-	private Datastore createDataStore(String database) {
+	private Datastore createDataStore(List<ServerAddress> addresses, String database, List<MongoCredential> credentials, MongoClientOptions mongoClientOptions) {
 		Morphia morphia = new Morphia();
 		morphia.map(TwitterAccount.class);
 
 		try {
 			log.info("Mongo credentials: "  + credentials);
-			MongoClient m = credentials != null ? new MongoClient(serverAddresses, credentials, mongoClientOptions) : new MongoClient(serverAddresses, mongoClientOptions);
+			MongoClient m = credentials != null ? new MongoClient(addresses, credentials, mongoClientOptions) : new MongoClient(addresses, mongoClientOptions);
 			return morphia.createDatastore(m, database);
 			
 		} catch (MongoException e) {
