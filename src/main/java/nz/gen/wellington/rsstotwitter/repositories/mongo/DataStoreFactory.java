@@ -1,7 +1,6 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.mongodb.*;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
@@ -11,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class DataStoreFactory {
@@ -27,10 +28,9 @@ public class DataStoreFactory {
                             @Value("${mongo.password}") String mongoPassword,
                             @Value("${mongo.ssl}") Boolean mongoSSL) throws MongoException {
 
-		List<ServerAddress> addresses = Lists.newArrayList();	// TODO It's 2019 - .map this
-		for (String mongoHost : mongoHosts.split(",")) {
-			addresses.add(new ServerAddress(mongoHost));
-		}
+		List<ServerAddress> addresses = Arrays.stream(mongoHosts.split(",")).
+						map(mongoHost -> new ServerAddress((mongoHost))).
+						collect(Collectors.toList());
 
 		log.debug("Mongo addresses: " + addresses);
 		log.debug("Mongo database: " + mongoDatabase);
