@@ -42,7 +42,7 @@ public class DataStoreFactory {
 
 		this.mongoDatabase = mongoDatabase;
 		this.mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
-		this.credentials = !Strings.isNullOrEmpty(mongoUser) ? Lists.newArrayList(MongoCredential.createPlainCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray())) : null;
+		this.credentials = !Strings.isNullOrEmpty(mongoUser) ? Lists.newArrayList(MongoCredential.createMongoCRCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray())) : null;
 	}
 	
 	Datastore getDs() {
