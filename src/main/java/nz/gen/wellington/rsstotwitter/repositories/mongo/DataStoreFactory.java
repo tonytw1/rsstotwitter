@@ -59,6 +59,7 @@ public class DataStoreFactory {
 		morphia.map(TwitterAccount.class);
 
 		try {
+			log.info("Mongo credentials: "  + credentials);
 			MongoClient m = credentials != null ? new MongoClient(serverAddresses, credentials, mongoClientOptions) : new MongoClient(serverAddresses, mongoClientOptions);
 			return morphia.createDatastore(m, database);
 			
