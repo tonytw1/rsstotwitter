@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.net.UnknownHostException;
 import java.util.List;
 
 @Component
@@ -26,7 +25,7 @@ public class DataStoreFactory {
                             @Value("${mongo.database}") String mongoDatabase,
                             @Value("${mongo.user}") String mongoUser,
                             @Value("${mongo.password}") String mongoPassword,
-                            @Value("${mongo.ssl}") Boolean mongoSSL) throws UnknownHostException, MongoException {
+                            @Value("${mongo.ssl}") Boolean mongoSSL) throws MongoException {
 
 		List<ServerAddress> addresses = Lists.newArrayList();	// TODO It's 2019 - .map this
 		for (String mongoHost : mongoHosts.split(",")) {
@@ -34,12 +33,13 @@ public class DataStoreFactory {
 		}
 
 		log.info("Mongo addresses: " + addresses);
-		log.info("Mongo credentials: " + mongoUser + " / " + mongoPassword);
+		log.info("Mongo database: " + mongoDatabase);
+		log.info("Mongo credentials: " + "'" + mongoUser + "'" + " / " + "'" + mongoPassword + "'" + " / " + mongoSSL);
 
 		MongoClientOptions mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
-		List<MongoCredential> credentials = !Strings.isNullOrEmpty(mongoUser) ? Lists.newArrayList(MongoCredential.createMongoCRCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray())) : null;
+		MongoCredential credential = !Strings.isNullOrEmpty(mongoUser) ? MongoCredential.createMongoCRCredential(mongoUser, mongoDatabase, mongoPassword.toCharArray()) : null;
 
-		datastore = createDataStore(addresses, mongoDatabase, credentials, mongoClientOptions);
+		datastore = createDataStore(addresses, mongoDatabase, credential, mongoClientOptions);
 		datastore.ensureIndexes();
 	}
 	
@@ -47,13 +47,12 @@ public class DataStoreFactory {
 		return datastore;
 	}
 	
-	private Datastore createDataStore(List<ServerAddress> addresses, String database, List<MongoCredential> credentials, MongoClientOptions mongoClientOptions) {
+	private Datastore createDataStore(List<ServerAddress> addresses, String database, MongoCredential credential, MongoClientOptions mongoClientOptions) {
 		Morphia morphia = new Morphia();
 		morphia.map(TwitterAccount.class);
 
 		try {
-			log.info("Mongo credentials: "  + credentials);
-			MongoClient m = credentials != null ? new MongoClient(addresses, credentials, mongoClientOptions) : new MongoClient(addresses, mongoClientOptions);
+			MongoClient m = credential != null ? new MongoClient(addresses, credential, mongoClientOptions) : new MongoClient(addresses, mongoClientOptions);
 			return morphia.createDatastore(m, database);
 			
 		} catch (MongoException e) {
