@@ -81,7 +81,7 @@ public class FeedsController {
       mv.addObject("job", job);
 
       mv.addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed()));
-      mv.addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed()));
+      mv.addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed()));
 
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
       mv.addObject("feedItems", feedItems);
