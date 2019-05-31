@@ -34,6 +34,11 @@ public class MongoTwitterHistoryDAO implements TwitterHistoryDAO {
     }
 
     @Override
+    public int getNumberOfTwitsInLastHour(Feed feed) {
+        return 0;   // TODO
+    }
+
+    @Override
     public int getNumberOfTwitsInLastTwentyFourHours(Feed feed) {
         return 0;   // TODO
     }

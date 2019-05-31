@@ -11,6 +11,7 @@ public interface TwitterHistoryDAO {
 
     void markAsTwittered(FeedItem feedItem, Tweet sentTweet);
 
+    int getNumberOfTwitsInLastHour(Feed feed);
     int getNumberOfTwitsInLastTwentyFourHours(Feed feed);
 
     int getNumberOfTwitsInLastTwentyFourHours(Feed feed, String publisher);

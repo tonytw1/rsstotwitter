@@ -18,6 +18,7 @@ public class TwitterUpdater implements Updater {
 
   private static Logger log = Logger.getLogger(TwitterUpdater.class);
 
+  private static final int MAX_TWITS_PER_HOUR = 5;
   private static final int MAX_TWITS_PER_DAY = 50;
   private static final int MAX_PUBLISHER_TWITS_PER_DAY = MAX_TWITS_PER_DAY;
 
@@ -34,18 +35,20 @@ public class TwitterUpdater implements Updater {
 
   public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account) {
     log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
-    int tweetsSent = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);  // TODO rate limit should really be about the twitter account, not the feed.
+    final int tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed);  // TODO rate limit should really be about the twitter account, not the feed.
+    final int tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);  // TODO rate limit should really be about the twitter account, not the feed.
 
+    int tweetsSentThisRound = 0;
     for (FeedItem feedItem : feedItems) {
-      if (hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSent)) {
-        log.info("Feed '" + feed.getUrl() + "' has exceeded maximum tweets per day rate limit; aborting");
+      if (hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + tweetsSentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + tweetsSentThisRound)) {
+        log.info("Feed '" + feed.getUrl() + "' has exceeded maximum tweets per day rate limit; returning");
         return;
       }
 
       boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());
       if (!publisherRateLimitExceeded) {
         if (processItem(account, feedItem)) {
-          tweetsSent++;
+          tweetsSentThisRound++;
         }
       } else {
         log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feeditem from this publisher");
@@ -82,6 +85,10 @@ public class TwitterUpdater implements Updater {
       log.info("Not twittering as guid has already been twittered: " + guid);
     }
     return false;
+  }
+
+  private boolean hasExceededMaxTweetsPerHourRateLimit(int tweetsSent) {
+    return tweetsSent >= MAX_TWITS_PER_HOUR;
   }
 
   private boolean hasExceededMaxTweetsPerDayFeedRateLimit(int tweetsSent) {
