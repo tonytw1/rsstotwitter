@@ -6,4 +6,6 @@ RSS to Twitter
 
 <p><a href="$job.feed.url">$job.feed.url</a>
 
+<p>$lastHour / $lastTwentyFourHours</p>
+
 <p>$feedItems</p>

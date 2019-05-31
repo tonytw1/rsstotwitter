@@ -7,6 +7,7 @@ import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
+import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,12 +31,14 @@ public class FeedsController {
   private final LoggedInUserFilter loggedInUserFilter;
   private final FeedToTwitterJobDAO feedToTwitterJobDAO;
   private final FeedService feedService;
+  private final TwitterHistoryDAO twitterHistoryDAO;
 
   @Autowired
-  public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedToTwitterJobDAO feedToTwitterJobDAO, FeedService feedService) {
+  public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedToTwitterJobDAO feedToTwitterJobDAO, FeedService feedService, TwitterHistoryDAO twitterHistoryDAO) {
     this.loggedInUserFilter = loggedInUserFilter;
     this.feedToTwitterJobDAO = feedToTwitterJobDAO;
     this.feedService = feedService;
+    this.twitterHistoryDAO = twitterHistoryDAO;
   }
 
   @RequestMapping(value = "/feeds/new", method = RequestMethod.GET)
@@ -76,6 +79,10 @@ public class FeedsController {
       mv.addObject("account", loggedInUser);
       FeedToTwitterJob job = feedToTwitterJobDAO.getByObjectId(id);
       mv.addObject("job", job);
+
+      mv.addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed()));
+      mv.addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed()));
+
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
       mv.addObject("feedItems", feedItems);
     }
