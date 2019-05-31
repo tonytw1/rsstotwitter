@@ -35,10 +35,12 @@ public class TwitterUpdater implements Updater {
 
   public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account) {
     log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
-    final int tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed);  // TODO rate limit should really be about the twitter account, not the feed.
-    final int tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);  // TODO rate limit should really be about the twitter account, not the feed.
+    final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed);  // TODO rate limit should really be about the twitter account, not the feed.
+    final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);  // TODO rate limit should really be about the twitter account, not the feed.
+    log.info("Tweets sent in last hour: " + tweetsSentInLastHour);
+    log.info("Tweets sent in last 24 hours: " + tweetsSentInLastTwentyForHours);
 
-    int tweetsSentThisRound = 0;
+    long tweetsSentThisRound = 0;
     for (FeedItem feedItem : feedItems) {
       if (hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + tweetsSentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + tweetsSentThisRound)) {
         log.info("Feed '" + feed.getUrl() + "' has exceeded maximum tweets per day rate limit; returning");
@@ -87,11 +89,11 @@ public class TwitterUpdater implements Updater {
     return false;
   }
 
-  private boolean hasExceededMaxTweetsPerHourRateLimit(int tweetsSent) {
+  private boolean hasExceededMaxTweetsPerHourRateLimit(long tweetsSent) {
     return tweetsSent >= MAX_TWITS_PER_HOUR;
   }
 
-  private boolean hasExceededMaxTweetsPerDayFeedRateLimit(int tweetsSent) {
+  private boolean hasExceededMaxTweetsPerDayFeedRateLimit(long tweetsSent) {
     return tweetsSent >= MAX_TWITS_PER_DAY;
   }
 

@@ -34,13 +34,19 @@ public class MongoTwitterHistoryDAO implements TwitterHistoryDAO {
     }
 
     @Override
-    public int getNumberOfTwitsInLastHour(Feed feed) {
-        return 0;   // TODO
+    public long getNumberOfTwitsInLastHour(Feed feed) {
+        return dataStoreFactory.getDs().createQuery(TwitterEvent.class).
+                field("date").
+                greaterThan(DateTime.now().minusHours(1))
+                .count();
     }
 
     @Override
-    public int getNumberOfTwitsInLastTwentyFourHours(Feed feed) {
-        return 0;   // TODO
+    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed) {
+      return dataStoreFactory.getDs().createQuery(TwitterEvent.class).
+              field("date").
+              greaterThan(DateTime.now().minusDays(1))
+              .count();
     }
 
     @Override
