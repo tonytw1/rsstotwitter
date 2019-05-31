@@ -35,7 +35,7 @@ public class MongoTwitterHistoryDAO implements TwitterHistoryDAO {
 
     @Override
     public long getNumberOfTwitsInLastHour(Feed feed) {
-        return dataStoreFactory.getDs().createQuery(TwitterEvent.class).
+        return dataStoreFactory.getDs().find(TwitterEvent.class).
                 field("date").
                 greaterThan(DateTime.now().minusHours(1).toDate())
                 .count();
@@ -43,7 +43,7 @@ public class MongoTwitterHistoryDAO implements TwitterHistoryDAO {
 
     @Override
     public long getNumberOfTwitsInLastTwentyFourHours(Feed feed) {
-      return dataStoreFactory.getDs().createQuery(TwitterEvent.class).
+      return dataStoreFactory.getDs().find(TwitterEvent.class).
               field("date").
               greaterThan(DateTime.now().minusDays(1).toDate())
               .count();
