@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TwitTextBuilderService {
 
+    private static final String DASH_SEPARATOR = " - ";
+
     private final TinyUrlService tinyUrlService;
 
     @Autowired
@@ -31,15 +33,13 @@ public class TwitTextBuilderService {
     }
 
     private String prependPublisher(String publisher, StringBuffer twit) {
-        boolean willFit = (twit.length() + (3 + publisher.length())) <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH;
-        if (willFit) {
-            StringBuilder published = new StringBuilder();
-            published.append(publisher);
-            published.append(" - ");
-            published.append(twit);
-            return published.toString();
+        final String publisherPrefix = publisher + DASH_SEPARATOR;
+        final boolean publisherWillFit = (twit.length() + publisherPrefix.length()) <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH;
+        if (publisherWillFit) {
+            return publisherPrefix + twit.toString();
+        } else {
+            return twit.toString();
         }
-        return twit.toString();
     }
 
 }
