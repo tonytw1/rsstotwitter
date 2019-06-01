@@ -6,7 +6,7 @@ Pushes RSS feed items to linked Twitter accounts.
 - Supports rate limiting and duplicate post protection.
 
 Uses MongoDB for storage.
-Java / Spring / Maven application intended to be run in a Docker container.
+Java / Spring Boot / Maven application intended to be run in a Docker container.
 
 Example output: [@wellynews](https://twitter.com/wellynews)
 
