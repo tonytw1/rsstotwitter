@@ -11,90 +11,90 @@ import twitter4j.Status;
 
 public class Tweet {
 
-	@Id
-	ObjectId objectId;
+    @Id
+    ObjectId objectId;
 
-	private Long id;
-	private long userId;
-	private Date date;
-	private String text;
-	private String author;
-	private long inReplyToUserId;
-	private GeoLocation geoLocation;
-		
-	public Tweet() {
-	}
-	
-	public Tweet(String text) {
-		this.text = text;
-	}
-	
-	public Tweet(Status status) {
-		this.id = status.getId();
-		this.userId = status.getUser().getId();
-		this.text = status.getText();
-		this.author = status.getUser().getScreenName();
-		
-		DateTime time = new DateTime(status.getCreatedAt());
-		this.date = time.toDate();
-		
-		this.inReplyToUserId = status.getInReplyToUserId();
-	}
+    private Long id;
+    private long userId;
+    private Date date;
+    private String text;
+    private String author;
+    private long inReplyToUserId;
+    private GeoLocation geoLocation;
 
-	public Long getId() {
-		return id;
-	}
+    public Tweet() {
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public long getUserId() {
-		return userId;
-	}
+    public Tweet(String text) {
+        this.text = text;
+    }
 
-	public void setUserId(long userId) {
-		this.userId = userId;
-	}
+    public Tweet(Status status) {
+        this.id = status.getId();
+        this.userId = status.getUser().getId();
+        this.text = status.getText();
+        this.author = status.getUser().getScreenName();
 
-	public String getText() {
-		return text;
-	}
+        DateTime time = new DateTime(status.getCreatedAt());
+        this.date = time.toDate();
 
-	public void setText(String text) {
-		this.text = text;
-	}
+        this.inReplyToUserId = status.getInReplyToUserId();
+    }
 
-	public String getAuthor() {
-		return author;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-	
-	public Date getDate() {
-		return date;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public long getUserId() {
+        return userId;
+    }
 
-	public long getInReplyToUserId() {
-		return inReplyToUserId;
-	}
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
-	public void setInReplyToUserId(long inReplyToUserId) {
-		this.inReplyToUserId = inReplyToUserId;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public GeoLocation getGeoLocation() {
-		return geoLocation;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	public void setGeoLocation(GeoLocation geoLocation) {
-		this.geoLocation = geoLocation;
-	}
-	
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public long getInReplyToUserId() {
+        return inReplyToUserId;
+    }
+
+    public void setInReplyToUserId(long inReplyToUserId) {
+        this.inReplyToUserId = inReplyToUserId;
+    }
+
+    public GeoLocation getGeoLocation() {
+        return geoLocation;
+    }
+
+    public void setGeoLocation(GeoLocation geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
 }

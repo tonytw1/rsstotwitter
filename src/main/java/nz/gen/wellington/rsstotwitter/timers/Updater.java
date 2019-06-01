@@ -8,6 +8,6 @@ import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
 public interface Updater {
 
-   	public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account);
+    public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account);
 
 }

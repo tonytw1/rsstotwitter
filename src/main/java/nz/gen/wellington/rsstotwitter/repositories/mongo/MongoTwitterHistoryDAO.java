@@ -23,7 +23,6 @@ public class MongoTwitterHistoryDAO {
         this.dataStoreFactory = dataStoreFactory;
     }
 
-
     @SuppressWarnings("unchecked")
     public boolean hasAlreadyBeenTwittered(String guid) {
         return !dataStoreFactory.getDs().

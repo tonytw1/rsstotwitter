@@ -5,46 +5,46 @@ import org.bson.types.ObjectId;
 
 public class FeedToTwitterJob {
 
-	@Id
-	ObjectId objectId;
+    @Id
+    ObjectId objectId;
 
-	private Feed feed;
-	private TwitterAccount account;
-	
-	public FeedToTwitterJob() {
-	}
-	
-	public FeedToTwitterJob(Feed feed, TwitterAccount account) {
-		this.feed = feed;
-		this.account = account;
-	}
+    private Feed feed;
+    private TwitterAccount account;
 
-	public String getObjectId() {
-		return objectId.toHexString();
-	}
+    public FeedToTwitterJob() {
+    }
 
-	public Feed getFeed() {
-		return feed;
-	}
+    public FeedToTwitterJob(Feed feed, TwitterAccount account) {
+        this.feed = feed;
+        this.account = account;
+    }
 
-	public void setFeed(Feed feed) {
-		this.feed = feed;
-	}
+    public String getObjectId() {
+        return objectId.toHexString();
+    }
 
-	public TwitterAccount getAccount() {
-		return account;
-	}
+    public Feed getFeed() {
+        return feed;
+    }
 
-	public void setAccount(TwitterAccount account) {
-		this.account = account;
-	}
+    public void setFeed(Feed feed) {
+        this.feed = feed;
+    }
 
-	@Override
-	public String toString() {
-		return "FeedToTwitterJob{" +
-				"objectId=" + objectId +
-				", feed=" + feed +
-				", account=" + account +
-				'}';
-	}
+    public TwitterAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(TwitterAccount account) {
+        this.account = account;
+    }
+
+    @Override
+    public String toString() {
+        return "FeedToTwitterJob{" +
+                "objectId=" + objectId +
+                ", feed=" + feed +
+                ", account=" + account +
+                '}';
+    }
 }

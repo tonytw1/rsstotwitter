@@ -15,38 +15,38 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UpdateService implements Runnable {
-	
-	private final static Logger log = Logger.getLogger(UpdateService.class);
+
+    private final static Logger log = Logger.getLogger(UpdateService.class);
 
     private MongoFeedToTwitterJobDAO feedToTwitterJobDAO;
     private FeedService feedService;
     private Updater twitterUpdater;
 
     @Autowired
-	public UpdateService(MongoFeedToTwitterJobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
-		this.feedToTwitterJobDAO = tweetFeedJobDAO;
-		this.feedService = feedService;
-		this.twitterUpdater = twitterUpdater;
-	}
+    public UpdateService(MongoFeedToTwitterJobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
+        this.feedToTwitterJobDAO = tweetFeedJobDAO;
+        this.feedService = feedService;
+        this.twitterUpdater = twitterUpdater;
+    }
 
-	@Scheduled(cron = "0 */5 * * * *")
-	public void run() {
-		log.info("Starting feed to twitter update.");
+    @Scheduled(cron = "0 */5 * * * *")
+    public void run() {
+        log.info("Starting feed to twitter update.");
         for (FeedToTwitterJob job : feedToTwitterJobDAO.getAllTweetFeedJobs()) {
-        	processJob(job);
+            processJob(job);
         }
     }
 
-	private void processJob(FeedToTwitterJob job) {
-		final Feed feed = job.getFeed();
-		log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
-		List<FeedItem> feedItems = feedService.loadFeedItems(feed);
-		if (feedItems != null && !feedItems.isEmpty()) {
-			twitterUpdater.updateFeed(feed, feedItems, job.getAccount());
-			
-		} else {
-			log.warn("Failed to load feed items from feed url or feed contained no items: " + feed.getUrl());
-		}
-	}
-    
+    private void processJob(FeedToTwitterJob job) {
+        final Feed feed = job.getFeed();
+        log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
+        List<FeedItem> feedItems = feedService.loadFeedItems(feed);
+        if (feedItems != null && !feedItems.isEmpty()) {
+            twitterUpdater.updateFeed(feed, feedItems, job.getAccount());
+
+        } else {
+            log.warn("Failed to load feed items from feed url or feed contained no items: " + feed.getUrl());
+        }
+    }
+
 }

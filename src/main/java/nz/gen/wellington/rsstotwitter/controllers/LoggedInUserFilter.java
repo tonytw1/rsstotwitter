@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggedInUserFilter {
 
-	private static final String LOGGED_IN_USER = "loggedInUser";
+    private static final String LOGGED_IN_USER = "loggedInUser";
 
-	public void setLoggedInUser(HttpServletRequest request, TwitterAccount account) {
-		request.getSession().setAttribute(LOGGED_IN_USER, account);		
-	}
-	
-	public TwitterAccount getLoggedInUser(HttpServletRequest request) {
-		return (TwitterAccount) request.getSession().getAttribute(LOGGED_IN_USER);	
-	}
-	
+    public void setLoggedInUser(HttpServletRequest request, TwitterAccount account) {
+        request.getSession().setAttribute(LOGGED_IN_USER, account);
+    }
+
+    public TwitterAccount getLoggedInUser(HttpServletRequest request) {
+        return (TwitterAccount) request.getSession().getAttribute(LOGGED_IN_USER);
+    }
+
 }

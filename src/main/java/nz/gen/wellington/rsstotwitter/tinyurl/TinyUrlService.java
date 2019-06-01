@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TinyUrlService {
-    
+
     private final static Logger log = Logger.getLogger(TinyUrlService.class);
 
     final private static String TINY_URL_API = "http://tinyurl.com/api-create.php?url=";
@@ -28,25 +28,25 @@ public class TinyUrlService {
         } catch (UnsupportedEncodingException e) {
             return null;
         }
-        
+
         HttpMethod method = new GetMethod(apiCallUrl);
         method.setFollowRedirects(false);
         try {
-            client.executeMethod(method);                   
+            client.executeMethod(method);
             if (method.getStatusCode() == HttpStatus.SC_OK) {
                 final String tinyUrl = method.getResponseBodyAsString();
                 log.info("Tinyurl is: " + tinyUrl);
                 return tinyUrl;
             } else {
                 log.warn("The http call returned http status:" + method.getStatusCode());
-            }            
+            }
         } catch (HttpException e) {
             log.error(e);
         } catch (IOException e) {
             log.error(e);
         }
         log.warn("Could not make tiny url, returning orginal url");
-        return url;        
+        return url;
     }
 
 }

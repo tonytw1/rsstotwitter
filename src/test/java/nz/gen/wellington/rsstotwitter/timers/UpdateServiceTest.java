@@ -20,71 +20,74 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class UpdateServiceTest {
-	
-	private static final String TWITTER_USERNAME = "testuser";
 
-	private static final String FEED_URL = "http://localhost/rss";
-	private static final String SECOND_FEED_URL = "http://localhost/2/rss";
-	
-	@Mock
+    private static final String TWITTER_USERNAME = "testuser";
+
+    private static final String FEED_URL = "http://localhost/rss";
+    private static final String SECOND_FEED_URL = "http://localhost/2/rss";
+
+    @Mock
     MongoFeedToTwitterJobDAO tweetFeedJobDAO;
-	@Mock
+    @Mock
     FeedService feedService;
-	@Mock Updater twitterUpdater;
+    @Mock
+    Updater twitterUpdater;
 
-	private UpdateService service;
+    private UpdateService service;
 
-	private List<FeedToTwitterJob> feedToTwitterJobs;
-	
-	Feed feed;
-	Feed secondFeed;
-	TwitterAccount account;
-	TwitterAccount secondAccount;
-	@Mock List<FeedItem> feedItems;
-	@Mock private List<FeedItem> secondFeedItems;
-	
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		feedToTwitterJobs = new ArrayList<FeedToTwitterJob>();
-		service = new UpdateService(tweetFeedJobDAO, feedService, twitterUpdater);
+    private List<FeedToTwitterJob> feedToTwitterJobs;
 
-		feed = new Feed(FEED_URL);
-		account = new TwitterAccount(1, TWITTER_USERNAME);
-		secondFeed = new Feed(SECOND_FEED_URL);
-		secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
-		feedToTwitterJobs.add(new FeedToTwitterJob(feed, account));
-		feedToTwitterJobs.add(new FeedToTwitterJob(secondFeed, secondAccount));
+    Feed feed;
+    Feed secondFeed;
+    TwitterAccount account;
+    TwitterAccount secondAccount;
+    @Mock
+    List<FeedItem> feedItems;
+    @Mock
+    private List<FeedItem> secondFeedItems;
 
-		when(tweetFeedJobDAO.getAllTweetFeedJobs()).thenReturn(feedToTwitterJobs);	
-	}
-	
-	@Test
-	public void shouldFetchFeedItemsAndPassThemToTheTwitterUpdaterForTweeting() throws Exception {
-		when(feedService.loadFeedItems(feed)).thenReturn(feedItems);
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        feedToTwitterJobs = new ArrayList<FeedToTwitterJob>();
+        service = new UpdateService(tweetFeedJobDAO, feedService, twitterUpdater);
 
-		service.run();
-		
-		verify(twitterUpdater).updateFeed(feed, feedItems, account);
-	}
-	
-	@Test
-	public void shouldGracefullyDoNothingIfFeedFailsToLoad() throws Exception {		
-		when(feedService.loadFeedItems(feed)).thenReturn(null);
-		
-		service.run();
-		
-		verifyNoMoreInteractions(twitterUpdater);
-	}
-	
-	@Test
-	public void shouldContinueProcessingRemainingFeedsIfOneFailsToLoad() throws Exception {
-		when(feedService.loadFeedItems(feed)).thenReturn(null);
-		when(feedService.loadFeedItems(secondFeed)).thenReturn(secondFeedItems);
-		
-		service.run();
-		
-		verify(twitterUpdater).updateFeed(secondFeed, secondFeedItems, secondAccount);
-	}
+        feed = new Feed(FEED_URL);
+        account = new TwitterAccount(1, TWITTER_USERNAME);
+        secondFeed = new Feed(SECOND_FEED_URL);
+        secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
+        feedToTwitterJobs.add(new FeedToTwitterJob(feed, account));
+        feedToTwitterJobs.add(new FeedToTwitterJob(secondFeed, secondAccount));
+
+        when(tweetFeedJobDAO.getAllTweetFeedJobs()).thenReturn(feedToTwitterJobs);
+    }
+
+    @Test
+    public void shouldFetchFeedItemsAndPassThemToTheTwitterUpdaterForTweeting() throws Exception {
+        when(feedService.loadFeedItems(feed)).thenReturn(feedItems);
+
+        service.run();
+
+        verify(twitterUpdater).updateFeed(feed, feedItems, account);
+    }
+
+    @Test
+    public void shouldGracefullyDoNothingIfFeedFailsToLoad() throws Exception {
+        when(feedService.loadFeedItems(feed)).thenReturn(null);
+
+        service.run();
+
+        verifyNoMoreInteractions(twitterUpdater);
+    }
+
+    @Test
+    public void shouldContinueProcessingRemainingFeedsIfOneFailsToLoad() throws Exception {
+        when(feedService.loadFeedItems(feed)).thenReturn(null);
+        when(feedService.loadFeedItems(secondFeed)).thenReturn(secondFeedItems);
+
+        service.run();
+
+        verify(twitterUpdater).updateFeed(secondFeed, secondFeedItems, secondAccount);
+    }
 
 }

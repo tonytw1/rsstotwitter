@@ -21,20 +21,20 @@ public class FeedService {
     private final static Logger log = Logger.getLogger(FeedService.class);
 
     @SuppressWarnings("unchecked")
-	public List<FeedItem> loadFeedItems(Feed feed) {
-    	List<FeedItem> feedItems = Lists.newArrayList();
-    	SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(feed.getUrl());
-    	if (syndfeed == null) {
-    		log.warn("Could not load syndfeed from url: " + feed.getUrl() + ". Returning empty list of items");
-    		return null;
-    	}
+    public List<FeedItem> loadFeedItems(Feed feed) {
+        List<FeedItem> feedItems = Lists.newArrayList();
+        SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(feed.getUrl());
+        if (syndfeed == null) {
+            log.warn("Could not load syndfeed from url: " + feed.getUrl() + ". Returning empty list of items");
+            return null;
+        }
 
         for (SyndEntry syndEntry : (Iterable<SyndEntry>) syndfeed.getEntries()) {
             feedItems.add(mapFeedItem(feed, syndEntry));
         }
         return feedItems;
     }
-    
+
     private SyndFeed loadSyndFeedWithFeedFetcher(String feedUrl) {
         log.info("Loading SyndFeed from url: " + feedUrl);
         try {
@@ -47,17 +47,17 @@ public class FeedService {
         }
         return null;
     }
-    
+
     private FeedItem mapFeedItem(Feed feed, SyndEntry syndEntry) {
-		Double latitude = null;
-		Double longitude = null;
-		GeoRSSModule geoModule = GeoRSSUtils.getGeoRSS(syndEntry);
-		if (geoModule != null && geoModule.getPosition() != null) {
-			latitude = geoModule.getPosition().getLatitude();
-			longitude = geoModule.getPosition().getLongitude();
-			log.debug("Feed item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
-		}		
-		return new FeedItem(feed, syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getLink(), syndEntry.getPublishedDate(), syndEntry.getAuthor(), latitude, longitude);
-	}
-    
+        Double latitude = null;
+        Double longitude = null;
+        GeoRSSModule geoModule = GeoRSSUtils.getGeoRSS(syndEntry);
+        if (geoModule != null && geoModule.getPosition() != null) {
+            latitude = geoModule.getPosition().getLatitude();
+            longitude = geoModule.getPosition().getLongitude();
+            log.debug("Feed item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
+        }
+        return new FeedItem(feed, syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getLink(), syndEntry.getPublishedDate(), syndEntry.getAuthor(), latitude, longitude);
+    }
+
 }

@@ -7,76 +7,76 @@ import java.util.Set;
 
 public class TwitterAccount {
 
-	@Id
-	ObjectId objectId;
+    @Id
+    ObjectId objectId;
 
-	private long id;
-	private String username;
-	private boolean autoFollow;
-	
-	private String token;
-	private String tokenSecret;
-	
-	private Set<Tweet> mentions;
+    private long id;
+    private String username;
+    private boolean autoFollow;
 
-	public TwitterAccount() {
-	}
+    private String token;
+    private String tokenSecret;
 
-	public TwitterAccount(long id, String username) {
-		this.id = id;
-		this.username = username;
-	}
-		
-	public long getId() {
-		return id;
-	}
+    private Set<Tweet> mentions;
 
-	public void setId(long id) {
-		this.id = id;
-	}
-	
-	public String getUsername() {
-		return username;
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	public Set<Tweet> getMentions() {
-		return mentions;
-	}
+    public TwitterAccount() {
+    }
 
-	public void setMentions(Set<Tweet> mentions) {
-		this.mentions = mentions;
-	}
+    public TwitterAccount(long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
 
-	public void addMention(Tweet mention) {
-		mentions.add(mention);
-	}
+    public long getId() {
+        return id;
+    }
 
-	public String getToken() {
-		return token;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setToken(String token) {	// TODO rename to accessToken
-		this.token = token;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getTokenSecret() {	// TODO rename to accessTokenSecret
-		return tokenSecret;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setTokenSecret(String tokenSecret) {
-		this.tokenSecret = tokenSecret;
-	}
+    public Set<Tweet> getMentions() {
+        return mentions;
+    }
 
-	public boolean isAutoFollow() {
-		return autoFollow;
-	}
+    public void setMentions(Set<Tweet> mentions) {
+        this.mentions = mentions;
+    }
 
-	public void setAutoFollow(boolean autoFollow) {
-		this.autoFollow = autoFollow;
-	}
-	
+    public void addMention(Tweet mention) {
+        mentions.add(mention);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {    // TODO rename to accessToken
+        this.token = token;
+    }
+
+    public String getTokenSecret() {    // TODO rename to accessTokenSecret
+        return tokenSecret;
+    }
+
+    public void setTokenSecret(String tokenSecret) {
+        this.tokenSecret = tokenSecret;
+    }
+
+    public boolean isAutoFollow() {
+        return autoFollow;
+    }
+
+    public void setAutoFollow(boolean autoFollow) {
+        this.autoFollow = autoFollow;
+    }
+
 }
