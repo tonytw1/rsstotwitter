@@ -1,7 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,10 +17,10 @@ public class HomepageController {
   private final static Logger log = Logger.getLogger(HomepageController.class);
 
   private final LoggedInUserFilter loggedInUserFilter;
-  private final FeedToTwitterJobDAO feedToTwitterJobDAO;
+  private final MongoFeedToTwitterJobDAO feedToTwitterJobDAO;
 
   @Autowired
-  public HomepageController(LoggedInUserFilter loggedInUserFilter, FeedToTwitterJobDAO feedToTwitterJobDAO) {
+  public HomepageController(LoggedInUserFilter loggedInUserFilter, MongoFeedToTwitterJobDAO feedToTwitterJobDAO) {
     this.loggedInUserFilter = loggedInUserFilter;
     this.feedToTwitterJobDAO = feedToTwitterJobDAO;
   }

@@ -4,7 +4,7 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -22,12 +22,12 @@ public class TwitterUpdater implements Updater {
   private static final int MAX_TWITS_PER_DAY = 50;
   private static final int MAX_PUBLISHER_TWITS_PER_DAY = MAX_TWITS_PER_DAY;
 
-  private final TwitterHistoryDAO twitterHistoryDAO;
+  private final MongoTwitterHistoryDAO twitterHistoryDAO;
   private final TwitterService twitterService;
   private final TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
 
   @Autowired
-  public TwitterUpdater(TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
+  public TwitterUpdater(MongoTwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
     this.twitterHistoryDAO = twitterHistoryDAO;
     this.twitterService = twitterService;
     this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;

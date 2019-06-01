@@ -4,7 +4,7 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,8 @@ import static org.mockito.Mockito.*;
 
 public class TwitterUpdaterTest {
 	
-	@Mock TwitterHistoryDAO twitterHistoryDAO;
+	@Mock
+    MongoTwitterHistoryDAO twitterHistoryDAO;
 	@Mock TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
 	@Mock TwitterService twitterService;
 	@Mock Feed feed;

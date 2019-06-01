@@ -12,8 +12,8 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
 
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -26,7 +26,8 @@ public class UpdateServiceTest {
 	private static final String FEED_URL = "http://localhost/rss";
 	private static final String SECOND_FEED_URL = "http://localhost/2/rss";
 	
-	@Mock FeedToTwitterJobDAO tweetFeedJobDAO;
+	@Mock
+    MongoFeedToTwitterJobDAO tweetFeedJobDAO;
 	@Mock
     FeedService feedService;
 	@Mock Updater twitterUpdater;

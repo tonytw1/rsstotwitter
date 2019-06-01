@@ -6,8 +6,8 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
-import nz.gen.wellington.rsstotwitter.repositories.TwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,12 +29,12 @@ public class FeedsController {
   private final static Logger log = Logger.getLogger(FeedsController.class);
 
   private final LoggedInUserFilter loggedInUserFilter;
-  private final FeedToTwitterJobDAO feedToTwitterJobDAO;
+  private final MongoFeedToTwitterJobDAO feedToTwitterJobDAO;
   private final FeedService feedService;
-  private final TwitterHistoryDAO twitterHistoryDAO;
+  private final MongoTwitterHistoryDAO twitterHistoryDAO;
 
   @Autowired
-  public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedToTwitterJobDAO feedToTwitterJobDAO, FeedService feedService, TwitterHistoryDAO twitterHistoryDAO) {
+  public FeedsController(LoggedInUserFilter loggedInUserFilter, MongoFeedToTwitterJobDAO feedToTwitterJobDAO, FeedService feedService, MongoTwitterHistoryDAO twitterHistoryDAO) {
     this.loggedInUserFilter = loggedInUserFilter;
     this.feedToTwitterJobDAO = feedToTwitterJobDAO;
     this.feedService = feedService;

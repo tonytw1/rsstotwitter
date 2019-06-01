@@ -6,8 +6,8 @@ import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.repositories.FeedToTwitterJobDAO;
 
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,12 +18,12 @@ public class UpdateService implements Runnable {
 	
 	private final static Logger log = Logger.getLogger(UpdateService.class);
 
-    private FeedToTwitterJobDAO feedToTwitterJobDAO;
+    private MongoFeedToTwitterJobDAO feedToTwitterJobDAO;
     private FeedService feedService;
     private Updater twitterUpdater;
 
     @Autowired
-	public UpdateService(FeedToTwitterJobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
+	public UpdateService(MongoFeedToTwitterJobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
 		this.feedToTwitterJobDAO = tweetFeedJobDAO;
 		this.feedService = feedService;
 		this.twitterUpdater = twitterUpdater;

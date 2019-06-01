@@ -2,12 +2,11 @@ package nz.gen.wellington.rsstotwitter.controllers.signin;
 
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.AccountDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterAccountDAO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,15 +20,15 @@ public class SigninController {
 
 	private final static Logger log = Logger.getLogger(SigninController.class);
 	
-	private final AccountDAO accountDAO;
+	private final MongoTwitterAccountDAO accountDAO;
 	private final SigninHandler signinHandler;
 	private final LoggedInUserFilter loggedInUserFilter;
 	private final String homePageUrl;
 
 	@Autowired
-	public SigninController(AccountDAO accountDAO, SigninHandler signinHandler,
-							LoggedInUserFilter loggedInUserFilter,
-							@Value("${homepage.url}") String homePageUrl) {
+	public SigninController(MongoTwitterAccountDAO accountDAO, SigninHandler signinHandler,
+                            LoggedInUserFilter loggedInUserFilter,
+                            @Value("${homepage.url}") String homePageUrl) {
 		this.accountDAO = accountDAO;
 		this.signinHandler = signinHandler;
 		this.loggedInUserFilter = loggedInUserFilter;
