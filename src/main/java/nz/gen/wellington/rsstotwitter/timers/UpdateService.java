@@ -32,9 +32,7 @@ public class UpdateService implements Runnable {
     @Scheduled(cron = "0 */5 * * * *")
     public void run() {
         log.info("Starting feed to twitter update.");
-        for (FeedToTwitterJob job : feedToTwitterJobDAO.getAllTweetFeedJobs()) {
-            processJob(job);
-        }
+        feedToTwitterJobDAO.getAllTweetFeedJobs().forEach(this::processJob);
     }
 
     private void processJob(FeedToTwitterJob job) {
