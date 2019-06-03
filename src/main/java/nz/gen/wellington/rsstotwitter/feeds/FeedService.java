@@ -1,6 +1,5 @@
 package nz.gen.wellington.rsstotwitter.feeds;
 
-import com.google.common.collect.Lists;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.GeoRSSUtils;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -22,31 +21,34 @@ public class FeedService {
 
     private final static Logger log = Logger.getLogger(FeedService.class);
 
-    @SuppressWarnings("unchecked")
     public List<FeedItem> loadFeedItems(Feed feed) {
-
-        SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(feed.getUrl());
-        if (syndfeed == null) {
-            log.warn("Could not load syndfeed from url: " + feed.getUrl() + ". Returning empty list of items");
+        List<SyndEntry> entries = loadSyndFeedEntiresWithFeedFetcher(feed.getUrl());
+        if (entries == null) {
+            log.warn("Could not load syndfeed entires from url: " + feed.getUrl() + ". Returning empty list of items");
             return null;
         }
 
-        List<SyndEntry> entries = syndfeed.getEntries();
         Stream<FeedItem> feedItems = entries.stream().map(entry -> mapFeedItem(feed, entry));
 
         return feedItems.collect(Collectors.toList());
     }
 
-    private SyndFeed loadSyndFeedWithFeedFetcher(String feedUrl) {
+    private List<SyndEntry> loadSyndFeedEntiresWithFeedFetcher(String feedUrl) {
         log.info("Loading SyndFeed from url: " + feedUrl);
         try {
             URL url = new URL(feedUrl);
             FeedFetcher fetcher = new HttpURLFeedFetcher();
-            return fetcher.retrieveFeed(url);
+            SyndFeed syndFeed = fetcher.retrieveFeed(url);
+            if (syndFeed != null) {
+                return syndFeed.getEntries();
+            } else {
+                return null;
+            }
 
         } catch (Exception e) {
             log.warn("Error while fetching feed: " + e.getMessage());
         }
+
         return null;
     }
 
