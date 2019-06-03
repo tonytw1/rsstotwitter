@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Optional;
+
 public class TwitTextBuilderServiceTest {
 
     private static final String PUBLISHER_NAME = "A Publisher";
@@ -27,7 +29,7 @@ public class TwitTextBuilderServiceTest {
     Feed feed;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         tinyUrlService = mock(TinyUrlService.class);
         when(tinyUrlService.makeTinyUrl(LONG_URL)).thenReturn("http://tinyurl/1");
@@ -35,27 +37,27 @@ public class TwitTextBuilderServiceTest {
     }
 
     @Test
-    public void shouldIgnoreLinkIfSetToNull() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, null, null, null, null, null));
+    public void shouldIgnoreLinkIfSetToNull() {
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, null, null, null, null, Optional.empty()));
         assertEquals(TITLE, twit);
     }
 
     @Test
-    public void shouldConvertLinksIntoTinyUrls() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, null));
+    public void shouldConvertLinksIntoTinyUrls() {
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, Optional.empty()));
         verify(tinyUrlService).makeTinyUrl(LONG_URL);
         assertEquals("The quick brown fox http://tinyurl/1", twit);
     }
 
     @Test
-    public void shouldNotAppendChannelIfNotSet() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, null));
+    public void shouldNotAppendChannelIfNotSet() {
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, Optional.empty()));
         assertEquals("The quick brown fox http://tinyurl/1", twit);
     }
 
     @Test
-    public void shouldPrependPublisher() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, PUBLISHER_NAME, null));
+    public void shouldPrependPublisher() {
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, PUBLISHER_NAME, Optional.empty()));
         assertEquals("A Publisher - The quick brown fox http://tinyurl/1", twit);
     }
 

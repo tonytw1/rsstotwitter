@@ -28,9 +28,10 @@ public class TweetFromFeedItemBuilder {
         validateTweet(tweetText);
 
         Tweet tweet = new Tweet(tweetText);
-        if (feedItem.isGeocoded()) {
-            tweet.setGeoLocation(new GeoLocation(feedItem.getLatLong().getLatitude(), feedItem.getLatLong().getLongitude()));
-        }
+        feedItem.getLatLong().ifPresent(latLong -> {
+            tweet.setGeoLocation(new GeoLocation(latLong.getLatitude(), latLong.getLongitude()));
+        });
+
         return tweet;
     }
 

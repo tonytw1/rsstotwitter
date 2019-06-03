@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.model;
 
 import java.util.Date;
+import java.util.Optional;
 
 public class FeedItem {
 
@@ -10,9 +11,9 @@ public class FeedItem {
     private String link;
     private Date publishedDate;
     private String author;
-    private LatLong latLong;
+    private Optional<LatLong> latLong;
 
-    public FeedItem(Feed feed, String title, String uri, String link, Date publishedDate, String author, LatLong latLong) {
+    public FeedItem(Feed feed, String title, String uri, String link, Date publishedDate, String author, Optional<LatLong> latLong) {
         this.feed = feed;
         this.title = title;
         this.uri = uri;
@@ -50,11 +51,7 @@ public class FeedItem {
         return uri;
     }
 
-    public boolean isGeocoded() {
-        return latLong != null;
-    }
-
-    public LatLong getLatLong() {
+    public Optional<LatLong> getLatLong() {
         return latLong;
     }
 

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,14 +58,14 @@ public class FeedService {
         return new FeedItem(feed, syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getLink(), syndEntry.getPublishedDate(), syndEntry.getAuthor(), extractLatLong(syndEntry));
     }
 
-    private LatLong extractLatLong(SyndEntry syndEntry) {
+    private Optional<LatLong> extractLatLong(SyndEntry syndEntry) {
         GeoRSSModule geoModule = GeoRSSUtils.getGeoRSS(syndEntry);
         if (geoModule != null && geoModule.getPosition() != null) {
             LatLong latLong = new LatLong(geoModule.getPosition().getLatitude(), geoModule.getPosition().getLongitude());
             log.debug("Feed item '" + syndEntry.getTitle() + "' has position information: " + latLong);
-            return latLong;
+            return Optional.of(latLong);
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
