@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class FeedService {
@@ -22,17 +24,17 @@ public class FeedService {
 
     @SuppressWarnings("unchecked")
     public List<FeedItem> loadFeedItems(Feed feed) {
-        List<FeedItem> feedItems = Lists.newArrayList();
+
         SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(feed.getUrl());
         if (syndfeed == null) {
             log.warn("Could not load syndfeed from url: " + feed.getUrl() + ". Returning empty list of items");
             return null;
         }
 
-        for (SyndEntry syndEntry : (Iterable<SyndEntry>) syndfeed.getEntries()) {
-            feedItems.add(mapFeedItem(feed, syndEntry));
-        }
-        return feedItems;
+        List<SyndEntry> entries = syndfeed.getEntries();
+        Stream<FeedItem> feedItems = entries.stream().map(entry -> mapFeedItem(feed, entry));
+
+        return feedItems.collect(Collectors.toList());
     }
 
     private SyndFeed loadSyndFeedWithFeedFetcher(String feedUrl) {
