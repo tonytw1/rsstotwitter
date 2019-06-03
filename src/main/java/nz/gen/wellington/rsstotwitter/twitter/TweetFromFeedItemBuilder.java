@@ -29,7 +29,7 @@ public class TweetFromFeedItemBuilder {
 
         Tweet tweet = new Tweet(tweetText);
         if (feedItem.isGeocoded()) {
-            tweet.setGeoLocation(new GeoLocation(feedItem.getLatitude(), feedItem.getLongitude()));
+            tweet.setGeoLocation(new GeoLocation(feedItem.getLatLong().getLatitude(), feedItem.getLatLong().getLongitude()));
         }
         return tweet;
     }

@@ -10,18 +10,16 @@ public class FeedItem {
     private String link;
     private Date publishedDate;
     private String author;
-    private Double latitude;
-    private Double longitude;
+    private LatLong latLong;
 
-    public FeedItem(Feed feed, String title, String uri, String link, Date publishedDate, String author, Double latitude, Double longitude) {
+    public FeedItem(Feed feed, String title, String uri, String link, Date publishedDate, String author, LatLong latLong) {
         this.feed = feed;
         this.title = title;
         this.uri = uri;
         this.link = link;
         this.publishedDate = publishedDate;
         this.author = author;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latLong = latLong;
     }
 
     public Feed getFeed() {
@@ -53,15 +51,11 @@ public class FeedItem {
     }
 
     public boolean isGeocoded() {
-        return latitude != null && longitude != null;
+        return latLong != null;
     }
 
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
+    public LatLong getLatLong() {
+        return latLong;
     }
 
     @Override
@@ -73,8 +67,7 @@ public class FeedItem {
                 ", link='" + link + '\'' +
                 ", publishedDate=" + publishedDate +
                 ", author='" + author + '\'' +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
+                ", latLong=" + latLong +
                 '}';
     }
 }

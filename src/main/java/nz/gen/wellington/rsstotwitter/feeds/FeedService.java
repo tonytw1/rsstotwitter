@@ -8,6 +8,7 @@ import com.sun.syndication.fetcher.FeedFetcher;
 import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
+import nz.gen.wellington.rsstotwitter.model.LatLong;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -53,15 +54,18 @@ public class FeedService {
     }
 
     private FeedItem mapFeedItem(Feed feed, SyndEntry syndEntry) {
-        Double latitude = null;
-        Double longitude = null;
+        return new FeedItem(feed, syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getLink(), syndEntry.getPublishedDate(), syndEntry.getAuthor(), extractLatLong(syndEntry));
+    }
+
+    private LatLong extractLatLong(SyndEntry syndEntry) {
         GeoRSSModule geoModule = GeoRSSUtils.getGeoRSS(syndEntry);
         if (geoModule != null && geoModule.getPosition() != null) {
-            latitude = geoModule.getPosition().getLatitude();
-            longitude = geoModule.getPosition().getLongitude();
-            log.debug("Feed item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
+            LatLong latLong = new LatLong(geoModule.getPosition().getLatitude(), geoModule.getPosition().getLongitude());
+            log.debug("Feed item '" + syndEntry.getTitle() + "' has position information: " + latLong);
+            return latLong;
+        } else {
+            return null;
         }
-        return new FeedItem(feed, syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getLink(), syndEntry.getPublishedDate(), syndEntry.getAuthor(), latitude, longitude);
     }
 
 }

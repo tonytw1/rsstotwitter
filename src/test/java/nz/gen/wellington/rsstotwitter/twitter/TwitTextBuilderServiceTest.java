@@ -36,26 +36,26 @@ public class TwitTextBuilderServiceTest {
 
     @Test
     public void shouldIgnoreLinkIfSetToNull() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, null, null, null, null, null, null));
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, null, null, null, null, null));
         assertEquals(TITLE, twit);
     }
 
     @Test
     public void shouldConvertLinksIntoTinyUrls() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, null, null));
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, null));
         verify(tinyUrlService).makeTinyUrl(LONG_URL);
         assertEquals("The quick brown fox http://tinyurl/1", twit);
     }
 
     @Test
     public void shouldNotAppendChannelIfNotSet() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, null, null));
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, null, null));
         assertEquals("The quick brown fox http://tinyurl/1", twit);
     }
 
     @Test
     public void shouldPrependPublisher() throws Exception {
-        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, PUBLISHER_NAME, null, null));
+        final String twit = service.buildTwitForItem(new FeedItem(feed, TITLE, LONG_URL, LONG_URL, null, PUBLISHER_NAME, null));
         assertEquals("A Publisher - The quick brown fox http://tinyurl/1", twit);
     }
 

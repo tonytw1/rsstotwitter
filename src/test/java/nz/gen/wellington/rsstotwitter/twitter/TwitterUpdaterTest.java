@@ -42,10 +42,10 @@ public class TwitterUpdaterTest {
     private FeedItem feedItem;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed)).thenReturn(2L);
-        feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null, null);
+        feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null);
         feedItems = new ArrayList<FeedItem>();
         feedItems.add(feedItem);
 
@@ -53,7 +53,7 @@ public class TwitterUpdaterTest {
     }
 
     @Test
-    public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() throws Exception {
+    public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() {
         when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed)).thenReturn(55L);
 
         service.updateFeed(feed, feedItems, account);
@@ -62,7 +62,7 @@ public class TwitterUpdaterTest {
     }
 
     @Test
-    public void shouldTweetFeedItems() throws Exception {
+    public void shouldTweetFeedItems() {
         when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem)).thenReturn(tweetToSend);
         when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
 
@@ -73,9 +73,9 @@ public class TwitterUpdaterTest {
     }
 
     @Test
-    public void shouldNotTweetFeedItemsOlderThanOneWeek() throws Exception {
+    public void shouldNotTweetFeedItemsOlderThanOneWeek() {
         final Date oldDate = new DateTime().minusDays(10).toDate();
-        FeedItem oldFeedItem = new FeedItem(feed, "title", "guid", "link", oldDate, "author", null, null);
+        FeedItem oldFeedItem = new FeedItem(feed, "title", "guid", "link", oldDate, "author", null);
         feedItems.clear();
         feedItems.add(oldFeedItem);
 
@@ -86,7 +86,7 @@ public class TwitterUpdaterTest {
     }
 
     @Test
-    public void shouldNotExceedRateLimitDuringRun() throws Exception {
+    public void shouldNotExceedRateLimitDuringRun() {
         when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed)).thenReturn(29L);
     }
 
