@@ -84,7 +84,7 @@ public class TwitterUpdater implements Updater {
             }
 
         } else {
-            log.info("Not twittering as guid has already been twittered: " + guid);
+            log.debug("Not twittering as guid has already been twittered: " + guid);
         }
         return false;
     }
