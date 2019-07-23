@@ -10,7 +10,6 @@ Java / Spring Boot / Maven application intended to be run in a Docker container.
 
 Example output: [@wellynews](https://twitter.com/wellynews)
 
-
 ## Build
 
 Run Maven build then Docker build.
