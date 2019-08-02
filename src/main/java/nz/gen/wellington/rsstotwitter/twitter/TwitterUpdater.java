@@ -43,7 +43,7 @@ public class TwitterUpdater implements Updater {
         long tweetsSentThisRound = 0;
         for (FeedItem feedItem : feedItems) {
             if (hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + tweetsSentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + tweetsSentThisRound)) {
-                log.info("Feed '" + feed.getUrl() + "' has exceeded maximum tweets per day rate limit; returning");
+                log.info("Feed '" + feed.getUrl() + "' has exceeded maximum tweets per hour or day rate limit; returning");
                 return;
             }
 
