@@ -1,6 +1,8 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
 import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import org.apache.commons.lang.ArrayUtils;
@@ -25,10 +27,14 @@ public class TwitterService {
     private String consumerKey;
     private String consumerSecret;
 
+    private Counter tweetedCounter;
+
     @Autowired
-    public TwitterService(@Value("${consumer.key}") String consumerKey, @Value("${consumer.secret}") String consumerSecret) {
+    public TwitterService(@Value("${consumer.key}") String consumerKey, @Value("${consumer.secret}") String consumerSecret,
+                          MeterRegistry meterRegistry) {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
+        this.tweetedCounter = meterRegistry.counter("tweeted");
     }
 
     public Tweet tweet(Tweet tweet, TwitterAccount account) {
@@ -36,6 +42,7 @@ public class TwitterService {
         final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);
         try {
             final Status updatedStatus = updateStatus(twitterApiForAccount, tweet);
+            tweetedCounter.increment();
             return new Tweet(updatedStatus);
         } catch (TwitterException e) {
             log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
