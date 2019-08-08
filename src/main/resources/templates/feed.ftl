@@ -8,4 +8,8 @@
 
 <p>${lastHour} / ${lastTwentyFourHours}</p>
 
-<p>${feedItems}</p>
+<ul>
+    <#list feedItems as feedItem>
+        <li>${feedItem}</li>
+    </#list>
+</ul>
