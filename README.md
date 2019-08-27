@@ -17,3 +17,4 @@ Run Maven build then Docker build.
 mvn clean test install
 docker build -t rsstotwitter:latest .
 ```
+
