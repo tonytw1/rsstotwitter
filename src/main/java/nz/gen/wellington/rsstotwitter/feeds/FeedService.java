@@ -45,7 +45,7 @@ public class FeedService {
         log.info("Loading SyndFeed from url: " + feedUrl);
         try {
             URL url = new URL(feedUrl);
-            FeedFetcher fetcher = new HttpURLFeedFetcher(); // TODO what's the time out on this?
+            FeedFetcher fetcher = new HttpURLFeedFetcher();
             SyndFeed syndFeed = fetcher.retrieveFeed(url);
             if (syndFeed != null) {
                 return syndFeed.getEntries();
