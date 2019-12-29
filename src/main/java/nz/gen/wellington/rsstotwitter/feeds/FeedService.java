@@ -23,12 +23,6 @@ public class FeedService {
 
     private final static Logger log = Logger.getLogger(FeedService.class);
 
-    public FeedService() {
-        log.info("Setting System connection timesouts");
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
-    }
-
     public List<FeedItem> loadFeedItems(Feed feed) {
         List<SyndEntry> entries = loadSyndFeedEntiresWithFeedFetcher(feed.getUrl());
         if (entries == null) {
@@ -43,6 +37,10 @@ public class FeedService {
 
     private List<SyndEntry> loadSyndFeedEntiresWithFeedFetcher(String feedUrl) {
         log.info("Loading SyndFeed from url: " + feedUrl);
+        log.info("Setting System connection timeouts");
+        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+
         try {
             URL url = new URL(feedUrl);
             FeedFetcher fetcher = new HttpURLFeedFetcher();
