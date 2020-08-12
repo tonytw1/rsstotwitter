@@ -21,7 +21,7 @@ public class TinyUrlService {
 
     public String makeTinyUrl(String url) {
         log.info("Fetching tinyurl for: " + url);
-        HttpClient client = new HttpClient();
+        HttpClient client = new HttpClient();   // TODO Needs a timeout set
         String apiCallUrl = null;
         try {
             apiCallUrl = TINY_URL_API + URLEncoder.encode(url, "UTF8");
@@ -40,12 +40,10 @@ public class TinyUrlService {
             } else {
                 log.warn("The http call returned http status:" + method.getStatusCode());
             }
-        } catch (HttpException e) {
-            log.error(e);
         } catch (IOException e) {
             log.error(e);
         }
-        log.warn("Could not make tiny url, returning orginal url");
+        log.warn("Could not make tiny url, returning original url");
         return url;
     }
 
