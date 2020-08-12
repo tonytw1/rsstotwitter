@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 @Component
@@ -24,36 +23,27 @@ public class TinyUrlService {
 
     private HttpClient client = HttpClients.createDefault();
 
-    public String makeTinyUrl(String url) {
+    public String makeTinyUrl(String url) throws IOException {
         log.info("Fetching tinyurl for: " + url);
-        String apiCallUrl = null;
-        try {
-            apiCallUrl = TINY_URL_API + URLEncoder.encode(url, "UTF8");
-        } catch (UnsupportedEncodingException e) {
-            return null;
+
+        HttpGet getTinyUrl = new HttpGet(TINY_URL_API + URLEncoder.encode(url, "UTF8"));
+        RequestConfig withTenSecondTimeout = RequestConfig.custom()
+                .setConnectionRequestTimeout(TEN_SECONDS)
+                .setConnectTimeout(TEN_SECONDS)
+                .setSocketTimeout(TEN_SECONDS)
+                .build();
+        getTinyUrl.setConfig(withTenSecondTimeout);
+
+        HttpResponse response = client.execute(getTinyUrl);
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode == HttpStatus.SC_OK) {
+            final String tinyUrl = EntityUtils.toString(response.getEntity());
+            log.info("Tinyurl is: " + tinyUrl);
+            return tinyUrl;
+        } else {
+            log.warn("The http call returned http status:" + statusCode);
         }
 
-        try {
-            HttpGet getTinyUrl = new HttpGet(apiCallUrl);
-            RequestConfig withTenSecondTimeout = RequestConfig.custom()
-                    .setConnectionRequestTimeout(TEN_SECONDS)
-                    .setConnectTimeout(TEN_SECONDS)
-                    .setSocketTimeout(TEN_SECONDS)
-                    .build();
-            getTinyUrl.setConfig(withTenSecondTimeout);
-
-            HttpResponse response = client.execute(getTinyUrl);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                final String tinyUrl = EntityUtils.toString(response.getEntity());
-                log.info("Tinyurl is: " + tinyUrl);
-                return tinyUrl;
-            } else {
-                log.warn("The http call returned http status:" + statusCode);
-            }
-        } catch (IOException e) {
-            log.error(e);
-        }
         log.warn("Could not make tiny url, returning original url");
         return url;
     }

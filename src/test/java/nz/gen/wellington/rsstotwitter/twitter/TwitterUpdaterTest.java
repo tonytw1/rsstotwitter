@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,7 +63,7 @@ public class TwitterUpdaterTest {
     }
 
     @Test
-    public void shouldTweetFeedItems() {
+    public void shouldTweetFeedItems() throws IOException {
         when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem)).thenReturn(tweetToSend);
         when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
 

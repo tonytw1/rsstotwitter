@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import twitter4j.GeoLocation;
 
+import java.io.IOException;
+
 @Component
 public class TweetFromFeedItemBuilder {
 
@@ -23,7 +25,7 @@ public class TweetFromFeedItemBuilder {
         this.twitBuilderService = twitBuilderService;
     }
 
-    public Tweet buildTweetFromFeedItem(FeedItem feedItem) {
+    public Tweet buildTweetFromFeedItem(FeedItem feedItem) throws IOException {
         final String tweetText = twitBuilderService.buildTwitForItem(feedItem);
         validateTweet(tweetText);
 

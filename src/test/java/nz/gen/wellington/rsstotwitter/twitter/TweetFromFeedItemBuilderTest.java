@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,7 @@ public class TweetFromFeedItemBuilderTest {
     }
 
     @Test
-    public void feedItemLocationIsIncludedOnTweet() {
+    public void feedItemLocationIsIncludedOnTweet() throws IOException {
         TweetFromFeedItemBuilder tweetFromFeedItemBuilder = new TweetFromFeedItemBuilder(twitTextBuilderService);
 
         LatLong latLong = new LatLong(51.3, -0.1);

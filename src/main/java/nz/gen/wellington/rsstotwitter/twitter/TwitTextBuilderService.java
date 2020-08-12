@@ -5,6 +5,8 @@ import nz.gen.wellington.rsstotwitter.tinyurl.TinyUrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 public class TwitTextBuilderService {
 
@@ -17,7 +19,7 @@ public class TwitTextBuilderService {
         this.tinyUrlService = tinyUrlService;
     }
 
-    public String buildTwitForItem(FeedItem feedItem) {
+    public String buildTwitForItem(FeedItem feedItem) throws IOException {
         StringBuffer twit = new StringBuffer();
         twit.append(feedItem.getTitle());
         if (feedItem.getLink() != null) {
