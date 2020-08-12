@@ -69,22 +69,21 @@ public class TwitterUpdater implements Updater {
             return false;
         }
 
-        final boolean hasAlreadyBeenTwittered = twitterHistoryDAO.hasAlreadyBeenTwittered(guid);
-        if (!hasAlreadyBeenTwittered) {
+        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(guid)) {
             try {
                 final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
                 final Tweet updatedStatus = twitterService.tweet(tweet, account);
                 if (updatedStatus != null) {
-                    twitterHistoryDAO.markAsTwittered(feedItem, updatedStatus);
+                    twitterHistoryDAO.markAsTweeted(feedItem, updatedStatus);
                     return true;
                 }
 
             } catch (Exception e) {
-                log.warn("Failed to twitter: " + feedItem.getTitle(), e);
+                log.warn("Failed to tweet: " + feedItem.getTitle(), e);
             }
 
         } else {
-            log.debug("Not twittering as guid has already been twittered: " + guid);
+            log.debug("Not tweeting as guid has already been tweeted: " + guid);
         }
         return false;
     }

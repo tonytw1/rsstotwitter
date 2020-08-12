@@ -24,13 +24,13 @@ public class MongoTwitterHistoryDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean hasAlreadyBeenTwittered(String guid) {
+    public boolean hasAlreadyBeenTweeted(String guid) {
         return !dataStoreFactory.getDs().
                 find(TwitterEvent.class).
                 filter("guid", guid).asList().isEmpty();
     }
 
-    public void markAsTwittered(FeedItem feedItem, Tweet sentTweet) {
+    public void markAsTweeted(FeedItem feedItem, Tweet sentTweet) {
         TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(), feedItem.getFeed(), sentTweet);
         saveTwitterEvent(newEvent);
     }

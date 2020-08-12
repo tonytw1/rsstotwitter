@@ -70,7 +70,7 @@ public class TwitterUpdaterTest {
         service.updateFeed(feed, feedItems, account);
 
         verify(twitterService).tweet(tweetToSend, account);
-        verify(twitterHistoryDAO).markAsTwittered(feedItem, sentTweet);
+        verify(twitterHistoryDAO).markAsTweeted(feedItem, sentTweet);
     }
 
     @Test

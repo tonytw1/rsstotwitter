@@ -122,7 +122,7 @@ public class TwitterService {
     }
 
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
-        log.info("Twittering: " + tweet.getText() + ", location: " + tweet.getGeoLocation());
+        log.info("Tweeting: " + tweet.getText() + ", location: " + tweet.getGeoLocation());
         StatusUpdate statusUpdate = new StatusUpdate(tweet.getText());
         if (tweet.getGeoLocation() != null) {
             statusUpdate.setLocation(tweet.getGeoLocation());
