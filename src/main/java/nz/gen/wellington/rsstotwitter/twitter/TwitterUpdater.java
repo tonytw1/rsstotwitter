@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
+import com.google.common.base.Strings;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -97,12 +98,13 @@ public class TwitterUpdater implements Updater {
     }
 
     private boolean isPublisherRateLimitExceed(Feed feed, String publisher) {
-        if (publisher != null && !publisher.isEmpty()) {
-            final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher);
-            log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
-            return numberOfPublisherTwitsInLastTwentyFourHours >= MAX_PUBLISHER_TWITS_PER_DAY;
+        if (Strings.isNullOrEmpty(publisher)) {
+            return false;
         }
-        return false;
+
+        final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher);
+        log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
+        return numberOfPublisherTwitsInLastTwentyFourHours >= MAX_PUBLISHER_TWITS_PER_DAY;
     }
 
     private boolean isLessThanOneWeekOld(FeedItem feedItem) {
