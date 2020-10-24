@@ -14,9 +14,8 @@ public class TinyUrlServiceTest {
 
         String tinyUrl = tinyUrlService.makeTinyUrl("http://wellington.gen.nz/tiny-url-test");
 
-        assertEquals("http://tinyurl.com/y5qyqgzk", tinyUrl);
+        assertEquals("https://tinyurl.com/y5qyqgzk", tinyUrl);
     }
-
 
 }
 
