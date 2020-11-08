@@ -18,4 +18,8 @@ public class LoggedInUserFilter {
         return (TwitterAccount) request.getSession().getAttribute(LOGGED_IN_USER);
     }
 
+    public void removeLoggedInUser(HttpServletRequest request) {
+        request.getSession().removeAttribute(LOGGED_IN_USER);
+    }
+
 }

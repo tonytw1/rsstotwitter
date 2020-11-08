@@ -9,10 +9,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 public interface SigninHandler {
 
-	public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) throws Exception;
-	
-	public Object getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request);
-	public TwitterAccount getUserByExternalIdentifier(Object externalIdentifier);
-	public void decorateUserWithExternalSigninIdentifier(TwitterAccount account, Object externalIdentifier);
-	
+    ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+    Object getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request);
+
+    TwitterAccount getUserByExternalIdentifier(Object externalIdentifier);
+
+    void decorateUserWithExternalSigninIdentifier(TwitterAccount account, Object externalIdentifier);
+
 }
