@@ -10,6 +10,22 @@ Java / Spring Boot / Maven application intended to be run in a Docker container.
 
 Example output: [@wellynews](https://twitter.com/wellynews)
 
+
+## Run locally
+
+Inspect the application.properties file.
+Set the Mongo connection details and your Twitter client credentials.
+
+In the Twitter developer tools, set http://localhost:8080/oauth/callback as an allowed oauth callback url.
+
+Use Spring Boot to start the application locally:
+```
+mvn spring-boot:run
+```
+
+The sign in screen will be visible at http://localhost:8080
+
+
 ## Build
 
 Run Maven build then Docker build.
