@@ -41,12 +41,12 @@ public class FeedsController {
     this.twitterHistoryDAO = twitterHistoryDAO;
   }
 
-  @RequestMapping(value = "/feeds/new", method = RequestMethod.GET)
-  public ModelAndView newFeed(@ModelAttribute("feedDetails") FeedDetails feedDetails, HttpServletRequest request) {
+  @RequestMapping(value = "/new", method = RequestMethod.GET)
+  public ModelAndView newFeed(@ModelAttribute("feedDetails") FeedDetails feedDetails) {
     return renderNewFeedForm(feedDetails);
   }
 
-  @RequestMapping(value = "/feeds/new", method = RequestMethod.POST)
+  @RequestMapping(value = "/new", method = RequestMethod.POST)
   public ModelAndView newFeedSubmit(@Valid @ModelAttribute("feedDetails") FeedDetails feedDetails, BindingResult result, HttpServletRequest request) {
     TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {

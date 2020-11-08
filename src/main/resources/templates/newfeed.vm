@@ -1,6 +1,6 @@
 <h4>New feed</h4>
 
-<form method="POST" action="/feeds/new">
+<form method="POST" action="/new">
     <div class="form-group">
         #springBind("feedDetails.url")
         <label for="${status.expression}" class="col-sm-2 control-label">Feed URL</label>
