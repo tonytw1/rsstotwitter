@@ -13,6 +13,12 @@ Example output: [@wellynews](https://twitter.com/wellynews)
 
 ## Run locally
 
+Use Docker to provide a local MongoDB instance:
+
+```
+docker-compose -f docker/docker-compose.yml up
+```
+
 Inspect the application.properties file.
 Set the Mongo connection details and your Twitter client credentials.
 
