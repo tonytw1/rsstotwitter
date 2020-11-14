@@ -10,7 +10,11 @@
 <h4>Tweets</h4>
 <ul>
     <#list tweets as tweet>
-        <li>${tweet}</li>
+        <li>
+            ${tweet.twit}<br/>
+            ${tweet.date}
+            <p>${tweet.tweet}</p>
+        </li>
     </#list>
 </ul>
 
