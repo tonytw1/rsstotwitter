@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import dev.morphia.query.Query;
+import dev.morphia.query.Sort;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -38,7 +39,9 @@ public class MongoTwitterHistoryDAO {
     }
 
     public List<TwitterEvent> getTweets(Feed feed) {
-        Query<TwitterEvent> limit = dataStoreFactory.getDs().find(TwitterEvent.class).limit(20);    // TODO filter by feed and ordering
+        Query<TwitterEvent> limit = dataStoreFactory.getDs().find(TwitterEvent.class).
+                order(Sort.descending("date")).
+                limit(20);    // TODO filter by feed
         return limit.asList();
     }
 
