@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
+import dev.morphia.query.Query;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class MongoTwitterHistoryDAO {
@@ -33,6 +35,11 @@ public class MongoTwitterHistoryDAO {
     public void markAsTweeted(FeedItem feedItem, Tweet sentTweet) {
         TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(), feedItem.getFeed(), sentTweet);
         saveTwitterEvent(newEvent);
+    }
+
+    public List<TwitterEvent> getTweets(Feed feed) {
+        Query<TwitterEvent> limit = dataStoreFactory.getDs().find(TwitterEvent.class).limit(20);    // TODO filter by feed and ordering
+        return limit.asList();
     }
 
     public long getNumberOfTwitsInLastHour(Feed feed) {

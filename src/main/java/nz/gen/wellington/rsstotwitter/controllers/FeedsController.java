@@ -56,7 +56,6 @@ public class FeedsController {
         return renderNewFeedForm(feedDetails);
       }
 
-
       Feed feed = new Feed(feedDetails.getUrl());
       FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser);
       log.info("Creating job: " + job);
@@ -80,6 +79,7 @@ public class FeedsController {
       FeedToTwitterJob job = feedToTwitterJobDAO.getByObjectId(id);
       mv.addObject("job", job);
 
+      mv.addObject("tweets", twitterHistoryDAO.getTweets(job.getFeed()));
       mv.addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed()));
       mv.addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed()));
 
