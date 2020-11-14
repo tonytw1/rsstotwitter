@@ -12,7 +12,7 @@
     <#list tweets as tweet>
         <li>
             ${tweet.twit}<br/>
-            ${tweet.date}
+            ${tweet.date?datetime?string("dd-MM-yyyy")}
             <p>${tweet.tweet}</p>
         </li>
     </#list>
