@@ -1,13 +1,13 @@
-<h2>RSS to Twitter</h2>
+<h2><a href="/">RSS to Twitter</a></h2>
 
 <h4>Feeds / ${job.objectId}</h4>
 
-<p>${job}</p>
+<p><a href="${job.feed.url}">${job.feed.url}</a> -> ${job.account.username}</p>
 
-<p><a href="${job.feed.url}">${job.feed.url}</a>
+<h4>Tweets sent</h4>
+<p>${lastHour} in the last hour / ${lastTwentyFourHours} in the last 24 hours</p>
 
-<p>${lastHour} / ${lastTwentyFourHours}</p>
-
+<h4>Feed items</h4>
 <ul>
     <#list feedItems as feedItem>
         <li>${feedItem}</li>
