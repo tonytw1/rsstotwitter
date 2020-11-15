@@ -4,5 +4,8 @@ services:
     image: mongo:3.4
     ports:
     - "27017:27017"
-    networks:
-    - cloudbuild
+
+networks:
+  default:
+    external:
+      name: cloudbuild
