@@ -1,7 +1,11 @@
 steps:
+- name: 'docker/compose:1.19.0'
+  args: ['-f', 'docker/docker-compose.yml', 'up', '-d']
 - name: 'maven:3.3-jdk-8'
   entrypoint: 'mvn'
   args: ['install']
+  env:
+  - 'MONGO_HOST=mongo'
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/rsstotwitter', '.']
 - name: 'gcr.io/cloud-builders/docker'
