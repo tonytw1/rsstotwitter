@@ -11,7 +11,7 @@ public class MongoFeedToTwitterJobDAOTest {
 
     String mongoDatabase = "rsstotwittertest" + UUID.randomUUID().toString();
 
-    DataStoreFactory dataStoreFactory = new DataStoreFactory("mongo:27017", mongoDatabase, "", "", false);
+    DataStoreFactory dataStoreFactory = new DataStoreFactory("localhost:27017", mongoDatabase, "", "", false);
     MongoFeedToTwitterJobDAO dao = new MongoFeedToTwitterJobDAO(dataStoreFactory);
 
     @Test
