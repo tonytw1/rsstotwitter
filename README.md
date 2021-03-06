@@ -15,10 +15,10 @@ Example output: [@wellynews](https://twitter.com/wellynews)
 ![Adding a new feed](newfeed.png)
 
 ### Listing feeds
-![Listing feeds](newfeed.png)
+![Listing feeds](feeds.png)
 
 ### Feed details
-![Feed detail](newfeed.png)
+![Feed detail](feed.png)
 
 
 ## Run locally
