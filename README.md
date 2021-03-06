@@ -11,6 +11,16 @@ Java / Spring Boot / Maven application intended to be run in a Docker container.
 Example output: [@wellynews](https://twitter.com/wellynews)
 
 
+### Adding a new feed
+![Adding a new feed](newfeed.png)
+
+### Listing feeds
+![Listing feeds](newfeed.png)
+
+### Feed details
+![Feed detail](newfeed.png)
+
+
 ## Run locally
 
 Use Docker to provide a local MongoDB instance:
