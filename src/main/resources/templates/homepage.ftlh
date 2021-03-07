@@ -1,2 +1,4 @@
-<h2>RSS to Twitter</h2>
+<#include "header.ftlh">
 <a href="oauth/login">Sign in</a>
+
+<#include "footer.ftlh">

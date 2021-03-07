@@ -1,4 +1,4 @@
-<h2>RSS to Twitter</h2>
+<#include "header.ftlh">
 ${account.username}
 <a href="/signout">Sign out</a>
 
@@ -27,3 +27,4 @@ ${account.username}
     </#list>
 </ul>
 
+<#include "footer.ftlh">

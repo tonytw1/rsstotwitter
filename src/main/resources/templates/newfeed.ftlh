@@ -1,4 +1,4 @@
-<h2>RSS to Twitter</h2>
+<#include "header.ftlh">
 ${account.username}
 <a href="/signout">Sign out</a>
 
@@ -13,3 +13,5 @@ ${account.username}
     </div>
     <input type="submit">Add feed</input>
 </form>
+
+<#include "footer.ftlh">
