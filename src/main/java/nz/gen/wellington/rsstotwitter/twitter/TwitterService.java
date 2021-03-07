@@ -21,10 +21,10 @@ public class TwitterService {
 
     private final static Logger log = Logger.getLogger(TwitterService.class);
 
-    private String consumerKey;
-    private String consumerSecret;
+    private final String consumerKey;
+    private final String consumerSecret;
 
-    private Counter tweetedCounter;
+    private final Counter tweetedCounter;
 
     @Autowired
     public TwitterService(@Value("${consumer.key}") String consumerKey, @Value("${consumer.secret}") String consumerSecret,
