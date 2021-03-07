@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 public class TweetFromFeedItemBuilder {
 
-    public final static int MAXIMUM_TWITTER_MESSAGE_LENGTH = 140;
+    public final static int MAXIMUM_TWITTER_MESSAGE_LENGTH = 280;
 
     private final static Logger log = Logger.getLogger(TweetFromFeedItemBuilder.class);
 
