@@ -32,7 +32,6 @@ public class TwitterLoginHandler implements SigninHandler {
 
     private final String consumerKey;
     private final String consumerSecret;
-    private final String callBackUrl;
 
     private final Map<String, Token> requestTokens;
     private final Map<Long, Token> accessTokens;
@@ -42,18 +41,17 @@ public class TwitterLoginHandler implements SigninHandler {
                                TwitterService twitterService,
                                @Value("${consumer.key}") String consumerKey,
                                @Value("${consumer.secret}") String consumerSecret,
-                               @Value("${callback.url}") String callBackUrl) {
+                               @Value("${homepage.url}") String homepageUrl) {
         this.accountDAO = accountDAO;
         this.twitterService = twitterService;
 
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
-        this.callBackUrl = callBackUrl;
 
         this.requestTokens = new HashMap<>();
         this.accessTokens = new HashMap<>();
 
-        this.oauthService = makeOauthService();
+        this.oauthService = makeOauthService(homepageUrl + "/oauth/callback");
     }
 
     @Override
@@ -138,7 +136,7 @@ public class TwitterLoginHandler implements SigninHandler {
         log.info("Tokens set to: " + account.getToken() + ", " + account.getTokenSecret());
     }
 
-    private OAuthService makeOauthService() {
+    private OAuthService makeOauthService(String callBackUrl) {
         log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
         log.info("Oauth callback url is: " + callBackUrl);
         return new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build();
