@@ -14,8 +14,6 @@ import java.io.IOException;
 @Component
 public class TweetFromFeedItemBuilder {
 
-    public final static int MAXIMUM_TWITTER_MESSAGE_LENGTH = 280;
-
     private final static Logger log = Logger.getLogger(TweetFromFeedItemBuilder.class);
 
     private final TwitTextBuilderService twitBuilderService;
@@ -38,7 +36,7 @@ public class TweetFromFeedItemBuilder {
     }
 
     private void validateTweet(String tweetText) {
-        if (!(tweetText.length() <= MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
+        if (!(tweetText.length() <= TwitterSettings.MAXIMUM_TWITTER_MESSAGE_LENGTH)) {
             log.warn("Message too long to tweet; not tweeted: " + tweetText);
             throw new RuntimeException("Message to long to tweet");
         }

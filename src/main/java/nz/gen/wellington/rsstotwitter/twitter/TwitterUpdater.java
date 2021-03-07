@@ -17,11 +17,7 @@ import java.util.List;
 @Component
 public class TwitterUpdater implements Updater {
 
-    private static Logger log = Logger.getLogger(TwitterUpdater.class);
-
-    private static final int MAX_TWITS_PER_HOUR = 5;
-    private static final int MAX_TWITS_PER_DAY = 50;
-    private static final int MAX_PUBLISHER_TWITS_PER_DAY = MAX_TWITS_PER_DAY;
+    private final static Logger log = Logger.getLogger(TwitterUpdater.class);
 
     private final MongoTwitterHistoryDAO twitterHistoryDAO;
     private final TwitterService twitterService;
@@ -90,11 +86,11 @@ public class TwitterUpdater implements Updater {
     }
 
     private boolean hasExceededMaxTweetsPerHourRateLimit(long tweetsSent) {
-        return tweetsSent >= MAX_TWITS_PER_HOUR;
+        return tweetsSent >= TwitterSettings.MAX_TWITS_PER_HOUR;
     }
 
     private boolean hasExceededMaxTweetsPerDayFeedRateLimit(long tweetsSent) {
-        return tweetsSent >= MAX_TWITS_PER_DAY;
+        return tweetsSent >= TwitterSettings.MAX_TWITS_PER_DAY;
     }
 
     private boolean isPublisherRateLimitExceed(Feed feed, String publisher) {
@@ -104,7 +100,7 @@ public class TwitterUpdater implements Updater {
 
         final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher);
         log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
-        return numberOfPublisherTwitsInLastTwentyFourHours >= MAX_PUBLISHER_TWITS_PER_DAY;
+        return numberOfPublisherTwitsInLastTwentyFourHours >= TwitterSettings.MAX_PUBLISHER_TWITS_PER_DAY;
     }
 
     private boolean isLessThanOneWeekOld(FeedItem feedItem) {

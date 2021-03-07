@@ -36,7 +36,7 @@ public class TwitTextBuilderService {
 
     private String prependPublisher(String publisher, StringBuffer twit) {
         final String publisherPrefix = publisher + DASH_SEPARATOR;
-        final boolean publisherWillFit = (twit.length() + publisherPrefix.length()) <= TweetFromFeedItemBuilder.MAXIMUM_TWITTER_MESSAGE_LENGTH;
+        final boolean publisherWillFit = (twit.length() + publisherPrefix.length()) <= TwitterSettings.MAXIMUM_TWITTER_MESSAGE_LENGTH;
         if (publisherWillFit) {
             return publisherPrefix + twit.toString();
         } else {
