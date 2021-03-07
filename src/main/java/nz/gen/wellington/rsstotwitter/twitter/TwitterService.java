@@ -106,7 +106,7 @@ public class TwitterService {
         return false;
     }
 
-    public twitter4j.User getTwitteUserCredentials(AccessToken accessToken) {
+    public twitter4j.User getTwitterUserCredentials(AccessToken accessToken) {
         Twitter twitterApi = getAuthenticatedApiForAccessToken(accessToken);
         try {
             return twitterApi.verifyCredentials();

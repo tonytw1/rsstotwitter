@@ -98,7 +98,7 @@ public class TwitterLoginHandler implements SigninHandler {
                     requestTokens.remove(requestToken.getToken());
 
                     log.debug("Using access token to lookup twitter user details");
-                    twitter4j.User twitterUser = twitterService.getTwitteUserCredentials(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
+                    twitter4j.User twitterUser = twitterService.getTwitterUserCredentials(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
                     if (twitterUser != null) {
                         accessTokens.put(twitterUser.getId(), accessToken);
                         return twitterUser;
