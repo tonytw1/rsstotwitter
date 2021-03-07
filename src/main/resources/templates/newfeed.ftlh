@@ -1,4 +1,8 @@
-<h4>New feed</h4>
+<h2>RSS to Twitter</h2>
+${account.username}
+<a href="/signout">Sign out</a>
+
+<h4>Adding a feed</h4>
 
 <form method="POST" action="/new">
     <div class="form-group">

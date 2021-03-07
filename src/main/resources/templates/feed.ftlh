@@ -1,4 +1,6 @@
-<h2><a href="/">RSS to Twitter</a></h2>
+<h2>RSS to Twitter</h2>
+${account.username}
+<a href="/signout">Sign out</a>
 
 <h4>Feeds / ${job.objectId}</h4>
 

@@ -27,13 +27,14 @@ public class HomepageController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView homepage(HttpServletRequest request) {
-        ModelAndView mv = new ModelAndView("homepage");
         TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
         if (loggedInUser != null) {
-            mv.addObject("account", loggedInUser);
-            mv.addObject("jobs", feedToTwitterJobDAO.getJobsForAccount(loggedInUser));
+            return new ModelAndView("feeds").
+                    addObject("account", loggedInUser).
+                    addObject("jobs", feedToTwitterJobDAO.getJobsForAccount(loggedInUser));
+        } else {
+            return new ModelAndView("homepage");
         }
-        return mv;
     }
 
 }

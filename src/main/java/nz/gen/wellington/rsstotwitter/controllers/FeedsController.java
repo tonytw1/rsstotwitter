@@ -42,18 +42,24 @@ public class FeedsController {
   }
 
   @RequestMapping(value = "/new", method = RequestMethod.GET)
-  public ModelAndView newFeed(@ModelAttribute("feedDetails") FeedDetails feedDetails) {
-    return renderNewFeedForm(feedDetails);
+  public ModelAndView newFeed(@ModelAttribute("feedDetails") FeedDetails feedDetails, HttpServletRequest request) {
+    TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+    if (loggedInUser != null) {
+      return renderNewFeedForm(feedDetails, loggedInUser);
+
+    } else {
+      log.warn("Not signed in");
+      return new ModelAndView(new RedirectView("/"));
+    }
   }
 
   @RequestMapping(value = "/new", method = RequestMethod.POST)
   public ModelAndView newFeedSubmit(@Valid @ModelAttribute("feedDetails") FeedDetails feedDetails, BindingResult result, HttpServletRequest request) {
     TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
-
       if (result.hasErrors()) {
         log.info("Feed form errors: " + result.getAllErrors());
-        return renderNewFeedForm(feedDetails);
+        return renderNewFeedForm(feedDetails, loggedInUser);
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
@@ -89,8 +95,10 @@ public class FeedsController {
     return mv;
   }
 
-  private ModelAndView renderNewFeedForm(FeedDetails feedDetails) {
-    return new ModelAndView("newfeed").addObject("feedDetails", feedDetails);
+  private ModelAndView renderNewFeedForm(FeedDetails feedDetails, TwitterAccount account) {
+    return new ModelAndView("newfeed").
+            addObject("feedDetails", feedDetails).
+            addObject("account", account);
   }
 
 }
