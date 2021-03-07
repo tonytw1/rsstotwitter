@@ -1,6 +1,5 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
-import com.google.common.collect.Lists;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -21,8 +20,6 @@ import java.util.List;
 public class TwitterService {
 
     private final static Logger log = Logger.getLogger(TwitterService.class);
-
-    private final static int REPLY_PAGES_TO_FETCH = 1;
 
     private String consumerKey;
     private String consumerSecret;
@@ -50,20 +47,6 @@ public class TwitterService {
         return null;
     }
 
-    public List<Status> getReplies(TwitterAccount account) {
-        log.info("Getting twitter replies from live api");
-        final Twitter twitter = getAuthenticatedApiForAccount(account);
-        final List<Status> all = Lists.newArrayList();
-        for (int i = 1; i <= REPLY_PAGES_TO_FETCH; i++) {
-            try {
-                all.addAll(twitter.getMentionsTimeline(new Paging(i)));
-            } catch (TwitterException e) {
-                log.warn("A TwitterException occured while trying to fetch mentions: " + e.getMessage());
-            }
-        }
-        return all;
-    }
-
     public List<Long> getFollowers(TwitterAccount account) {
         final Twitter twitter = getAuthenticatedApiForAccount(account);
         try {
@@ -77,35 +60,6 @@ public class TwitterService {
         return null;
     }
 
-    public List<Long> getFriends(TwitterAccount account) {
-        final Twitter twitter = getAuthenticatedApiForAccount(account);
-        try {
-            IDs friendIds = twitter.getFriendsIDs((account.getId()));
-            log.info("Found " + friendIds.getIDs().length + " friend ids");
-            return Arrays.asList(ArrayUtils.toObject(friendIds.getIDs()));
-
-        } catch (TwitterException e) {
-            log.error("Error while fetching friends of '" + account.getUsername() + "'" + e.getMessage());
-        }
-        return null;
-    }
-
-    public boolean follow(TwitterAccount account, long userId) throws TwitterException {
-        Twitter twitter = getAuthenticatedApiForAccount(account);
-        try {
-            User followed = twitter.createFriendship(userId, true);
-            if (followed != null) {
-                log.info("Followed: " + followed.getScreenName());
-                return true;
-            } else {
-                log.warn("Failed to follow");
-            }
-        } catch (Exception e) {
-            log.error("Error while attempting to follow: " + e.getMessage());
-        }
-        return false;
-    }
-
     public twitter4j.User getTwitterUserCredentials(AccessToken accessToken) {
         Twitter twitterApi = getAuthenticatedApiForAccessToken(accessToken);
         try {
@@ -114,11 +68,6 @@ public class TwitterService {
             log.warn("Failed up obtain twitter user details due to Twitter exception: " + e.getMessage());
             return null;
         }
-    }
-
-    public ResponseList<User> getUserDetails(List<Long> userIds, TwitterAccount account) throws TwitterException {
-        final Twitter twitter = getAuthenticatedApiForAccount(account);
-        return twitter.lookupUsers(ArrayUtils.toPrimitive(userIds.toArray(new Long[userIds.size()])));
     }
 
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
