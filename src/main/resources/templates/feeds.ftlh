@@ -1,6 +1,4 @@
 <#include "header.ftlh">
-${account.username}
-<a href="/signout">Sign out</a>
 
 <h4>Feeds</h4>
 <p>These feeds will be tweeted to your Twitter account ${account.username}.</p>

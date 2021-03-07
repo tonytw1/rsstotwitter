@@ -1,6 +1,4 @@
 <#include "header.ftlh">
-${account.username}
-<a href="/signout">Sign out</a>
 
 <h4>Feeds / ${job.objectId}</h4>
 
