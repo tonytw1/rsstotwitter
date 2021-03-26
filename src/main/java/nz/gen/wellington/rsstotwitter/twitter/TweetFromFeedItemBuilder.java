@@ -3,8 +3,8 @@ package nz.gen.wellington.rsstotwitter.twitter;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import twitter4j.GeoLocation;
@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 public class TweetFromFeedItemBuilder {
 
-    private final static Logger log = Logger.getLogger(TweetFromFeedItemBuilder.class);
+    private final static Logger log = LogManager.getLogger(TweetFromFeedItemBuilder.class);
 
     private final TwitTextBuilderService twitBuilderService;
 
@@ -45,7 +45,6 @@ public class TweetFromFeedItemBuilder {
         char[] charArray = tweetText.toCharArray();
         for (int i = 0; i < charArray.length; i++) {
             char letter = tweetText.charAt(i);
-            log.debug(letter + "(" + Character.codePointAt(charArray, i) + "): " + Character.isValidCodePoint(letter));
             if (!Character.isValidCodePoint(letter)) {
                 log.warn("Message has invalid code point: " + letter);
                 throw new RuntimeException("Message has invalid code point: " + letter);

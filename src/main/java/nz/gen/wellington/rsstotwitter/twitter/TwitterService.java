@@ -5,7 +5,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ import java.util.List;
 @Component
 public class TwitterService {
 
-    private final static Logger log = Logger.getLogger(TwitterService.class);
+    private final static Logger log = LogManager.getLogger(TwitterService.class);
 
     private final String consumerKey;
     private final String consumerSecret;

@@ -1,14 +1,15 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MongoTwitterAccountDAO {
 
-    private final static Logger log = Logger.getLogger(MongoTwitterAccountDAO.class);
+    private final static Logger log = LogManager.getLogger(MongoTwitterAccountDAO.class);
 
     private DataStoreFactory dataStoreFactory;
 

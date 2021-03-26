@@ -9,7 +9,8 @@ import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.LatLong;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
 @Component
 public class FeedService {
 
-    private final static Logger log = Logger.getLogger(FeedService.class);
+    private final static Logger log = LogManager.getLogger(FeedService.class);
 
     public List<FeedItem> loadFeedItems(Feed feed) {
         List<SyndEntry> entries = loadSyndFeedEntiresWithFeedFetcher(feed.getUrl());

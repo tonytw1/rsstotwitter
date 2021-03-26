@@ -7,7 +7,8 @@ import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ import java.util.List;
 @Component
 public class TwitterUpdater implements Updater {
 
-    private final static Logger log = Logger.getLogger(TwitterUpdater.class);
+    private final static Logger log = LogManager.getLogger(TwitterUpdater.class);
 
     private final MongoTwitterHistoryDAO twitterHistoryDAO;
     private final TwitterService twitterService;

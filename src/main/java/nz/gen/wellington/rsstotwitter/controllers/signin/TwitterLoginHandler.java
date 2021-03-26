@@ -3,7 +3,8 @@ package nz.gen.wellington.rsstotwitter.controllers.signin;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterAccountDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Component
 public class TwitterLoginHandler implements SigninHandler {
 
-    private final static Logger log = Logger.getLogger(TwitterLoginHandler.class);
+    private final static Logger log = LogManager.getLogger(TwitterLoginHandler.class);
 
     private final MongoTwitterAccountDAO accountDAO;
     private final TwitterService twitterService;

@@ -8,7 +8,8 @@ import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -26,7 +27,7 @@ import java.util.List;
 @Controller
 public class FeedsController {
 
-  private final static Logger log = Logger.getLogger(FeedsController.class);
+  private final static Logger log = LogManager.getLogger(FeedsController.class);
 
   private final LoggedInUserFilter loggedInUserFilter;
   private final MongoFeedToTwitterJobDAO feedToTwitterJobDAO;

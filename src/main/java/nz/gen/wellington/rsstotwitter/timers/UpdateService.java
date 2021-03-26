@@ -1,23 +1,22 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UpdateService implements Runnable {
 
-    private final static Logger log = Logger.getLogger(UpdateService.class);
+    private final static Logger log = LogManager.getLogger(UpdateService.class);
 
     private MongoFeedToTwitterJobDAO feedToTwitterJobDAO;
     private FeedService feedService;

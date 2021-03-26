@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -16,7 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 public class Main {
 
-    private final static Logger log = Logger.getLogger(Main.class);
+    private final static Logger log = LogManager.getLogger(Main.class);
 
     private static ApplicationContext ctx;
 

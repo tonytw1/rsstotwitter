@@ -3,7 +3,8 @@ package nz.gen.wellington.rsstotwitter.controllers.signin;
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterAccountDAO;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class SigninController {
 
-    private final static Logger log = Logger.getLogger(SigninController.class);
+    private final static Logger log = LogManager.getLogger(SigninController.class);
 
     private final MongoTwitterAccountDAO accountDAO;
     private final SigninHandler signinHandler;

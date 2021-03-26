@@ -6,7 +6,8 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterEvent;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ import java.util.List;
 @Component
 public class MongoTwitterHistoryDAO {
 
-    private final static Logger log = Logger.getLogger(MongoTwitterHistoryDAO.class);
+    private final static Logger log = LogManager.getLogger(MongoTwitterHistoryDAO.class);
 
     private DataStoreFactory dataStoreFactory;
 
