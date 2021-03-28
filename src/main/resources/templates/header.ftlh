@@ -2,10 +2,10 @@
 <head>
     <title>RSS to Twitter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
-<script src="js/bootstrap.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 
 <div class="container">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
