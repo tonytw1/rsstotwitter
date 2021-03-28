@@ -1,6 +1,6 @@
 <#include "header.ftlh">
 
-<h4>Feeds / ${job.objectId}</h4>
+<h4><a href="/">Feeds</a> / ${job.objectId}</h4>
 
 <p><a href="${job.feed.url}">${job.feed.url}</a> -> ${job.account.username}</p>
 

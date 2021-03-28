@@ -1,6 +1,8 @@
 <#include "header.ftlh">
 
-<h4>Adding a feed</h4>
+
+
+<h4><a href="/">Feeds</a> / Adding a feed</h4>
 
 <form method="POST" action="/new">
     <div class="form-group">
