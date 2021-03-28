@@ -1,10 +1,45 @@
 <html>
+<head>
+    <title>RSS to Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
 <body>
-<h2>RSS to Twitter</h2>
+<script src="js/bootstrap.min.js"></script>
 
-<#if account??>
-    @${account.username}
-    <a href="/signout">Sign out</a>
-<#else>
-    <a href="oauth/login">Sign in</a>
-</#if>
+<div class="container">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">RSS to Twitter</a>
+    <#if account??>
+        @${account.username}
+        <a href="/signout">Sign out</a>
+    <#else>
+        <a href="oauth/login">Sign in</a>
+    </#if>
+</nav>
+</div>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="/">RSS to Twitter</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                <#if account??>
+                    <li><a href="/">@${account.username}</a></li>
+                    <li><a href="/signout">Sign out</a></li>
+                <#else>
+                    <li><a href="oauth/login">Sign in</a></li>
+                </#if>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+
+<div class="container">
