@@ -79,18 +79,16 @@ public class FeedsController {
   public ModelAndView feed(@PathVariable String id, HttpServletRequest request) {
     TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
-      ModelAndView mv = new ModelAndView("feed");
-      mv.addObject("account", loggedInUser);
       FeedToTwitterJob job = feedToTwitterJobDAO.getByObjectId(id);
-      mv.addObject("job", job);
-
-      mv.addObject("tweets", twitterHistoryDAO.getTweets(job.getFeed()));
-      mv.addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed()));
-      mv.addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed()));
-
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
-      mv.addObject("feedItems", feedItems);
-      return mv;
+
+      return new ModelAndView("feed").
+              addObject("account", loggedInUser).
+              addObject("job", job).
+              addObject("tweets", twitterHistoryDAO.getTweets(job.getFeed())).
+              addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed())).
+              addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed())).
+              addObject("feedItems", feedItems);
 
     } else {
       return redirectToSignInPage();
