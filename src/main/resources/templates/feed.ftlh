@@ -7,9 +7,11 @@
 <ul>
     <#list tweets as tweet>
         <li>
-            ${tweet.twit}<br/>
-            ${tweet.date?datetime?string("dd-MM-yyyy")}
-            <p>${tweet.tweet}</p>
+            <a href="https://twitter.com/${tweet.author}/status/${tweet.id}">
+                ${tweet.twit}<br/>
+                ${tweet.date?datetime?string("dd-MM-yyyy")}
+                <p>${tweet.tweet}</p>
+            </a>
         </li>
     </#list>
 </ul>
