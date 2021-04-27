@@ -97,4 +97,16 @@ public class Tweet {
         this.geoLocation = geoLocation;
     }
 
+    @Override
+    public String toString() {
+        return "Tweet{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", date=" + date +
+                ", text='" + text + '\'' +
+                ", author='" + author + '\'' +
+                ", inReplyToUserId=" + inReplyToUserId +
+                ", geoLocation=" + geoLocation +
+                '}';
+    }
 }
