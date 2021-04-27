@@ -49,8 +49,7 @@ public class FeedsController {
       return renderNewFeedForm(feedDetails, loggedInUser);
 
     } else {
-      log.warn("Not signed in");
-      return new ModelAndView(new RedirectView("/"));
+      return redirectToSignInPage();
     }
   }
 
@@ -72,16 +71,15 @@ public class FeedsController {
       return new ModelAndView(new RedirectView("/"));
 
     } else {
-      log.warn("Not signed in");
-      return new ModelAndView(new RedirectView("/"));
+      return redirectToSignInPage();
     }
   }
 
   @RequestMapping(value = "/feeds/{id}", method = RequestMethod.GET)
   public ModelAndView feed(@PathVariable String id, HttpServletRequest request) {
-    ModelAndView mv = new ModelAndView("feed");
     TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
+      ModelAndView mv = new ModelAndView("feed");
       mv.addObject("account", loggedInUser);
       FeedToTwitterJob job = feedToTwitterJobDAO.getByObjectId(id);
       mv.addObject("job", job);
@@ -92,14 +90,21 @@ public class FeedsController {
 
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
       mv.addObject("feedItems", feedItems);
+      return mv;
+
+    } else {
+      return redirectToSignInPage();
     }
-    return mv;
   }
 
   private ModelAndView renderNewFeedForm(FeedDetails feedDetails, TwitterAccount account) {
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
             addObject("account", account);
+  }
+
+  private ModelAndView redirectToSignInPage() {
+    return new ModelAndView(new RedirectView("/"));
   }
 
 }
