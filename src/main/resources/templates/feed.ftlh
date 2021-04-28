@@ -7,7 +7,7 @@
 <ul>
     <#list tweetEvents as tweetEvent>
         <li>
-            <a href="https://twitter.com/statuses/${tweetEvent.tweet.id?c}">
+            <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}">
                 ${tweetEvent.twit}<br/>
                 ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
             </a>
