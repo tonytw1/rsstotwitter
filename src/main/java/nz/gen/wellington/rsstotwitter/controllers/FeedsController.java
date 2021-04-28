@@ -82,7 +82,7 @@ public class FeedsController {
       return new ModelAndView("feed").
               addObject("account", loggedInUser).
               addObject("job", job).
-              addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed())).
+              addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), loggedInUser.getId())).
               addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed())).
               addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed())).
               addObject("feedItems", feedItems);

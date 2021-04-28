@@ -39,10 +39,12 @@ public class MongoTwitterHistoryDAO {
         saveTwitterEvent(newEvent);
     }
 
-    public List<TwitterEvent> getTweetEvents(Feed feed) {
+    public List<TwitterEvent> getTweetEvents(Feed feed, Long twitterUserId) {
         Query<TwitterEvent> limit = dataStoreFactory.getDs().find(TwitterEvent.class).
+                filter("feed.url", feed.getUrl()).
+                filter("tweet.userId", twitterUserId).
                 order(Sort.descending("date")).
-                limit(20);    // TODO filter by feed
+                limit(20);
         return limit.asList();
     }
 
@@ -65,8 +67,8 @@ public class MongoTwitterHistoryDAO {
     private long getNumberOfTweetsSince(Date since) {
         return dataStoreFactory.getDs().find(TwitterEvent.class).
                 field("date").
-                greaterThan(since)
-                .count();
+                greaterThan(since).
+                count();
     }
 
 }
