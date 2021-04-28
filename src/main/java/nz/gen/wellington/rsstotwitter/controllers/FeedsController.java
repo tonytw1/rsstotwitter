@@ -2,10 +2,7 @@ package nz.gen.wellington.rsstotwitter.controllers;
 
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.forms.FeedDetails;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
 import org.apache.logging.log4j.LogManager;
@@ -85,7 +82,7 @@ public class FeedsController {
       return new ModelAndView("feed").
               addObject("account", loggedInUser).
               addObject("job", job).
-              addObject("tweets", twitterHistoryDAO.getTweets(job.getFeed())).
+              addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed())).
               addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed())).
               addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed())).
               addObject("feedItems", feedItems);

@@ -39,7 +39,7 @@ public class MongoTwitterHistoryDAO {
         saveTwitterEvent(newEvent);
     }
 
-    public List<TwitterEvent> getTweets(Feed feed) {
+    public List<TwitterEvent> getTweetEvents(Feed feed) {
         Query<TwitterEvent> limit = dataStoreFactory.getDs().find(TwitterEvent.class).
                 order(Sort.descending("date")).
                 limit(20);    // TODO filter by feed
