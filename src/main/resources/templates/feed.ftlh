@@ -7,10 +7,9 @@
 <ul>
     <#list tweetEvents as tweetEvent>
         <li>
-            <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}">
-                ${tweetEvent.twit}<br/>
+            <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}" target="_blank">
+                ${tweetEvent.twit} </a><br/>
                 ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
-            </a>
         </li>
     </#list>
 </ul>
@@ -20,7 +19,7 @@
     <#list feedItems as feedItem>
         <li>
             <p>
-                <a href="${feedItem.link}">${feedItem.title}</a><br/>
+                <a href="${feedItem.link}" target="_blank">${feedItem.title}</a><br/>
                 ${(feedItem.author)!}
                 ${feedItem.publishedDate?datetime?string("dd-MM-yyyy")}<br/>
             </p>
