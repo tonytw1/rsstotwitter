@@ -33,8 +33,8 @@ public class TwitterUpdater implements Updater {
 
     public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account) {
         log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
-        final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed);  // TODO rate limit should really be about the twitter account, not the feed.
-        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed);  // TODO rate limit should really be about the twitter account, not the feed.
+        final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account.getId());
+        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId());
         log.info("Tweets sent in last hour: " + tweetsSentInLastHour);
         log.info("Tweets sent in last 24 hours: " + tweetsSentInLastTwentyForHours);
 

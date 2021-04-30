@@ -40,8 +40,8 @@ public class HomepageController {
                     map(job -> {
                         Feed feed = job.getFeed();
                         ActivitySummary activity = new ActivitySummary(
-                                twitterHistoryDAO.getNumberOfTwitsInLastHour(feed),
-                                twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed));
+                                twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount().getId()),
+                                twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, job.getAccount().getId()));
                         return new JobWithActivity(job, activity);
                     }).collect(Collectors.toList());
 

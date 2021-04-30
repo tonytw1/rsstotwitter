@@ -48,12 +48,12 @@ public class MongoTwitterHistoryDAO {
         return limit.asList();
     }
 
-    public long getNumberOfTwitsInLastHour(Feed feed) { // TODO filter by feed
-        return getNumberOfTweetsSince(DateTime.now().minusHours(1).toDate());
+    public long getNumberOfTwitsInLastHour(Feed feed, long twitterUserId) {
+        return getNumberOfTweetsSince(feed, twitterUserId, DateTime.now().minusHours(1).toDate());
     }
 
-    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed) {  // TODO filter by feed
-        return getNumberOfTweetsSince(DateTime.now().minusDays(1).toDate());
+    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed, long twitterUserId) {
+        return getNumberOfTweetsSince(feed, twitterUserId, DateTime.now().minusDays(1).toDate());
     }
 
     public int getNumberOfTwitsInLastTwentyFourHours(Feed feed, String publisher) {
@@ -64,10 +64,12 @@ public class MongoTwitterHistoryDAO {
         dataStoreFactory.getDs().save(event);
     }
 
-    private long getNumberOfTweetsSince(Date since) {
+    private long getNumberOfTweetsSince(Feed feed, long twitterUserId, Date since) {
         return dataStoreFactory.getDs().find(TwitterEvent.class).
                 field("date").
                 greaterThan(since).
+                filter("feed.url", feed.getUrl()).
+                filter("tweet.userId", twitterUserId).
                 count();
     }
 
