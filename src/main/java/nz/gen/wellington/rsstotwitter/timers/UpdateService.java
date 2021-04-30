@@ -3,8 +3,8 @@ package nz.gen.wellington.rsstotwitter.timers;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
+import nz.gen.wellington.rsstotwitter.model.Job;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,12 @@ public class UpdateService implements Runnable {
 
     private final static Logger log = LogManager.getLogger(UpdateService.class);
 
-    private MongoFeedToTwitterJobDAO feedToTwitterJobDAO;
+    private JobDAO feedToTwitterJobDAO;
     private FeedService feedService;
     private Updater twitterUpdater;
 
     @Autowired
-    public UpdateService(MongoFeedToTwitterJobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
+    public UpdateService(JobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
         this.feedToTwitterJobDAO = tweetFeedJobDAO;
         this.feedService = feedService;
         this.twitterUpdater = twitterUpdater;
@@ -40,7 +40,7 @@ public class UpdateService implements Runnable {
         }
     }
 
-    private void processJob(FeedToTwitterJob job) {
+    private void processJob(Job job) {
         final Feed feed = job.getFeed();
         log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
         try {

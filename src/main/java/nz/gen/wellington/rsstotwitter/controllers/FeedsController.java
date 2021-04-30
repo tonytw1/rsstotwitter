@@ -3,7 +3,7 @@ package nz.gen.wellington.rsstotwitter.controllers;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.forms.FeedDetails;
 import nz.gen.wellington.rsstotwitter.model.*;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,14 +27,14 @@ public class FeedsController {
   private final static Logger log = LogManager.getLogger(FeedsController.class);
 
   private final LoggedInUserFilter loggedInUserFilter;
-  private final MongoFeedToTwitterJobDAO feedToTwitterJobDAO;
+  private final JobDAO jobDAO;
   private final FeedService feedService;
   private final MongoTwitterHistoryDAO twitterHistoryDAO;
 
   @Autowired
-  public FeedsController(LoggedInUserFilter loggedInUserFilter, MongoFeedToTwitterJobDAO feedToTwitterJobDAO, FeedService feedService, MongoTwitterHistoryDAO twitterHistoryDAO) {
+  public FeedsController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO, FeedService feedService, MongoTwitterHistoryDAO twitterHistoryDAO) {
     this.loggedInUserFilter = loggedInUserFilter;
-    this.feedToTwitterJobDAO = feedToTwitterJobDAO;
+    this.jobDAO = jobDAO;
     this.feedService = feedService;
     this.twitterHistoryDAO = twitterHistoryDAO;
   }
@@ -60,10 +60,10 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser);
+      Job job = new Job(feed, loggedInUser);
       log.info("Creating job: " + job);
 
-      feedToTwitterJobDAO.save(job);
+      jobDAO.save(job);
 
       return new ModelAndView(new RedirectView("/"));
 
@@ -76,15 +76,18 @@ public class FeedsController {
   public ModelAndView feed(@PathVariable String id, HttpServletRequest request) {
     TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
-      FeedToTwitterJob job = feedToTwitterJobDAO.getByObjectId(id);
+      Job job = jobDAO.getByObjectId(id);
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
+
+      long numberOfTwitsInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed());
+      long numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed());
+      ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
 
       return new ModelAndView("feed").
               addObject("account", loggedInUser).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), loggedInUser.getId())).
-              addObject("lastHour", twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed())).
-              addObject("lastTwentyFourHours", twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed())).
+              addObject("activity", activity).
               addObject("feedItems", feedItems);
 
     } else {

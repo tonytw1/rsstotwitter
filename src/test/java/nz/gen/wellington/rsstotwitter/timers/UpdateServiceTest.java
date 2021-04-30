@@ -10,10 +10,10 @@ import java.util.List;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
+import nz.gen.wellington.rsstotwitter.model.Job;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoFeedToTwitterJobDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -27,7 +27,7 @@ public class UpdateServiceTest {
     private static final String SECOND_FEED_URL = "http://localhost/2/rss";
 
     @Mock
-    MongoFeedToTwitterJobDAO tweetFeedJobDAO;
+    JobDAO jobDAO;
     @Mock
     FeedService feedService;
     @Mock
@@ -35,7 +35,7 @@ public class UpdateServiceTest {
 
     private UpdateService service;
 
-    private List<FeedToTwitterJob> feedToTwitterJobs;
+    private List<Job> jobs;
 
     Feed feed;
     Feed secondFeed;
@@ -49,17 +49,17 @@ public class UpdateServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        feedToTwitterJobs = new ArrayList<FeedToTwitterJob>();
-        service = new UpdateService(tweetFeedJobDAO, feedService, twitterUpdater);
+        jobs = new ArrayList<>();
+        service = new UpdateService(jobDAO, feedService, twitterUpdater);
 
         feed = new Feed(FEED_URL);
         account = new TwitterAccount(1, TWITTER_USERNAME);
         secondFeed = new Feed(SECOND_FEED_URL);
         secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
-        feedToTwitterJobs.add(new FeedToTwitterJob(feed, account));
-        feedToTwitterJobs.add(new FeedToTwitterJob(secondFeed, secondAccount));
+        jobs.add(new Job(feed, account));
+        jobs.add(new Job(secondFeed, secondAccount));
 
-        when(tweetFeedJobDAO.getAllTweetFeedJobs()).thenReturn(feedToTwitterJobs);
+        when(jobDAO.getAllTweetFeedJobs()).thenReturn(jobs);
     }
 
     @Test

@@ -1,13 +1,13 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
+import nz.gen.wellington.rsstotwitter.model.Job;
 import org.junit.Test;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class MongoFeedToTwitterJobDAOTest {
+public class JobDAOTest {
 
     String mongoDatabase = "rsstotwittertest" + UUID.randomUUID().toString();
 
@@ -19,14 +19,14 @@ public class MongoFeedToTwitterJobDAOTest {
         }
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
-        MongoFeedToTwitterJobDAO dao = new MongoFeedToTwitterJobDAO(dataStoreFactory);
+        JobDAO dao = new JobDAO(dataStoreFactory);
 
-        FeedToTwitterJob job = new FeedToTwitterJob();
+        Job job = new Job();
 
         dao.save(job);
         assertNotNull(job.getObjectId());
 
-        FeedToTwitterJob reloaded = dao.getByObjectId(job.getObjectId());
+        Job reloaded = dao.getByObjectId(job.getObjectId());
         assertEquals(job.getObjectId(), reloaded.getObjectId());
     }
 

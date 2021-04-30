@@ -48,11 +48,11 @@ public class MongoTwitterHistoryDAO {
         return limit.asList();
     }
 
-    public long getNumberOfTwitsInLastHour(Feed feed) {
+    public long getNumberOfTwitsInLastHour(Feed feed) { // TODO filter by feed
         return getNumberOfTweetsSince(DateTime.now().minusHours(1).toDate());
     }
 
-    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed) {
+    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed) {  // TODO filter by feed
         return getNumberOfTweetsSince(DateTime.now().minusDays(1).toDate());
     }
 

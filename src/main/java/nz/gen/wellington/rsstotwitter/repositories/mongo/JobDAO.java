@@ -1,7 +1,7 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import dev.morphia.Datastore;
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
+import nz.gen.wellington.rsstotwitter.model.Job;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,34 +12,34 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class MongoFeedToTwitterJobDAO {
+public class JobDAO {
 
     private final static Logger log = LogManager.getLogger(MongoTwitterAccountDAO.class);
 
     private DataStoreFactory dataStoreFactory;
 
     @Autowired
-    public MongoFeedToTwitterJobDAO(DataStoreFactory dataStoreFactory) {
+    public JobDAO(DataStoreFactory dataStoreFactory) {
         this.dataStoreFactory = dataStoreFactory;
     }
 
-    public List<FeedToTwitterJob> getAllTweetFeedJobs() {
+    public List<Job> getAllTweetFeedJobs() {
         final Datastore ds = dataStoreFactory.getDs();
-        return ds.find(FeedToTwitterJob.class).asList();
+        return ds.find(Job.class).asList();
     }
 
     @SuppressWarnings("unchecked")
-    public List<FeedToTwitterJob> getJobsForAccount(TwitterAccount account) {
+    public List<Job> getJobsForAccount(TwitterAccount account) {
         return dataStoreFactory.getDs().
-                find(FeedToTwitterJob.class).
+                find(Job.class).
                 filter("account.id", account.getId()).asList();
     }
 
-    public FeedToTwitterJob getByObjectId(String id) {
-        return dataStoreFactory.getDs().find(FeedToTwitterJob.class, "_id", new ObjectId(id)).get();
+    public Job getByObjectId(String id) {
+        return dataStoreFactory.getDs().find(Job.class, "_id", new ObjectId(id)).get();
     }
 
-    public void save(FeedToTwitterJob job) {
+    public void save(Job job) {
         dataStoreFactory.getDs().save(job);
     }
 

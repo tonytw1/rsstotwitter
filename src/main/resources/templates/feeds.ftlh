@@ -6,7 +6,11 @@
 <ul>
     <#list jobs as job>
         <li>
-            <p><a href="/feeds/${job.objectId}">${job.feed.url}</a><p>
+            <p>
+                <a href="/feeds/${job.job.objectId}">${job.job.feed.url}</a><br/>
+                <#assign activity = job.activity>
+                <#include "activity.ftlh">
+            </p>
         </li>
     </#list>
 </ul>
