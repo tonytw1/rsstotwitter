@@ -2,15 +2,15 @@ package nz.gen.wellington.rsstotwitter.model;
 
 public class JobWithActivity {
 
-    private final Job job;
+    private final FeedToTwitterJob job;
     private final ActivitySummary activity;
 
-    public JobWithActivity(Job job, ActivitySummary activity) {
+    public JobWithActivity(FeedToTwitterJob job, ActivitySummary activity) {
         this.job = job;
         this.activity = activity;
     }
 
-    public Job getJob() {
+    public FeedToTwitterJob getJob() {
         return job;
     }
 

@@ -1,7 +1,7 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import dev.morphia.Datastore;
-import nz.gen.wellington.rsstotwitter.model.Job;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,23 +23,23 @@ public class JobDAO {
         this.dataStoreFactory = dataStoreFactory;
     }
 
-    public List<Job> getAllTweetFeedJobs() {
+    public List<FeedToTwitterJob> getAllTweetFeedJobs() {
         final Datastore ds = dataStoreFactory.getDs();
-        return ds.find(Job.class).asList();
+        return ds.find(FeedToTwitterJob.class).asList();
     }
 
     @SuppressWarnings("unchecked")
-    public List<Job> getJobsForAccount(TwitterAccount account) {
+    public List<FeedToTwitterJob> getJobsForAccount(TwitterAccount account) {
         return dataStoreFactory.getDs().
-                find(Job.class).
+                find(FeedToTwitterJob.class).
                 filter("account.id", account.getId()).asList();
     }
 
-    public Job getByObjectId(String id) {
-        return dataStoreFactory.getDs().find(Job.class, "_id", new ObjectId(id)).get();
+    public FeedToTwitterJob getByObjectId(String id) {
+        return dataStoreFactory.getDs().find(FeedToTwitterJob.class, "_id", new ObjectId(id)).get();
     }
 
-    public void save(Job job) {
+    public void save(FeedToTwitterJob job) {
         dataStoreFactory.getDs().save(job);
     }
 

@@ -60,7 +60,7 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      Job job = new Job(feed, loggedInUser);
+      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser);
       log.info("Creating job: " + job);
 
       jobDAO.save(job);
@@ -76,7 +76,7 @@ public class FeedsController {
   public ModelAndView feed(@PathVariable String id, HttpServletRequest request) {
     TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
-      Job job = jobDAO.getByObjectId(id);
+      FeedToTwitterJob job = jobDAO.getByObjectId(id);
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
 
       long numberOfTwitsInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount().getId());

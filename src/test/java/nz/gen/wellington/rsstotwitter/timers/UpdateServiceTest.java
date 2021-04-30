@@ -10,7 +10,7 @@ import java.util.List;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.Job;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
@@ -35,7 +35,7 @@ public class UpdateServiceTest {
 
     private UpdateService service;
 
-    private List<Job> jobs;
+    private List<FeedToTwitterJob> jobs;
 
     Feed feed;
     Feed secondFeed;
@@ -56,8 +56,8 @@ public class UpdateServiceTest {
         account = new TwitterAccount(1, TWITTER_USERNAME);
         secondFeed = new Feed(SECOND_FEED_URL);
         secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
-        jobs.add(new Job(feed, account));
-        jobs.add(new Job(secondFeed, secondAccount));
+        jobs.add(new FeedToTwitterJob(feed, account));
+        jobs.add(new FeedToTwitterJob(secondFeed, secondAccount));
 
         when(jobDAO.getAllTweetFeedJobs()).thenReturn(jobs);
     }

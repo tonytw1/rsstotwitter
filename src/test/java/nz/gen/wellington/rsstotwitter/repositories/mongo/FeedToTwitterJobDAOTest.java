@@ -1,15 +1,15 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
-import nz.gen.wellington.rsstotwitter.model.Job;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import org.junit.Test;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class JobDAOTest {
+public class FeedToTwitterJobDAOTest {
 
-    String mongoDatabase = "rsstotwittertest" + UUID.randomUUID().toString();
+    String mongoDatabase = "rsstotwittertest" + UUID.randomUUID();
 
     @Test
     public void canSaveJobAndReloadById() {
@@ -21,12 +21,12 @@ public class JobDAOTest {
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
         JobDAO dao = new JobDAO(dataStoreFactory);
 
-        Job job = new Job();
+        FeedToTwitterJob job = new FeedToTwitterJob();
 
         dao.save(job);
         assertNotNull(job.getObjectId());
 
-        Job reloaded = dao.getByObjectId(job.getObjectId());
+        FeedToTwitterJob reloaded = dao.getByObjectId(job.getObjectId());
         assertEquals(job.getObjectId(), reloaded.getObjectId());
     }
 
