@@ -42,7 +42,7 @@ public class UpdateService implements Runnable {
 
     private void processJob(FeedToTwitterJob job) {
         final Feed feed = job.getFeed();
-        log.info("Running feed to twitter job: " + feed.getUrl() + " -> " + job.getAccount().getUsername());
+        log.info("Running feed to twitter job: " + feed.getUrl() + " -> @" + job.getAccount().getUsername());
         try {
             List<FeedItem> feedItems = feedService.loadFeedItems(feed);
             if (feedItems != null && !feedItems.isEmpty()) {
