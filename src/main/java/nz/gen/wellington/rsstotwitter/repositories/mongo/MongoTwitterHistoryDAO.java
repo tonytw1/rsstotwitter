@@ -6,8 +6,6 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,8 +16,6 @@ import java.util.List;
 @Component
 public class MongoTwitterHistoryDAO {
 
-    private final static Logger log = LogManager.getLogger(MongoTwitterHistoryDAO.class);
-
     private DataStoreFactory dataStoreFactory;
 
     @Autowired
@@ -29,9 +25,13 @@ public class MongoTwitterHistoryDAO {
 
     @SuppressWarnings("unchecked")
     public boolean hasAlreadyBeenTweeted(String guid) {
-        return !dataStoreFactory.getDs().
+        return !tweetsForGuid(guid).isEmpty();
+    }
+
+    public List<TwitterEvent> tweetsForGuid(String guid) {
+        return dataStoreFactory.getDs().
                 find(TwitterEvent.class).
-                filter("guid", guid).asList().isEmpty();
+                filter("guid", guid).asList();
     }
 
     public void markAsTweeted(FeedItem feedItem, Tweet sentTweet) {
