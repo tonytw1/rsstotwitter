@@ -23,8 +23,8 @@
                 ${(feedItem.value0.author)!}
                 ${feedItem.value0.publishedDate?datetime?string("dd-MM-yyyy")}<br/>
                 <#list feedItem.getValue1() as tweet>
-                    <p>${(tweet.text)!}</p>
-                    <p>${(tweet.id)!}</p>
+                    <p>${tweet.text}</p>
+                    <p>${tweet.id}</p>
                     <p>${tweet.date?datetime?string("dd-MM-yyyy")}</p>
                 </#list>
             </p>
