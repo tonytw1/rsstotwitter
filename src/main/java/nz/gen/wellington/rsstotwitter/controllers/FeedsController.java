@@ -7,6 +7,7 @@ import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class FeedsController {
@@ -83,12 +85,20 @@ public class FeedsController {
       long numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount().getId());
       ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
 
+      List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems.stream().map(
+              feedItem -> {
+                List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(feedItem.getGuid());
+                return new Pair<>(feedItem, tweets);
+              }
+      ).collect(Collectors.toList());
+
       return new ModelAndView("feed").
               addObject("account", loggedInUser).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount().getId())).
               addObject("activity", activity).
-              addObject("feedItems", feedItems);
+              addObject("feedItems", feedItems).
+              addObject("feedItemsWithTweets", withTweets);
 
     } else {
       return redirectToSignInPage();

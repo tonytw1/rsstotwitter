@@ -16,12 +16,13 @@
 
 <h4>Feed items</h4>
 <ul>
-    <#list feedItems as feedItem>
+    <#list feedItemsWithTweets as feedItem>
         <li>
             <p>
-                <a href="${feedItem.link}" target="_blank">${feedItem.title}</a><br/>
-                ${(feedItem.author)!}
-                ${feedItem.publishedDate?datetime?string("dd-MM-yyyy")}<br/>
+                <a href="${feedItem.value0.link}" target="_blank">${feedItem.value0.title}</a><br/>
+                ${(feedItem.value0.author)!}
+                ${feedItem.value0.publishedDate?datetime?string("dd-MM-yyyy")}<br/>
+                <p>${feedItem.value1}</p>
             </p>
         </li>
     </#list>
