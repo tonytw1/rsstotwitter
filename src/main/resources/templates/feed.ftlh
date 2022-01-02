@@ -22,11 +22,15 @@
                 <a href="${feedItem.value0.link}" target="_blank">${feedItem.value0.title}</a><br/>
                 ${(feedItem.value0.author)!}
                 ${feedItem.value0.publishedDate?datetime?string("dd-MM-yyyy")}<br/>
-                <#list feedItem.getValue1() as tweet>
-                    <p>${tweet.text}</p>
-                    <p>${tweet.id}</p>
-                    <p>${tweet.date?datetime?string("dd-MM-yyyy")}</p>
-                </#list>
+                <ul>
+                    <#list feedItem.getValue1() as tweetEvent>
+                         <li>
+                            <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}" target="_blank">
+                            ${tweetEvent.twit} </a><br/>
+                            ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
+                        </li>
+                    </#list>
+                </ul>
             </p>
         </li>
     </#list>
