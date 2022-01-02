@@ -22,7 +22,9 @@
                 <a href="${feedItem.value0.link}" target="_blank">${feedItem.value0.title}</a><br/>
                 ${(feedItem.value0.author)!}
                 ${feedItem.value0.publishedDate?datetime?string("dd-MM-yyyy")}<br/>
-                <p>${feedItem.value1}</p>
+                <#list feedItem.getValue1() as tweets>
+                    <p>${tweet}</p>
+                </#list>
             </p>
         </li>
     </#list>

@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
+import com.google.common.collect.Lists;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.forms.FeedDetails;
 import nz.gen.wellington.rsstotwitter.model.*;
@@ -85,12 +86,12 @@ public class FeedsController {
       long numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount().getId());
       ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
 
-      List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems.stream().map(
+      List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems != null ? feedItems.stream().map(
               feedItem -> {
                 List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(feedItem.getGuid());
                 return new Pair<>(feedItem, tweets);
               }
-      ).collect(Collectors.toList());
+      ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
               addObject("account", loggedInUser).
