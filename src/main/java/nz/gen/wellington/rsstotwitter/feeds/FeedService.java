@@ -1,11 +1,14 @@
 package nz.gen.wellington.rsstotwitter.feeds;
 
-import com.sun.syndication.feed.module.georss.GeoRSSModule;
-import com.sun.syndication.feed.module.georss.GeoRSSUtils;
-import com.sun.syndication.feed.synd.SyndEntry;
-import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.fetcher.FeedFetcher;
-import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
+import com.rometools.modules.georss.GeoRSSModule;
+import com.rometools.modules.georss.GeoRSSUtils;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.LatLong;
@@ -13,9 +16,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.net.URL;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,14 +42,22 @@ public class FeedService {
 
     private List<SyndEntry> loadSyndFeedEntiresWithFeedFetcher(String feedUrl) {
         log.info("Loading SyndFeed from url: " + feedUrl);
-        log.info("Setting System connection timeouts");
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+
+        OkHttpClient client = new OkHttpClient();
+        client.setReadTimeout(10, TimeUnit.SECONDS);
+        client.setConnectTimeout(10, TimeUnit.SECONDS);
 
         try {
-            URL url = new URL(feedUrl);
-            FeedFetcher fetcher = new HttpURLFeedFetcher();
-            SyndFeed syndFeed = fetcher.retrieveFeed(url);
+            Request request = new Request.Builder()
+                    .url(feedUrl)
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            InputStream bytes = response.body().byteStream();
+
+            SyndFeedInput input = new SyndFeedInput();
+            SyndFeed syndFeed = input.build(new XmlReader(bytes));
+
             if (syndFeed != null) {
                 return syndFeed.getEntries();
             } else {

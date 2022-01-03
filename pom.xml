@@ -115,31 +115,25 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>2.7.5</version>
         </dependency>
 
         <dependency>
-            <groupId>net.java.dev.rome</groupId>
+            <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
-            <version>1.0.0</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
-            <groupId>net.java.dev.rome</groupId>
-            <artifactId>rome-fetcher</artifactId>
-            <version>1.0.0</version>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome-modules</artifactId>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
-            <groupId>org.geonames</groupId>
-            <artifactId>georss-rome</artifactId>
-            <version>0.9.8</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>rome</groupId>
-                    <artifactId>rome</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome-utils</artifactId>
+            <version>1.18.0</version>
         </dependency>
 
         <dependency>
