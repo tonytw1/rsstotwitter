@@ -41,6 +41,10 @@ mvn spring-boot:run
 
 The sign in screen will be visible at http://localhost:8080
 
+## Dependencies
+
+OkHttp for RSS feed fetching.
+
 
 ## Build
 

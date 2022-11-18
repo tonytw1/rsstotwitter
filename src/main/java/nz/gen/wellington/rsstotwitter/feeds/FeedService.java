@@ -6,12 +6,12 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.LatLong;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -27,6 +27,10 @@ import java.util.stream.Stream;
 public class FeedService {
 
     private final static Logger log = LogManager.getLogger(FeedService.class);
+    private final OkHttpClient client = new OkHttpClient.Builder().
+            connectTimeout(10, TimeUnit.SECONDS).
+            readTimeout(10, TimeUnit.SECONDS).
+            build();
 
     public List<FeedItem> loadFeedItems(Feed feed) {
         List<SyndEntry> entries = loadSyndFeedEntiresWithFeedFetcher(feed.getUrl());
@@ -42,11 +46,6 @@ public class FeedService {
 
     private List<SyndEntry> loadSyndFeedEntiresWithFeedFetcher(String feedUrl) {
         log.info("Loading SyndFeed from url: " + feedUrl);
-
-        OkHttpClient client = new OkHttpClient();
-        client.setReadTimeout(10, TimeUnit.SECONDS);
-        client.setConnectTimeout(10, TimeUnit.SECONDS);
-
         try {
             Request request = new Request.Builder()
                     .url(feedUrl)
