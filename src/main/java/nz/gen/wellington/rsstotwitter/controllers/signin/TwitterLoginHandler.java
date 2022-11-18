@@ -134,7 +134,6 @@ public class TwitterLoginHandler implements SigninHandler {
         account.setUsername(twitterUser.getScreenName());
         account.setToken(accessTokens.get(twitterUser.getId()).getToken());
         account.setTokenSecret(accessTokens.get(twitterUser.getId()).getSecret());
-        log.info("Tokens set to: " + account.getToken() + ", " + account.getTokenSecret());
     }
 
     private OAuthService makeOauthService(String callBackUrl) {

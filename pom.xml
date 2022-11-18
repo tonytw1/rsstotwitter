@@ -7,6 +7,18 @@
     <name>RSS to Twitter</name>
     <version>0.0.1-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>jitpack</id>
+            <name>Jitpack</name>
+            <layout>default</layout>
+            <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -106,6 +118,12 @@
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
             <version>4.0.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.sys1yagi.mastodon4j</groupId>
+            <artifactId>mastodon4j</artifactId>
+            <version>1.7.0</version>
         </dependency>
 
         <dependency>

@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
 import com.google.common.base.Strings;
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -23,12 +24,15 @@ public class TwitterUpdater implements Updater {
     private final MongoTwitterHistoryDAO twitterHistoryDAO;
     private final TwitterService twitterService;
     private final TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
+    private final MastodonService mastodonService;
 
     @Autowired
-    public TwitterUpdater(MongoTwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetFromFeedItemBuilder tweetFromFeedItemBuilder) {
+    public TwitterUpdater(MongoTwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetFromFeedItemBuilder tweetFromFeedItemBuilder,
+                          MastodonService mastodonService) {
         this.twitterHistoryDAO = twitterHistoryDAO;
         this.twitterService = twitterService;
         this.tweetFromFeedItemBuilder = tweetFromFeedItemBuilder;
+        this.mastodonService = mastodonService;
     }
 
     public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account) {
@@ -73,6 +77,11 @@ public class TwitterUpdater implements Updater {
                 final Tweet updatedStatus = twitterService.tweet(tweet, account);
                 if (updatedStatus != null) {
                     twitterHistoryDAO.markAsTweeted(feedItem, updatedStatus);
+
+                    // Echo to Mastodon spike
+                    // TODO move to separate updater
+                    mastodonService.post(tweet.getText());
+
                     return true;
                 }
 

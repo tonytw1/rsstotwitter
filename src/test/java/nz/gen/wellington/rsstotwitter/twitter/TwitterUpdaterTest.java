@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -28,6 +29,9 @@ public class TwitterUpdaterTest {
     @Mock
     TwitterService twitterService;
     @Mock
+    MastodonService mastodonService;
+
+    @Mock
     Feed feed;
 
     @Mock
@@ -50,7 +54,7 @@ public class TwitterUpdaterTest {
         feedItems = new ArrayList<FeedItem>();
         feedItems.add(feedItem);
 
-        service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder);
+        service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder, mastodonService);
     }
 
     @Test
