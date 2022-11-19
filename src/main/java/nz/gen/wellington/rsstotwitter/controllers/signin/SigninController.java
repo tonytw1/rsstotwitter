@@ -57,22 +57,24 @@ public class SigninController {
     public ModelAndView callback(HttpServletRequest request) {
         final Object externalIdentifier = signinHandler.getExternalUserIdentifierFromCallbackRequest(request);
         if (externalIdentifier != null) {
-            log.info("External user identifier is: " + externalIdentifier.toString());
+            log.info("External user identifier is: " + externalIdentifier);
 
             TwitterAccount account = signinHandler.getUserByExternalIdentifier(externalIdentifier);
 
             final boolean localAccountAlreadyExistsForThisUser = account != null;
             if (!localAccountAlreadyExistsForThisUser) {
-                log.info("Creating new user account for external identifier: " + externalIdentifier.toString());
+                log.info("Creating new user account for external identifier: " + externalIdentifier);
                 account = createNewUser(externalIdentifier);
+
             } else {
-                log.info("Existing local account found for external identifier: " + externalIdentifier.toString());
+                log.info("Existing local account found for external identifier: " + externalIdentifier);
                 signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
             }
 
             loggedInUserFilter.setLoggedInUser(request, account);
             return new ModelAndView(new RedirectView(homePageUrl));
         }
+
         return signinErrorView(request);
     }
 

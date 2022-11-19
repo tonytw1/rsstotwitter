@@ -3,8 +3,6 @@ package nz.gen.wellington.rsstotwitter.model;
 import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 
-import java.util.Set;
-
 public class TwitterAccount {
 
     @Id
@@ -12,12 +10,9 @@ public class TwitterAccount {
 
     private long id;
     private String username;
-    private boolean autoFollow;
 
     private String token;
     private String tokenSecret;
-
-    private Set<Tweet> mentions;
 
     public TwitterAccount() {
     }
@@ -43,18 +38,6 @@ public class TwitterAccount {
         this.username = username;
     }
 
-    public Set<Tweet> getMentions() {
-        return mentions;
-    }
-
-    public void setMentions(Set<Tweet> mentions) {
-        this.mentions = mentions;
-    }
-
-    public void addMention(Tweet mention) {
-        mentions.add(mention);
-    }
-
     public String getToken() {
         return token;
     }
@@ -69,14 +52,6 @@ public class TwitterAccount {
 
     public void setTokenSecret(String tokenSecret) {
         this.tokenSecret = tokenSecret;
-    }
-
-    public boolean isAutoFollow() {
-        return autoFollow;
-    }
-
-    public void setAutoFollow(boolean autoFollow) {
-        this.autoFollow = autoFollow;
     }
 
 }
