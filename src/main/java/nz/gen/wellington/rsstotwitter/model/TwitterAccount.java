@@ -8,7 +8,9 @@ public class TwitterAccount {
     @Id
     ObjectId objectId;
 
+    // This user's Twitter id
     private long id;
+    // This user's Twitter screen name
     private String username;
 
     private String token;
