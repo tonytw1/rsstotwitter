@@ -14,7 +14,7 @@
         @${account.username}
         <a href="/signout">Sign out</a>
     <#else>
-        <a href="oauth/login">Sign in</a>
+        <a href="oauth/login">Sign in using Twitter</a>
     </#if>
 </nav>
 </div>
