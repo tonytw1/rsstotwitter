@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MongoTwitterAccountDAO {
+public class TwitterAccountDAO {
 
     private DataStoreFactory dataStoreFactory;
 
     @Autowired
-    public MongoTwitterAccountDAO(DataStoreFactory dataStoreFactory) {
+    public TwitterAccountDAO(DataStoreFactory dataStoreFactory) {
         this.dataStoreFactory = dataStoreFactory;
     }
 

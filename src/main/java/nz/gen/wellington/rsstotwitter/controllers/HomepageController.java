@@ -5,7 +5,7 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.JobWithActivity;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +21,11 @@ public class HomepageController {
 
     private final LoggedInUserFilter loggedInUserFilter;
     private final JobDAO jobDAO;
-    private final MongoTwitterHistoryDAO twitterHistoryDAO;
+    private final TwitterHistoryDAO twitterHistoryDAO;
 
     @Autowired
     public HomepageController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO,
-                              MongoTwitterHistoryDAO twitterHistoryDAO) {
+                              TwitterHistoryDAO twitterHistoryDAO) {
         this.loggedInUserFilter = loggedInUserFilter;
         this.jobDAO = jobDAO;
         this.twitterHistoryDAO = twitterHistoryDAO;

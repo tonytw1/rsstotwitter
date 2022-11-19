@@ -1,7 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterAccountDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +27,7 @@ public class TwitterLoginHandler implements SigninHandler {
 
     private final static Logger log = LogManager.getLogger(TwitterLoginHandler.class);
 
-    private final MongoTwitterAccountDAO accountDAO;
+    private final TwitterAccountDAO accountDAO;
     private final TwitterService twitterService;
     private final OAuthService oauthService;
 
@@ -38,7 +38,7 @@ public class TwitterLoginHandler implements SigninHandler {
     private final Map<Long, Token> accessTokens;
 
     @Autowired
-    public TwitterLoginHandler(MongoTwitterAccountDAO accountDAO,
+    public TwitterLoginHandler(TwitterAccountDAO accountDAO,
                                TwitterService twitterService,
                                @Value("${consumer.key}") String consumerKey,
                                @Value("${consumer.secret}") String consumerSecret,

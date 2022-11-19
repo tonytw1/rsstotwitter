@@ -6,7 +6,7 @@ import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,13 +21,13 @@ public class TwitterUpdater implements Updater {
 
     private final static Logger log = LogManager.getLogger(TwitterUpdater.class);
 
-    private final MongoTwitterHistoryDAO twitterHistoryDAO;
+    private final TwitterHistoryDAO twitterHistoryDAO;
     private final TwitterService twitterService;
     private final TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
     private final MastodonService mastodonService;
 
     @Autowired
-    public TwitterUpdater(MongoTwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetFromFeedItemBuilder tweetFromFeedItemBuilder,
+    public TwitterUpdater(TwitterHistoryDAO twitterHistoryDAO, TwitterService twitterService, TweetFromFeedItemBuilder tweetFromFeedItemBuilder,
                           MastodonService mastodonService) {
         this.twitterHistoryDAO = twitterHistoryDAO;
         this.twitterService = twitterService;

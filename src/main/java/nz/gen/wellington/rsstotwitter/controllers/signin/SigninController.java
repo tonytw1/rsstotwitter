@@ -2,7 +2,7 @@ package nz.gen.wellington.rsstotwitter.controllers.signin;
 
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
 import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterAccountDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +21,13 @@ public class SigninController {
 
     private final static Logger log = LogManager.getLogger(SigninController.class);
 
-    private final MongoTwitterAccountDAO accountDAO;
+    private final TwitterAccountDAO accountDAO;
     private final SigninHandler signinHandler;
     private final LoggedInUserFilter loggedInUserFilter;
     private final String homePageUrl;
 
     @Autowired
-    public SigninController(MongoTwitterAccountDAO accountDAO, SigninHandler signinHandler,
+    public SigninController(TwitterAccountDAO accountDAO, SigninHandler signinHandler,
                             LoggedInUserFilter loggedInUserFilter,
                             @Value("${homepage.url}") String homePageUrl) {
         this.accountDAO = accountDAO;

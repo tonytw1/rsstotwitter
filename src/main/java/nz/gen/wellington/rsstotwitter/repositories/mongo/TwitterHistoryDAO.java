@@ -14,12 +14,12 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class MongoTwitterHistoryDAO {
+public class TwitterHistoryDAO {
 
     private DataStoreFactory dataStoreFactory;
 
     @Autowired
-    public MongoTwitterHistoryDAO(DataStoreFactory dataStoreFactory) {
+    public TwitterHistoryDAO(DataStoreFactory dataStoreFactory) {
         this.dataStoreFactory = dataStoreFactory;
     }
 

@@ -5,7 +5,7 @@ import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.forms.FeedDetails;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javatuples.Pair;
@@ -32,10 +32,10 @@ public class FeedsController {
   private final LoggedInUserFilter loggedInUserFilter;
   private final JobDAO jobDAO;
   private final FeedService feedService;
-  private final MongoTwitterHistoryDAO twitterHistoryDAO;
+  private final TwitterHistoryDAO twitterHistoryDAO;
 
   @Autowired
-  public FeedsController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO, FeedService feedService, MongoTwitterHistoryDAO twitterHistoryDAO) {
+  public FeedsController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO, FeedService feedService, TwitterHistoryDAO twitterHistoryDAO) {
     this.loggedInUserFilter = loggedInUserFilter;
     this.jobDAO = jobDAO;
     this.feedService = feedService;
