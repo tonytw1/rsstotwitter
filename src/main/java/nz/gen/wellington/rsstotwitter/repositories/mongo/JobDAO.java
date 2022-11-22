@@ -28,7 +28,7 @@ public class JobDAO {
     public List<FeedToTwitterJob> getJobsForAccount(TwitterAccount account) {
         return dataStoreFactory.getDs().
                 find(FeedToTwitterJob.class).
-                filter("account.id", account.getId()).asList();
+                filter("account", account).asList();
     }
 
     public FeedToTwitterJob getByObjectId(String id) {

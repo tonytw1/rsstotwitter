@@ -24,7 +24,7 @@ public class TwitterHistoryDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean hasAlreadyBeenTweeted(String guid) {
+    public boolean hasAlreadyBeenTweeted(String guid) { // TODO should be by account as well.
         return !tweetsForGuid(guid).isEmpty();
     }
 
