@@ -3,7 +3,7 @@ package nz.gen.wellington.rsstotwitter.controllers;
 import nz.gen.wellington.rsstotwitter.model.ActivitySummary;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.JobWithActivity;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class HomepageController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView homepage(HttpServletRequest request) {
-        TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+        Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
         if (loggedInUser != null) {
 
             List<JobWithActivity> jobsWithActivity = jobDAO.getJobsForAccount(loggedInUser).stream().

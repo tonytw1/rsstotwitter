@@ -5,7 +5,7 @@ import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +35,7 @@ public class TwitterUpdater implements Updater {
         this.mastodonService = mastodonService;
     }
 
-    public void updateFeed(Feed feed, List<FeedItem> feedItems, TwitterAccount account) {
+    public void updateFeed(Feed feed, List<FeedItem> feedItems, Account account) {
         log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
         final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account.getId());
         final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId());
@@ -62,7 +62,7 @@ public class TwitterUpdater implements Updater {
         log.info("Twitter update completed for feed: " + feed.getUrl());
     }
 
-    private boolean processItem(TwitterAccount account, FeedItem feedItem) {
+    private boolean processItem(Account account, FeedItem feedItem) {
         final String guid = feedItem.getGuid();
 
         final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);

@@ -3,7 +3,7 @@ package nz.gen.wellington.rsstotwitter.model;
 import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 
-public class TwitterAccount {
+public class Account {
 
     @Id
     ObjectId objectId;
@@ -16,10 +16,10 @@ public class TwitterAccount {
     private String token;
     private String tokenSecret;
 
-    public TwitterAccount() {
+    public Account() {
     }
 
-    public TwitterAccount(long id, String username) {
+    public Account(long id, String username) {
         this.id = id;
         this.username = username;
     }

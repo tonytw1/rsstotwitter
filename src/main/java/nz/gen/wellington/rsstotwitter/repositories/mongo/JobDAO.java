@@ -2,7 +2,7 @@ package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import dev.morphia.Datastore;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class JobDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<FeedToTwitterJob> getJobsForAccount(TwitterAccount account) {
+    public List<FeedToTwitterJob> getJobsForAccount(Account account) {
         return dataStoreFactory.getDs().
                 find(FeedToTwitterJob.class).
                 filter("account", account).asList();

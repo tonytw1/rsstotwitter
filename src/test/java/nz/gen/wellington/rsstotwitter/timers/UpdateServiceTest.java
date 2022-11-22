@@ -11,7 +11,7 @@ import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import org.junit.Before;
@@ -39,8 +39,8 @@ public class UpdateServiceTest {
 
     Feed feed;
     Feed secondFeed;
-    TwitterAccount account;
-    TwitterAccount secondAccount;
+    Account account;
+    Account secondAccount;
     @Mock
     List<FeedItem> feedItems;
     @Mock
@@ -53,9 +53,9 @@ public class UpdateServiceTest {
         service = new UpdateService(jobDAO, feedService, twitterUpdater);
 
         feed = new Feed(FEED_URL);
-        account = new TwitterAccount(1, TWITTER_USERNAME);
+        account = new Account(1, TWITTER_USERNAME);
         secondFeed = new Feed(SECOND_FEED_URL);
-        secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
+        secondAccount = new Account(2, TWITTER_USERNAME);
         jobs.add(new FeedToTwitterJob(feed, account));
         jobs.add(new FeedToTwitterJob(secondFeed, secondAccount));
 

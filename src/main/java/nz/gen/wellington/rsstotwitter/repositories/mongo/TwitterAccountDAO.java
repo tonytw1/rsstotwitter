@@ -1,6 +1,6 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +14,11 @@ public class TwitterAccountDAO {
         this.dataStoreFactory = dataStoreFactory;
     }
 
-    public void saveAccount(TwitterAccount account) {
+    public void saveAccount(Account account) {
         dataStoreFactory.getDs().save(account);
     }
 
-    public TwitterAccount getUserByTwitterId(long id) {
-        return dataStoreFactory.getDs().find(TwitterAccount.class, "id", id).get();
+    public Account getUserByTwitterId(long id) {
+        return dataStoreFactory.getDs().find(Account.class, "id", id).get();
     }
 }

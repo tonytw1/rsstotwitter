@@ -3,7 +3,7 @@ package nz.gen.wellington.rsstotwitter.twitter;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,7 @@ public class TwitterService {
         this.tweetedCounter = meterRegistry.counter("tweeted");
     }
 
-    public Tweet tweet(Tweet tweet, TwitterAccount account) {
+    public Tweet tweet(Tweet tweet, Account account) {
         log.info("Attempting to tweet: " + tweet.getText());
         final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);
         try {
@@ -48,7 +48,7 @@ public class TwitterService {
         return null;
     }
 
-    public List<Long> getFollowers(TwitterAccount account) {
+    public List<Long> getFollowers(Account account) {
         final Twitter twitter = getAuthenticatedApiForAccount(account);
         try {
             IDs followersIDs = twitter.getFollowersIDs(account.getId());
@@ -80,7 +80,7 @@ public class TwitterService {
         return twitter.updateStatus(statusUpdate);
     }
 
-    private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
+    private Twitter getAuthenticatedApiForAccount(Account account) {
         Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(new AccessToken(account.getToken(), account.getTokenSecret()));
         if (twitterApiForAccount == null) {
             throw new RuntimeException("Could not get api instance for account: " + account.getUsername());    // TODO is a null return really what twitter4j returns?

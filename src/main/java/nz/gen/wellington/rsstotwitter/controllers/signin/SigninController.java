@@ -1,7 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +59,7 @@ public class SigninController {
         if (externalIdentifier != null) {
             log.info("External user identifier is: " + externalIdentifier);
 
-            TwitterAccount account = signinHandler.getUserByExternalIdentifier(externalIdentifier);
+            Account account = signinHandler.getUserByExternalIdentifier(externalIdentifier);
 
             final boolean localAccountAlreadyExistsForThisUser = account != null;
             if (!localAccountAlreadyExistsForThisUser) {
@@ -83,8 +83,8 @@ public class SigninController {
         return new ModelAndView(new RedirectView(homePageUrl));
     }
 
-    private TwitterAccount createNewUser(Object externalIdentifier) {
-        TwitterAccount newUser = new TwitterAccount();
+    private Account createNewUser(Object externalIdentifier) {
+        Account newUser = new Account();
         signinHandler.decorateUserWithExternalSigninIdentifier(newUser, externalIdentifier);
         accountDAO.saveAccount(newUser);
         log.info("Created new user with external identifier: " + externalIdentifier.toString());

@@ -4,7 +4,7 @@ import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class TwitterUpdaterTest {
     @Mock
     Tweet sentTweet;
     @Mock
-    TwitterAccount account;
+    Account account;
 
     TwitterUpdater service;
 

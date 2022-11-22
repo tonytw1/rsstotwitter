@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.mongodb.*;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class DataStoreFactory {
 
     private Datastore createDataStore(List<ServerAddress> addresses, String database, MongoCredential credential, MongoClientOptions mongoClientOptions) {
         Morphia morphia = new Morphia();
-        morphia.map(TwitterAccount.class);
+        morphia.map(Account.class);
 
         try {
             MongoClient m = credential != null ? new MongoClient(addresses, credential, mongoClientOptions) : new MongoClient(addresses, mongoClientOptions);

@@ -44,7 +44,7 @@ public class FeedsController {
 
   @RequestMapping(value = "/new", method = RequestMethod.GET)
   public ModelAndView newFeed(@ModelAttribute("feedDetails") FeedDetails feedDetails, HttpServletRequest request) {
-    TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+    Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
       return renderNewFeedForm(feedDetails, loggedInUser);
 
@@ -55,7 +55,7 @@ public class FeedsController {
 
   @RequestMapping(value = "/new", method = RequestMethod.POST)
   public ModelAndView newFeedSubmit(@Valid @ModelAttribute("feedDetails") FeedDetails feedDetails, BindingResult result, HttpServletRequest request) {
-    TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+    Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
       if (result.hasErrors()) {
         log.info("Feed form errors: " + result.getAllErrors());
@@ -77,7 +77,7 @@ public class FeedsController {
 
   @RequestMapping(value = "/feeds/{id}", method = RequestMethod.GET)
   public ModelAndView feed(@PathVariable String id, HttpServletRequest request) {
-    TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+    Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
       FeedToTwitterJob job = jobDAO.getByObjectId(id);
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
@@ -106,7 +106,7 @@ public class FeedsController {
     }
   }
 
-  private ModelAndView renderNewFeedForm(FeedDetails feedDetails, TwitterAccount account) {
+  private ModelAndView renderNewFeedForm(FeedDetails feedDetails, Account account) {
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
             addObject("account", account);

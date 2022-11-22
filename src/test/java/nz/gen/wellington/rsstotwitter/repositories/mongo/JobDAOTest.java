@@ -2,7 +2,7 @@ package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import org.junit.Test;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class JobDAOTest {
         TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
         JobDAO jobDAO = new JobDAO(dataStoreFactory);
 
-        TwitterAccount account = new TwitterAccount();
+        Account account = new Account();
         account.setId(123L);
         account.setUsername("a-user");
         accountDAO.saveAccount(account);
@@ -58,7 +58,7 @@ public class JobDAOTest {
         TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
         JobDAO jobDAO = new JobDAO(dataStoreFactory);
 
-        TwitterAccount account = new TwitterAccount();
+        Account account = new Account();
         account.setId(123L);
         account.setUsername("a-user");
         accountDAO.saveAccount(account);
@@ -71,7 +71,7 @@ public class JobDAOTest {
         jobDAO.save(job);
 
 
-        TwitterAccount anotherAccount = new TwitterAccount();
+        Account anotherAccount = new Account();
         anotherAccount.setId(456L);
         anotherAccount.setUsername("another-user");
         accountDAO.saveAccount(anotherAccount);

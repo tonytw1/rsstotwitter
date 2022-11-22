@@ -1,6 +1,6 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import org.apache.logging.log4j.LogManager;
@@ -121,13 +121,13 @@ public class TwitterLoginHandler implements SigninHandler {
     }
 
     @Override
-    public TwitterAccount getUserByExternalIdentifier(Object externalIdentifier) {
+    public Account getUserByExternalIdentifier(Object externalIdentifier) {
         twitter4j.User twitterUser = (twitter4j.User) externalIdentifier;
         return accountDAO.getUserByTwitterId(twitterUser.getId());
     }
 
     @Override
-    public void decorateUserWithExternalSigninIdentifier(TwitterAccount account, Object externalIdentifier) {
+    public void decorateUserWithExternalSigninIdentifier(Account account, Object externalIdentifier) {
         twitter4j.User twitterUser = (twitter4j.User) externalIdentifier;
         account.setId(twitterUser.getId());
         account.setUsername(twitterUser.getScreenName());

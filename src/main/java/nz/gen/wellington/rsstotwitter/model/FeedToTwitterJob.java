@@ -12,12 +12,12 @@ public class FeedToTwitterJob {
     private Feed feed;
 
     @Reference
-    private TwitterAccount account;
+    private Account account;
 
     public FeedToTwitterJob() {
     }
 
-    public FeedToTwitterJob(Feed feed, TwitterAccount account) {
+    public FeedToTwitterJob(Feed feed, Account account) {
         this.feed = feed;
         this.account = account;
     }
@@ -34,11 +34,11 @@ public class FeedToTwitterJob {
         this.feed = feed;
     }
 
-    public TwitterAccount getAccount() {
+    public Account getAccount() {
         return account;
     }
 
-    public void setAccount(TwitterAccount account) {
+    public void setAccount(Account account) {
         this.account = account;
     }
 
