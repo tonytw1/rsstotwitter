@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.model;
 
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
 
 public class FeedToTwitterJob {
@@ -9,6 +10,8 @@ public class FeedToTwitterJob {
     ObjectId objectId;
 
     private Feed feed;
+
+    @Reference
     private TwitterAccount account;
 
     public FeedToTwitterJob() {

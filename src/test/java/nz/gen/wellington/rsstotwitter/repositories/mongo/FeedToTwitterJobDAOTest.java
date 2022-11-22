@@ -21,11 +21,13 @@ public class FeedToTwitterJobDAOTest {
         }
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
-        JobDAO dao = new JobDAO(dataStoreFactory);
+        TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
+        JobDAO jobDAO = new JobDAO(dataStoreFactory);
 
         TwitterAccount account = new TwitterAccount();
         account.setId(123L);
         account.setUsername("a-user");
+        accountDAO.saveAccount(account);
 
         Feed feed = new Feed("https://wellington.gen.nz/rss");
 
@@ -33,10 +35,10 @@ public class FeedToTwitterJobDAOTest {
         job.setAccount(account);
         job.setFeed(feed);
 
-        dao.save(job);
+        jobDAO.save(job);
         assertNotNull(job.getObjectId());
 
-        FeedToTwitterJob reloaded = dao.getByObjectId(job.getObjectId());
+        FeedToTwitterJob reloaded = jobDAO.getByObjectId(job.getObjectId());
         assertEquals(job.getObjectId(), reloaded.getObjectId());
         assertEquals(feed, reloaded.getFeed());
         assertEquals(account.getId(), reloaded.getAccount().getId());

@@ -1,5 +1,7 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import java.util.Objects;
+
 public class Feed {
 
     private String url;
@@ -20,9 +22,23 @@ public class Feed {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Feed feed = (Feed) o;
+        return Objects.equals(url, feed.url);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(url);
+    }
+
+    @Override
     public String toString() {
         return "Feed{" +
                 "url='" + url + '\'' +
                 '}';
     }
+
 }
