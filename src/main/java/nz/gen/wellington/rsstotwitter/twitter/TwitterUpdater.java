@@ -39,9 +39,9 @@ public class TwitterUpdater implements Updater {
         log.info("Sent to " + destination + " in last hour: " + tweetsSentInLastHour);
         log.info("Sent to " + destination + " in last 24 hours: " + tweetsSentInLastTwentyForHours);
 
-        long tweetsSentThisRound = 0;
+        long sentThisRound = 0;
         for (FeedItem feedItem : feedItems) {
-            if (hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + tweetsSentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + tweetsSentThisRound)) {
+            if (hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + sentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + sentThisRound)) {
                 log.info("Feed '" + feed.getUrl() + "' has exceeded maximum per hour or day rate limit; returning");
                 return;
             }
@@ -49,8 +49,9 @@ public class TwitterUpdater implements Updater {
             boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account);
             if (!publisherRateLimitExceeded) {
                 if (processItem(account, feedItem, destination)) {
-                    tweetsSentThisRound++;
+                    sentThisRound++;
                 }
+
             } else {
                 log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feed item from this publisher");
             }
@@ -64,21 +65,23 @@ public class TwitterUpdater implements Updater {
 
         final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
         if (!isLessThanOneWeekOld) {
-            log.debug("Not tweeting as the item's publication date is more than one week old: " + guid);
+            log.debug("Not tweeting as the item's publication date is more than one week old: " + guid);    // TODO push up
             return false;
         }
 
-        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(account, guid, Destination.TWITTER)) {
+        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(account, guid, destination)) {
             try {
                 final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
-                final Tweet updatedStatus = twitterService.tweet(tweet, account);
+
+                Tweet updatedStatus = null;
+                if (destination == Destination.TWITTER) {
+                    updatedStatus = twitterService.tweet(tweet, account);
+                }
+                if (destination == Destination.MASTODON) {
+                    updatedStatus = mastodonService.post(tweet.getText());
+                }
                 if (updatedStatus != null) {
-                    twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, Destination.TWITTER);
-
-                    // Echo to Mastodon spike
-                    // TODO move to separate updater
-                    mastodonService.post(tweet.getText());
-
+                    twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, destination);
                     return true;
                 }
 
