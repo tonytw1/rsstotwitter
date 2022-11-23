@@ -1,10 +1,7 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
-import nz.gen.wellington.rsstotwitter.model.Destination;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
+import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,13 +39,17 @@ public class UpdateService implements Runnable {
     }
 
     private void processJob(FeedToTwitterJob job) {
+        // Load the feed items for this job.
+        // Send them to each destination for this job.
+        // Rate limiting is per job
+
         final Feed feed = job.getFeed();
         log.info("Running feed to twitter job: " + feed.getUrl() + " -> @" + job.getAccount().getUsername());
         try {
             List<FeedItem> feedItems = feedService.loadFeedItems(feed);
             if (feedItems != null && !feedItems.isEmpty()) {
-                if (job.getDestinations().contains(Destination.TWITTER)) {
-                    twitterUpdater.updateFeed(feed, feedItems, job);
+                for (Destination destination : job.getDestinations()) {
+                    twitterUpdater.updateFeed(job.getAccount(), feed, feedItems, destination);
                 }
 
             } else {

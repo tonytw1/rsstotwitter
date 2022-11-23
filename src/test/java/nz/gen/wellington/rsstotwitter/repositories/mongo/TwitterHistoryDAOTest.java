@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
+import nz.gen.wellington.rsstotwitter.model.Destination;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -20,6 +21,7 @@ public class TwitterHistoryDAOTest {
         if (mongoHost == null) {
             mongoHost = "localhost";
         }
+        System.out.println(mongoDatabase);
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
         TwitterHistoryDAO twitterHistoryDAO = new TwitterHistoryDAO(dataStoreFactory);
@@ -29,10 +31,11 @@ public class TwitterHistoryDAOTest {
         FeedItem feedItem = new FeedItem(feed, "A post", link, link, null, null, null);
         Tweet tweet = new Tweet();
 
-        twitterHistoryDAO.markAsTweeted(feedItem, tweet);
+        twitterHistoryDAO.markAsTweeted(feedItem, tweet, Destination.TWITTER);
 
-        assertTrue(twitterHistoryDAO.hasAlreadyBeenTweeted(link));
-        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted("http://localhost/not-seen-before"));
+        assertTrue(twitterHistoryDAO.hasAlreadyBeenTweeted(link, Destination.TWITTER));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted("http://localhost/not-seen-before", Destination.TWITTER));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(link, Destination.MASTODON));
     }
 
 }

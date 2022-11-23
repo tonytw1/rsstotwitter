@@ -32,8 +32,7 @@ public class TwitterUpdater implements Updater {
         this.mastodonService = mastodonService;
     }
 
-    public void updateFeed(Feed feed, List<FeedItem> feedItems, FeedToTwitterJob job) {
-        Account account = job.getAccount();
+    public void updateFeed(Account account, Feed feed, List<FeedItem> feedItems, Destination destination) {
         log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
         final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account.getId());
         final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId());
@@ -49,7 +48,7 @@ public class TwitterUpdater implements Updater {
 
             boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());
             if (!publisherRateLimitExceeded) {
-                if (processItem(account, feedItem, job)) {
+                if (processItem(account, feedItem, destination)) {
                     tweetsSentThisRound++;
                 }
             } else {
@@ -60,7 +59,7 @@ public class TwitterUpdater implements Updater {
         log.info("Twitter update completed for feed: " + feed.getUrl());
     }
 
-    private boolean processItem(Account account, FeedItem feedItem, FeedToTwitterJob job) {
+    private boolean processItem(Account account, FeedItem feedItem, Destination destination) {
         final String guid = feedItem.getGuid();
 
         final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
@@ -69,18 +68,16 @@ public class TwitterUpdater implements Updater {
             return false;
         }
 
-        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(guid)) {
+        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(guid, Destination.TWITTER)) {
             try {
                 final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
                 final Tweet updatedStatus = twitterService.tweet(tweet, account);
                 if (updatedStatus != null) {
-                    twitterHistoryDAO.markAsTweeted(feedItem, updatedStatus);
+                    twitterHistoryDAO.markAsTweeted(feedItem, updatedStatus, Destination.TWITTER);
 
-                    if (job.getDestinations().contains(Destination.MASTODON)) {
-                        // Echo to Mastodon spike
-                        // TODO move to separate updater
-                        mastodonService.post(tweet.getText());
-                    }
+                    // Echo to Mastodon spike
+                    // TODO move to separate updater
+                    mastodonService.post(tweet.getText());
 
                     return true;
                 }

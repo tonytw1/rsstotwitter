@@ -2,10 +2,7 @@ package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import dev.morphia.query.Query;
 import dev.morphia.query.Sort;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterEvent;
+import nz.gen.wellington.rsstotwitter.model.*;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,18 +21,21 @@ public class TwitterHistoryDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean hasAlreadyBeenTweeted(String guid) { // TODO should be by account as well.
-        return !tweetsForGuid(guid).isEmpty();
+    public boolean hasAlreadyBeenTweeted(String guid, Destination destination) { // TODO should be by account as well.
+        return !tweetsForGuid(guid, destination).isEmpty();
     }
 
-    public List<TwitterEvent> tweetsForGuid(String guid) {
+    public List<TwitterEvent> tweetsForGuid(String guid, Destination destination) {
         return dataStoreFactory.getDs().
                 find(TwitterEvent.class).
-                filter("guid", guid).asList();
+                filter("guid", guid).
+                filter("destination", destination).
+                asList();
     }
 
-    public void markAsTweeted(FeedItem feedItem, Tweet sentTweet) {
-        TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(), feedItem.getFeed(), sentTweet);
+    public void markAsTweeted(FeedItem feedItem, Tweet sentTweet, Destination destination) {
+        TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(),
+                feedItem.getFeed(), sentTweet, destination);
         saveTwitterEvent(newEvent);
     }
 

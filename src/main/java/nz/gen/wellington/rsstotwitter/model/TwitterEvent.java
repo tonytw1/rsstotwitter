@@ -16,33 +16,27 @@ public class TwitterEvent {
     private String publisher;
     private Feed feed;
     private Tweet tweet;
+    private Destination destination;
 
     public TwitterEvent() {
     }
 
-    public TwitterEvent(String guid, String twit, Date date, String publisher, Feed feed, Tweet tweet) {
+    public TwitterEvent(String guid, String twit, Date date, String publisher, Feed feed, Tweet tweet, Destination destination) {
         this.guid = guid;
         this.twit = twit;
         this.date = date;
         this.feed = feed;
         this.publisher = publisher;
         this.tweet = tweet;
+        this.destination = destination;
     }
 
     public String getGuid() {
         return guid;
     }
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
-
     public Date getDate() {
         return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public String getTwit() {
@@ -55,10 +49,6 @@ public class TwitterEvent {
 
     public String getPublisher() {
         return publisher;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
     }
 
     public Feed getFeed() {
@@ -77,6 +67,10 @@ public class TwitterEvent {
         this.tweet = tweet;
     }
 
+    public Destination getDestination() {
+        return destination;
+    }
+
     @Override
     public String toString() {
         return "TwitterEvent{" +
@@ -87,6 +81,7 @@ public class TwitterEvent {
                 ", publisher='" + publisher + '\'' +
                 ", feed=" + feed +
                 ", tweet=" + tweet +
+                ", destination=" + destination +
                 '}';
     }
 }

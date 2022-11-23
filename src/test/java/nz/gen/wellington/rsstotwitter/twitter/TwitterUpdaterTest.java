@@ -58,9 +58,8 @@ public class TwitterUpdaterTest {
     @Test
     public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() {
         when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(55L);
-        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER));
 
-        service.updateFeed(feed, feedItems, job);
+        service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
         verifyNoMoreInteractions(twitterService);
     }
@@ -69,12 +68,11 @@ public class TwitterUpdaterTest {
     public void shouldTweetFeedItems() throws IOException {
         when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem)).thenReturn(tweetToSend);
         when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
-        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER));
 
-        service.updateFeed(feed, feedItems, job);
+        service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
         verify(twitterService).tweet(tweetToSend, account);
-        verify(twitterHistoryDAO).markAsTweeted(feedItem, sentTweet);
+        verify(twitterHistoryDAO).markAsTweeted(feedItem, sentTweet,  Destination.TWITTER);
     }
 
     @Test
@@ -83,9 +81,8 @@ public class TwitterUpdaterTest {
         FeedItem oldFeedItem = new FeedItem(feed, "title", "guid", "link", oldDate, "author", null);
         feedItems.clear();
         feedItems.add(oldFeedItem);
-        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER));
 
-        service.updateFeed(feed, feedItems, job);
+        service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
         verifyNoMoreInteractions(tweetFromFeedItemBuilder);
         verifyNoMoreInteractions(twitterService);

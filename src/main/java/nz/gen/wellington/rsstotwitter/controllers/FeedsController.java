@@ -89,7 +89,7 @@ public class FeedsController {
 
       List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems != null ? feedItems.stream().map(
               feedItem -> {
-                List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(feedItem.getGuid());
+                List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(feedItem.getGuid(), Destination.TWITTER);
                 return new Pair<>(feedItem, tweets);
               }
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
