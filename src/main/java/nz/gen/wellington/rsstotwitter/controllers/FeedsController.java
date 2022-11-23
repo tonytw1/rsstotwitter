@@ -64,7 +64,7 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Sets.newHashSet(Destination.TWITTER));
+      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Sets.newHashSet(Destination.TWITTER, Destination.MASTODON));
       log.info("Creating job: " + job);
 
       jobDAO.save(job);

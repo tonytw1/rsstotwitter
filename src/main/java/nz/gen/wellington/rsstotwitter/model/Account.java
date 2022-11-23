@@ -3,6 +3,8 @@ package nz.gen.wellington.rsstotwitter.model;
 import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 
+import java.util.Objects;
+
 public class Account {
 
     @Id
@@ -54,6 +56,19 @@ public class Account {
 
     public void setTokenSecret(String tokenSecret) {
         this.tokenSecret = tokenSecret;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return id == account.id && Objects.equals(objectId, account.objectId) && Objects.equals(username, account.username) && Objects.equals(token, account.token) && Objects.equals(tokenSecret, account.tokenSecret);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectId, id, username, token, tokenSecret);
     }
 
 }

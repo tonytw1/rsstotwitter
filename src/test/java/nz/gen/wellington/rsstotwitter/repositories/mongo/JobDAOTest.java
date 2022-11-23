@@ -45,7 +45,7 @@ public class JobDAOTest {
         assertEquals(feed, reloaded.getFeed());
         assertEquals(account.getId(), reloaded.getAccount().getId());
         assertEquals(account.getUsername(), reloaded.getAccount().getUsername());
-        assertEquals(Sets.newHashSet(Destination.TWITTER), reloaded.getDestination());
+        assertEquals(Sets.newHashSet(Destination.TWITTER), reloaded.getDestinations());
     }
 
     @Test

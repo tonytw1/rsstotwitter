@@ -2,10 +2,7 @@ package nz.gen.wellington.rsstotwitter.twitter;
 
 import com.google.common.base.Strings;
 import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.Account;
+import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import nz.gen.wellington.rsstotwitter.timers.Updater;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +32,8 @@ public class TwitterUpdater implements Updater {
         this.mastodonService = mastodonService;
     }
 
-    public void updateFeed(Feed feed, List<FeedItem> feedItems, Account account) {
+    public void updateFeed(Feed feed, List<FeedItem> feedItems, FeedToTwitterJob job) {
+        Account account = job.getAccount();
         log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
         final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account.getId());
         final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId());
@@ -51,7 +49,7 @@ public class TwitterUpdater implements Updater {
 
             boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());
             if (!publisherRateLimitExceeded) {
-                if (processItem(account, feedItem)) {
+                if (processItem(account, feedItem, job)) {
                     tweetsSentThisRound++;
                 }
             } else {
@@ -62,7 +60,7 @@ public class TwitterUpdater implements Updater {
         log.info("Twitter update completed for feed: " + feed.getUrl());
     }
 
-    private boolean processItem(Account account, FeedItem feedItem) {
+    private boolean processItem(Account account, FeedItem feedItem, FeedToTwitterJob job) {
         final String guid = feedItem.getGuid();
 
         final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
@@ -78,9 +76,11 @@ public class TwitterUpdater implements Updater {
                 if (updatedStatus != null) {
                     twitterHistoryDAO.markAsTweeted(feedItem, updatedStatus);
 
-                    // Echo to Mastodon spike
-                    // TODO move to separate updater
-                    mastodonService.post(tweet.getText());
+                    if (job.getDestinations().contains(Destination.MASTODON)) {
+                        // Echo to Mastodon spike
+                        // TODO move to separate updater
+                        mastodonService.post(tweet.getText());
+                    }
 
                     return true;
                 }

@@ -1,10 +1,8 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
+import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.Account;
+import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -60,8 +58,9 @@ public class TwitterUpdaterTest {
     @Test
     public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() {
         when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(55L);
+        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER));
 
-        service.updateFeed(feed, feedItems, account);
+        service.updateFeed(feed, feedItems, job);
 
         verifyNoMoreInteractions(twitterService);
     }
@@ -70,8 +69,9 @@ public class TwitterUpdaterTest {
     public void shouldTweetFeedItems() throws IOException {
         when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem)).thenReturn(tweetToSend);
         when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
+        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER));
 
-        service.updateFeed(feed, feedItems, account);
+        service.updateFeed(feed, feedItems, job);
 
         verify(twitterService).tweet(tweetToSend, account);
         verify(twitterHistoryDAO).markAsTweeted(feedItem, sentTweet);
@@ -83,8 +83,9 @@ public class TwitterUpdaterTest {
         FeedItem oldFeedItem = new FeedItem(feed, "title", "guid", "link", oldDate, "author", null);
         feedItems.clear();
         feedItems.add(oldFeedItem);
+        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER));
 
-        service.updateFeed(feed, feedItems, account);
+        service.updateFeed(feed, feedItems, job);
 
         verifyNoMoreInteractions(tweetFromFeedItemBuilder);
         verifyNoMoreInteractions(twitterService);

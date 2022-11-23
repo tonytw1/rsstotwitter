@@ -5,9 +5,10 @@ import java.util.List;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.Account;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 
 public interface Updater {
 
-    public void updateFeed(Feed feed, List<FeedItem> feedItems, Account account);
+    public void updateFeed(Feed feed, List<FeedItem> feedItems, FeedToTwitterJob job);
 
 }

@@ -4,6 +4,7 @@ import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class FeedToTwitterJob {
@@ -38,8 +39,21 @@ public class FeedToTwitterJob {
         return account;
     }
 
-    public Set<Destination> getDestination() {
+    public Set<Destination> getDestinations() {
         return destinations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FeedToTwitterJob that = (FeedToTwitterJob) o;
+        return Objects.equals(objectId, that.objectId) && Objects.equals(feed, that.feed) && Objects.equals(destinations, that.destinations) && Objects.equals(account, that.account);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectId, feed, destinations, account);
     }
 
     @Override

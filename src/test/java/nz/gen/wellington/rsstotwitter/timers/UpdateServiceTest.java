@@ -63,10 +63,11 @@ public class UpdateServiceTest {
     @Test
     public void shouldFetchFeedItemsAndPassThemToTheTwitterUpdaterForTweeting() throws Exception {
         when(feedService.loadFeedItems(feed)).thenReturn(feedItems);
+        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER));
 
         service.run();
 
-        verify(twitterUpdater).updateFeed(feed, feedItems, account);
+        verify(twitterUpdater).updateFeed(feed, feedItems, job);
     }
 
     @Test
@@ -82,10 +83,11 @@ public class UpdateServiceTest {
     public void shouldContinueProcessingRemainingFeedsIfOneFailsToLoad() throws Exception {
         when(feedService.loadFeedItems(feed)).thenReturn(null);
         when(feedService.loadFeedItems(secondFeed)).thenReturn(secondFeedItems);
+        FeedToTwitterJob secondJob = new FeedToTwitterJob(secondFeed, secondAccount, Sets.newHashSet(Destination.TWITTER));
 
         service.run();
 
-        verify(twitterUpdater).updateFeed(secondFeed, secondFeedItems, secondAccount);
+        verify(twitterUpdater).updateFeed(secondFeed, secondFeedItems, secondJob);
     }
 
 }

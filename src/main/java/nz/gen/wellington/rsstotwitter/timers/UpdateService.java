@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
+import nz.gen.wellington.rsstotwitter.model.Destination;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedItem;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
@@ -46,7 +47,9 @@ public class UpdateService implements Runnable {
         try {
             List<FeedItem> feedItems = feedService.loadFeedItems(feed);
             if (feedItems != null && !feedItems.isEmpty()) {
-                twitterUpdater.updateFeed(feed, feedItems, job.getAccount());
+                if (job.getDestinations().contains(Destination.TWITTER)) {
+                    twitterUpdater.updateFeed(feed, feedItems, job);
+                }
 
             } else {
                 log.warn("Failed to load feed items from feed url or feed contained no items: " + feed.getUrl());
