@@ -1,6 +1,6 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,17 +46,16 @@ public class TwitterUpdaterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(2L);
+        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account)).thenReturn(2L);
         feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null);
-        feedItems = new ArrayList<FeedItem>();
-        feedItems.add(feedItem);
+        feedItems = Lists.newArrayList(feedItem);
 
         service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder, mastodonService);
     }
 
     @Test
     public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() {
-        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(55L);
+        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account)).thenReturn(55L);
 
         service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
@@ -72,7 +70,7 @@ public class TwitterUpdaterTest {
         service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
         verify(twitterService).tweet(tweetToSend, account);
-        verify(twitterHistoryDAO).markAsTweeted(feedItem, sentTweet,  Destination.TWITTER);
+        verify(twitterHistoryDAO).markAsTweeted(account, feedItem, sentTweet,  Destination.TWITTER);
     }
 
     @Test
@@ -90,7 +88,7 @@ public class TwitterUpdaterTest {
 
     @Test
     public void shouldNotExceedRateLimitDuringRun() {
-        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(29L);
+        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account)).thenReturn(29L);
     }
 
 }

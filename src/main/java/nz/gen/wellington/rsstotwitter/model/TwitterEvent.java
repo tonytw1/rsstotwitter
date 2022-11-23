@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.model;
 
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -18,10 +19,13 @@ public class TwitterEvent {
     private Tweet tweet;
     private Destination destination;
 
+    @Reference
+    private Account account;
+
     public TwitterEvent() {
     }
 
-    public TwitterEvent(String guid, String twit, Date date, String publisher, Feed feed, Tweet tweet, Destination destination) {
+    public TwitterEvent(String guid, String twit, Date date, String publisher, Feed feed, Tweet tweet, Destination destination, Account account) {
         this.guid = guid;
         this.twit = twit;
         this.date = date;
@@ -29,6 +33,7 @@ public class TwitterEvent {
         this.publisher = publisher;
         this.tweet = tweet;
         this.destination = destination;
+        this.account = account;
     }
 
     public String getGuid() {
@@ -71,6 +76,10 @@ public class TwitterEvent {
         return destination;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
     @Override
     public String toString() {
         return "TwitterEvent{" +
@@ -82,6 +91,8 @@ public class TwitterEvent {
                 ", feed=" + feed +
                 ", tweet=" + tweet +
                 ", destination=" + destination +
+                ", account=" + account +
                 '}';
     }
+
 }

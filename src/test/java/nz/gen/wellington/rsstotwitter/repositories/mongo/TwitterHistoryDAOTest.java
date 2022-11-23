@@ -1,9 +1,6 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
-import nz.gen.wellington.rsstotwitter.model.Destination;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.Tweet;
+import nz.gen.wellington.rsstotwitter.model.*;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -21,21 +18,30 @@ public class TwitterHistoryDAOTest {
         if (mongoHost == null) {
             mongoHost = "localhost";
         }
-        System.out.println(mongoDatabase);
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
         TwitterHistoryDAO twitterHistoryDAO = new TwitterHistoryDAO(dataStoreFactory);
+        TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
 
         Feed feed = new Feed("https://wellington.gen.nz/rss");
         String link = "https://wellington.gen.nz/a-post";
         FeedItem feedItem = new FeedItem(feed, "A post", link, link, null, null, null);
         Tweet tweet = new Tweet();
 
-        twitterHistoryDAO.markAsTweeted(feedItem, tweet, Destination.TWITTER);
+        Account account = new Account();
+        account.setId(123L);
+        accountDAO.saveAccount(account);
 
-        assertTrue(twitterHistoryDAO.hasAlreadyBeenTweeted(link, Destination.TWITTER));
-        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted("http://localhost/not-seen-before", Destination.TWITTER));
-        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(link, Destination.MASTODON));
+        Account anotherAccount = new Account();
+        anotherAccount.setId(456L);
+        accountDAO.saveAccount(anotherAccount);
+
+        twitterHistoryDAO.markAsTweeted(account, feedItem, tweet, Destination.TWITTER);
+
+        assertTrue(twitterHistoryDAO.hasAlreadyBeenTweeted(account, link, Destination.TWITTER));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(account, "http://localhost/not-seen-before", Destination.TWITTER));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(account, link, Destination.MASTODON));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(anotherAccount, link, Destination.TWITTER));
     }
 
 }

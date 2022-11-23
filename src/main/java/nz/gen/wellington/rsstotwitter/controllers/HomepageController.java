@@ -1,9 +1,9 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.model.ActivitySummary;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.JobWithActivity;
-import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +40,8 @@ public class HomepageController {
                     map(job -> {
                         Feed feed = job.getFeed();
                         ActivitySummary activity = new ActivitySummary(
-                                twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount().getId()),
-                                twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, job.getAccount().getId()));
+                                twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount()),
+                                twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, job.getAccount()));
                         return new JobWithActivity(job, activity);
                     }).collect(Collectors.toList());
 

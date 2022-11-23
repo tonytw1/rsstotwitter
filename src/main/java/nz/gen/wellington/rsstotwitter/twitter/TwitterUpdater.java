@@ -34,8 +34,8 @@ public class TwitterUpdater implements Updater {
 
     public void updateFeed(Account account, Feed feed, List<FeedItem> feedItems, Destination destination) {
         log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
-        final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account.getId());
-        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId());
+        final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account);
+        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account);
         log.info("Tweets sent in last hour: " + tweetsSentInLastHour);
         log.info("Tweets sent in last 24 hours: " + tweetsSentInLastTwentyForHours);
 
@@ -68,12 +68,12 @@ public class TwitterUpdater implements Updater {
             return false;
         }
 
-        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(guid, Destination.TWITTER)) {
+        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(account, guid, Destination.TWITTER)) {
             try {
                 final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
                 final Tweet updatedStatus = twitterService.tweet(tweet, account);
                 if (updatedStatus != null) {
-                    twitterHistoryDAO.markAsTweeted(feedItem, updatedStatus, Destination.TWITTER);
+                    twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, Destination.TWITTER);
 
                     // Echo to Mastodon spike
                     // TODO move to separate updater

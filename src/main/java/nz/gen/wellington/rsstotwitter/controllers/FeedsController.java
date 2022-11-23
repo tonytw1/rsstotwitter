@@ -83,13 +83,13 @@ public class FeedsController {
       FeedToTwitterJob job = jobDAO.getByObjectId(id);
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
 
-      long numberOfTwitsInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount().getId());
-      long numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount().getId());
+      long numberOfTwitsInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount());
+      long numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount());
       ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
 
       List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems != null ? feedItems.stream().map(
               feedItem -> {
-                List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(feedItem.getGuid(), Destination.TWITTER);
+                List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), Destination.TWITTER);
                 return new Pair<>(feedItem, tweets);
               }
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
@@ -97,7 +97,7 @@ public class FeedsController {
       return new ModelAndView("feed").
               addObject("account", loggedInUser).
               addObject("job", job).
-              addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount().getId())).
+              addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
               addObject("feedItems", feedItems).
               addObject("feedItemsWithTweets", withTweets);

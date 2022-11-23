@@ -21,39 +21,40 @@ public class TwitterHistoryDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public boolean hasAlreadyBeenTweeted(String guid, Destination destination) { // TODO should be by account as well.
-        return !tweetsForGuid(guid, destination).isEmpty();
+    public boolean hasAlreadyBeenTweeted(Account account, String guid, Destination destination) {
+        return !tweetsForGuid(account, guid, destination).isEmpty();
     }
 
-    public List<TwitterEvent> tweetsForGuid(String guid, Destination destination) {
+    public List<TwitterEvent> tweetsForGuid(Account account, String guid, Destination destination) {
         return dataStoreFactory.getDs().
                 find(TwitterEvent.class).
                 filter("guid", guid).
                 filter("destination", destination).
+                filter("account", account).
                 asList();
     }
 
-    public void markAsTweeted(FeedItem feedItem, Tweet sentTweet, Destination destination) {
+    public void markAsTweeted(Account account, FeedItem feedItem, Tweet sentTweet, Destination destination) {
         TwitterEvent newEvent = new TwitterEvent(feedItem.getGuid(), sentTweet.getText(), new DateTime().toDate(), feedItem.getAuthor(),
-                feedItem.getFeed(), sentTweet, destination);
+                feedItem.getFeed(), sentTweet, destination, account);
         saveTwitterEvent(newEvent);
     }
 
-    public List<TwitterEvent> getTweetEvents(Feed feed, Long twitterUserId) {
+    public List<TwitterEvent> getTweetEvents(Feed feed, Account account) {
         Query<TwitterEvent> limit = dataStoreFactory.getDs().find(TwitterEvent.class).
                 filter("feed.url", feed.getUrl()).
-                filter("tweet.userId", twitterUserId).
+                filter("account", account).
                 order(Sort.descending("date")).
                 limit(20);
         return limit.asList();
     }
 
-    public long getNumberOfTwitsInLastHour(Feed feed, long twitterUserId) {
-        return getNumberOfTweetsSince(feed, twitterUserId, DateTime.now().minusHours(1).toDate());
+    public long getNumberOfTwitsInLastHour(Feed feed, Account account) {
+        return getNumberOfTweetsSince(feed, account, DateTime.now().minusHours(1).toDate());
     }
 
-    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed, long twitterUserId) {
-        return getNumberOfTweetsSince(feed, twitterUserId, DateTime.now().minusDays(1).toDate());
+    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed, Account account) {
+        return getNumberOfTweetsSince(feed, account, DateTime.now().minusDays(1).toDate());
     }
 
     public int getNumberOfTwitsInLastTwentyFourHours(Feed feed, String publisher) {
@@ -64,12 +65,12 @@ public class TwitterHistoryDAO {
         dataStoreFactory.getDs().save(event);
     }
 
-    private long getNumberOfTweetsSince(Feed feed, long twitterUserId, Date since) {
+    private long getNumberOfTweetsSince(Feed feed, Account account, Date since) {
         return dataStoreFactory.getDs().find(TwitterEvent.class).
                 field("date").
                 greaterThan(since).
                 filter("feed.url", feed.getUrl()).
-                filter("tweet.userId", twitterUserId).
+                filter("account", account).
                 count();
     }
 
