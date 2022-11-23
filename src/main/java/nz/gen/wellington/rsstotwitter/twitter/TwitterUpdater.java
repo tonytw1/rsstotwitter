@@ -33,30 +33,30 @@ public class TwitterUpdater implements Updater {
     }
 
     public void updateFeed(Account account, Feed feed, List<FeedItem> feedItems, Destination destination) {
-        log.info("Calling update feed for account '" + account.getUsername() + "' with " + feedItems.size() + " feed items");
+        log.info("Calling update feed for account '" + account.getUsername() + "' to " + destination + " with " + feedItems.size() + " feed items");
         final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account);
         final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account);
-        log.info("Tweets sent in last hour: " + tweetsSentInLastHour);
-        log.info("Tweets sent in last 24 hours: " + tweetsSentInLastTwentyForHours);
+        log.info("Sent to " + destination + " in last hour: " + tweetsSentInLastHour);
+        log.info("Sent to " + destination + " in last 24 hours: " + tweetsSentInLastTwentyForHours);
 
         long tweetsSentThisRound = 0;
         for (FeedItem feedItem : feedItems) {
             if (hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + tweetsSentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + tweetsSentThisRound)) {
-                log.info("Feed '" + feed.getUrl() + "' has exceeded maximum tweets per hour or day rate limit; returning");
+                log.info("Feed '" + feed.getUrl() + "' has exceeded maximum per hour or day rate limit; returning");
                 return;
             }
 
-            boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor());
+            boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account);
             if (!publisherRateLimitExceeded) {
                 if (processItem(account, feedItem, destination)) {
                     tweetsSentThisRound++;
                 }
             } else {
-                log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feeditem from this publisher");
+                log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feed item from this publisher");
             }
         }
 
-        log.info("Twitter update completed for feed: " + feed.getUrl());
+        log.info("Update to " + destination + " completed for feed: " + feed.getUrl());
     }
 
     private boolean processItem(Account account, FeedItem feedItem, Destination destination) {
@@ -100,12 +100,12 @@ public class TwitterUpdater implements Updater {
         return tweetsSent >= TwitterSettings.MAX_TWITS_PER_DAY;
     }
 
-    private boolean isPublisherRateLimitExceed(Feed feed, String publisher) {
+    private boolean isPublisherRateLimitExceed(Feed feed, String publisher, Account account) {
         if (Strings.isNullOrEmpty(publisher)) {
             return false;
         }
 
-        final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher);
+        final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher, account);
         log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
         return numberOfPublisherTwitsInLastTwentyFourHours >= TwitterSettings.MAX_PUBLISHER_TWITS_PER_DAY;
     }

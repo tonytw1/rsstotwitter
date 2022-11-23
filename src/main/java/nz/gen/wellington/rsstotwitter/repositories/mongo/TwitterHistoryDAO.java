@@ -57,7 +57,7 @@ public class TwitterHistoryDAO {
         return getNumberOfTweetsSince(feed, account, DateTime.now().minusDays(1).toDate());
     }
 
-    public int getNumberOfTwitsInLastTwentyFourHours(Feed feed, String publisher) {
+    public int getNumberOfTwitsInLastTwentyFourHours(Feed feed, String publisher, Account account) {
         return 0;   // TODO
     }
 
