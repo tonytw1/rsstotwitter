@@ -32,16 +32,8 @@ public class FeedToTwitterJob {
         return feed;
     }
 
-    public void setFeed(Feed feed) {
-        this.feed = feed;
-    }
-
     public Account getAccount() {
         return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 
     public Destination getDestination() {
