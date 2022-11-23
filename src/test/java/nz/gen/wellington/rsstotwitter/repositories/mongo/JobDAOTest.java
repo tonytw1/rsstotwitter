@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
+import nz.gen.wellington.rsstotwitter.model.Destination;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.Account;
@@ -33,10 +34,7 @@ public class JobDAOTest {
 
         Feed feed = new Feed("https://wellington.gen.nz/rss");
 
-        FeedToTwitterJob job = new FeedToTwitterJob();
-        job.setAccount(account);
-        job.setFeed(feed);
-
+        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Destination.TWITTER);
         jobDAO.save(job);
         assertNotNull(job.getObjectId());
 
@@ -45,6 +43,7 @@ public class JobDAOTest {
         assertEquals(feed, reloaded.getFeed());
         assertEquals(account.getId(), reloaded.getAccount().getId());
         assertEquals(account.getUsername(), reloaded.getAccount().getUsername());
+        assertEquals(Destination.TWITTER, reloaded.getDestination());
     }
 
     @Test
@@ -65,11 +64,8 @@ public class JobDAOTest {
 
         Feed feed = new Feed("https://wellington.gen.nz/rss");
 
-        FeedToTwitterJob job = new FeedToTwitterJob();
-        job.setAccount(account);
-        job.setFeed(feed);
+        FeedToTwitterJob job = new FeedToTwitterJob(feed, account, Destination.TWITTER);
         jobDAO.save(job);
-
 
         Account anotherAccount = new Account();
         anotherAccount.setId(456L);
@@ -78,15 +74,14 @@ public class JobDAOTest {
 
         Feed anotherFeed = new Feed("https://wellington.govt.nz/rss");
 
-        FeedToTwitterJob anotherJob = new FeedToTwitterJob();
-        anotherJob.setAccount(anotherAccount);
-        anotherJob.setFeed(anotherFeed);
+        FeedToTwitterJob anotherJob = new FeedToTwitterJob(anotherFeed, anotherAccount, Destination.TWITTER);
         jobDAO.save(anotherJob);
 
         List<FeedToTwitterJob> jobsForAccount = jobDAO.getJobsForAccount(account);
 
         assertEquals(1, jobsForAccount.size());
-        assertEquals(account.getId(), jobsForAccount.get(0).getAccount().getId());
+        FeedToTwitterJob reloadedJob = jobsForAccount.get(0);
+        assertEquals(account.getId(), reloadedJob.getAccount().getId());
     }
 
 }

@@ -10,6 +10,7 @@ public class FeedToTwitterJob {
     ObjectId objectId;
 
     private Feed feed;
+    private Destination destination;
 
     @Reference
     private Account account;
@@ -17,9 +18,10 @@ public class FeedToTwitterJob {
     public FeedToTwitterJob() {
     }
 
-    public FeedToTwitterJob(Feed feed, Account account) {
+    public FeedToTwitterJob(Feed feed, Account account, Destination destination) {
         this.feed = feed;
         this.account = account;
+        this.destination = destination;
     }
 
     public String getObjectId() {
@@ -40,6 +42,10 @@ public class FeedToTwitterJob {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public Destination getDestination() {
+        return destination;
     }
 
     @Override

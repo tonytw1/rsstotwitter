@@ -63,7 +63,7 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser);
+      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Destination.TWITTER);
       log.info("Creating job: " + job);
 
       jobDAO.save(job);
