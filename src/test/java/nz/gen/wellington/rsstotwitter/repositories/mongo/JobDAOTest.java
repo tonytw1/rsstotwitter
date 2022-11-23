@@ -23,7 +23,6 @@ public class JobDAOTest {
         if (mongoHost == null) {
             mongoHost = "localhost";
         }
-        System.out.println(mongoDatabase);
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
         TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
