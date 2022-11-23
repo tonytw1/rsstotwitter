@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.forms.FeedDetails;
 import nz.gen.wellington.rsstotwitter.model.*;
@@ -63,7 +64,7 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Destination.TWITTER);
+      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Sets.newHashSet(Destination.TWITTER));
       log.info("Creating job: " + job);
 
       jobDAO.save(job);

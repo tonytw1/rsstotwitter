@@ -4,13 +4,15 @@ import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
 
+import java.util.Set;
+
 public class FeedToTwitterJob {
 
     @Id
     ObjectId objectId;
 
     private Feed feed;
-    private Destination destination;
+    private Set<Destination> destinations;
 
     @Reference
     private Account account;
@@ -18,10 +20,10 @@ public class FeedToTwitterJob {
     public FeedToTwitterJob() {
     }
 
-    public FeedToTwitterJob(Feed feed, Account account, Destination destination) {
+    public FeedToTwitterJob(Feed feed, Account account, Set<Destination> destinations) {
         this.feed = feed;
         this.account = account;
-        this.destination = destination;
+        this.destinations = destinations;
     }
 
     public String getObjectId() {
@@ -36,8 +38,8 @@ public class FeedToTwitterJob {
         return account;
     }
 
-    public Destination getDestination() {
-        return destination;
+    public Set<Destination> getDestination() {
+        return destinations;
     }
 
     @Override

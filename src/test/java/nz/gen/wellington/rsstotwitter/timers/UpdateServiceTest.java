@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.*;
 
@@ -53,8 +54,8 @@ public class UpdateServiceTest {
         account = new Account(1, TWITTER_USERNAME);
         secondFeed = new Feed(SECOND_FEED_URL);
         secondAccount = new Account(2, TWITTER_USERNAME);
-        jobs.add(new FeedToTwitterJob(feed, account, Destination.TWITTER));
-        jobs.add(new FeedToTwitterJob(secondFeed, secondAccount, Destination.TWITTER));
+        jobs.add(new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER)));
+        jobs.add(new FeedToTwitterJob(secondFeed, secondAccount, Sets.newHashSet(Destination.TWITTER)));
 
         when(jobDAO.getAllTweetFeedJobs()).thenReturn(jobs);
     }
