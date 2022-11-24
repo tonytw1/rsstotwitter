@@ -49,15 +49,15 @@ public class TwitterHistoryDAO {
         return limit.asList();
     }
 
-    public long getNumberOfTwitsInLastHour(Feed feed, Account account) {
-        return getNumberOfTweetsSince(feed, account, DateTime.now().minusHours(1).toDate());
+    public long getNumberOfTwitsInLastHour(Feed feed, Account account, Destination destination) {
+        return getNumberOfTweetsSince(feed, account, DateTime.now().minusHours(1).toDate(), destination);
     }
 
-    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed, Account account) {
-        return getNumberOfTweetsSince(feed, account, DateTime.now().minusDays(1).toDate());
+    public long getNumberOfPublisherTwitsInLastTwentyFourHours(Feed feed, Account account, Destination destination) {
+        return getNumberOfTweetsSince(feed, account, DateTime.now().minusDays(1).toDate(), destination);
     }
 
-    public int getNumberOfTwitsInLastTwentyFourHours(Feed feed, String publisher, Account account) {
+    public int getNumberOfPublisherTwitsInLastTwentyFourHours(Feed feed, String publisher, Account account, Destination destination) {
         return 0;   // TODO
     }
 
@@ -65,7 +65,7 @@ public class TwitterHistoryDAO {
         dataStoreFactory.getDs().save(event);
     }
 
-    private long getNumberOfTweetsSince(Feed feed, Account account, Date since) {
+    private long getNumberOfTweetsSince(Feed feed, Account account, Date since, Destination destination) {
         return dataStoreFactory.getDs().find(TwitterEvent.class).
                 field("date").
                 greaterThan(since).

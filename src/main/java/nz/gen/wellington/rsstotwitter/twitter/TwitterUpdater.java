@@ -33,8 +33,8 @@ public class TwitterUpdater {
 
     public void updateFeed(Account account, Feed feed, List<FeedItem> feedItems, Destination destination) {
         log.info("Calling update feed for account '" + account.getUsername() + "' to " + destination + " with " + feedItems.size() + " feed items");
-        final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account);
-        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account);
+        final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account, destination);
+        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, account, destination);
         log.info("Sent to " + destination + " in last hour: " + tweetsSentInLastHour);
         log.info("Sent to " + destination + " in last 24 hours: " + tweetsSentInLastTwentyForHours);
 
@@ -50,7 +50,7 @@ public class TwitterUpdater {
                 log.debug("Not tweeting as the item's publication date is more than one week old: " + feedItem.getGuid());
             }
 
-            boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account);
+            boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account, destination);
             if (!publisherRateLimitExceeded && isLessThanOneWeekOld) {
                 if (processItem(account, feedItem, destination)) {
                     sentThisRound++;
@@ -101,12 +101,12 @@ public class TwitterUpdater {
         return tweetsSent >= TwitterSettings.MAX_TWITS_PER_DAY;
     }
 
-    private boolean isPublisherRateLimitExceed(Feed feed, String publisher, Account account) {
+    private boolean isPublisherRateLimitExceed(Feed feed, String publisher, Account account, Destination destination) {
         if (Strings.isNullOrEmpty(publisher)) {
             return false;
         }
 
-        final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, publisher, account);
+        final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, publisher, account, destination);
         log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
         return numberOfPublisherTwitsInLastTwentyFourHours >= TwitterSettings.MAX_PUBLISHER_TWITS_PER_DAY;
     }

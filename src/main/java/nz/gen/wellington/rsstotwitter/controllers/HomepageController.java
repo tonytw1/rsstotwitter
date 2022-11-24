@@ -1,9 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
-import nz.gen.wellington.rsstotwitter.model.Account;
-import nz.gen.wellington.rsstotwitter.model.ActivitySummary;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.JobWithActivity;
+import com.google.common.collect.Sets;
+import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -39,9 +38,11 @@ public class HomepageController {
             List<JobWithActivity> jobsWithActivity = jobDAO.getJobsForAccount(loggedInUser).stream().
                     map(job -> {
                         Feed feed = job.getFeed();
+                        Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
+
                         ActivitySummary activity = new ActivitySummary(
-                                twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount()),
-                                twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, job.getAccount()));
+                                allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount(), destination)).sum(),
+                                allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, job.getAccount(), destination)).sum());
                         return new JobWithActivity(job, activity);
                     }).collect(Collectors.toList());
 

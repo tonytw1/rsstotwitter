@@ -23,6 +23,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -83,15 +84,19 @@ public class FeedsController {
       FeedToTwitterJob job = jobDAO.getByObjectId(id);
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
 
-      long numberOfTwitsInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount());
-      long numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount());
+      Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
+
+      long numberOfTwitsInLastHour = allDestinations.stream().mapToLong( destination ->
+              twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount(), destination)
+      ).sum();
+      long numberOfTwitsInLastTwentyFourHours = allDestinations.stream().mapToLong( destination ->
+              twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount(), destination)
+      ).sum();
+
       ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
 
       List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems != null ? feedItems.stream().map(
-              feedItem -> {
-                List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), Destination.TWITTER);
-                return new Pair<>(feedItem, tweets);
-              }
+              feedItem -> new Pair<>(feedItem, allDestinations.stream().map (destination -> twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), Destination.TWITTER)).flatMap(List::stream).collect(Collectors.toList()))
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
