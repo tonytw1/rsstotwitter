@@ -5,8 +5,6 @@ import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -40,8 +38,15 @@ public abstract class AbstractSigninController {
 
             final boolean localAccountAlreadyExistsForThisUser = account != null;
             if (!localAccountAlreadyExistsForThisUser) {
-                log.info("Creating new user account for external identifier: " + externalIdentifier);
-                account = createNewUser(externalIdentifier);
+                // There is no local user for this external user?
+                // If not append to the currently signed in user or e an entirely new user
+                Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+                if (loggedInUser != null) {
+                    account = loggedInUser;
+                } else {
+                    log.info("Creating new user account for external identifier: " + externalIdentifier);
+                    account = createNewUser(externalIdentifier);
+                }
 
             } else {
                 log.info("Existing local account found for external identifier: " + externalIdentifier);
