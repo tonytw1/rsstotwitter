@@ -71,6 +71,7 @@ public class TwitterHistoryDAO {
                 greaterThan(since).
                 filter("feed.url", feed.getUrl()).
                 filter("account", account).
+                filter("destination", destination).
                 count();
     }
 
