@@ -13,7 +13,7 @@
                 <ul>
                     <#list feedItem.getValue1() as tweetEvent>
                          <li>
-                            <a href="$tweetEvent.getPreviewUrl()}" target="_blank">
+                            <a href="$tweetEvent.tweet.getPreviewUrl()}" target="_blank">
                             ${tweetEvent.twit} </a><br/>
                             ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
                             ${tweetEvent.destination}
@@ -30,7 +30,7 @@
 <ul>
     <#list tweetEvents as tweetEvent>
         <li>
-            <a href="$tweetEvent.getPreviewUrl()" target="_blank">
+            <a href="$tweetEvent.tweet.getPreviewUrl()" target="_blank">
                 ${tweetEvent.twit} </a><br/>
                 ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
                 ${tweetEvent.destination}
