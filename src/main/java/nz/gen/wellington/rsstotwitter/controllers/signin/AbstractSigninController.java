@@ -46,12 +46,15 @@ public abstract class AbstractSigninController<T> {
                 } else {
                     log.info("Creating new user account for external identifier: " + externalIdentifier);
                     account = createNewUser(externalIdentifier);
+                    signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
                 }
 
             } else {
                 log.info("Existing local account found for external identifier: " + externalIdentifier);
-                signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
             }
+
+            // Always redecorate to update access tokens and external account details if the have changed
+            signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
 
             loggedInUserFilter.setLoggedInUser(request, account);
             return new ModelAndView(new RedirectView(homePageUrl));
