@@ -45,7 +45,7 @@ public class UpdateService implements Runnable {
         // Rate limiting is per job
 
         final Feed feed = job.getFeed();
-        log.info("Running feed to twitter job: " + feed.getUrl() + " -> @" + job.getAccount().getUsername());
+        log.info("Running job: " + feed.getUrl() + " -> @" + job.getAccount().getUsername());
         try {
             List<FeedItem> feedItems = feedService.loadFeedItems(feed);
             if (feedItems != null && !feedItems.isEmpty()) {

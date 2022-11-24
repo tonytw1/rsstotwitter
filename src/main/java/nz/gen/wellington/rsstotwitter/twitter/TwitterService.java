@@ -72,7 +72,6 @@ public class TwitterService {
     }
 
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
-        log.info("Tweeting: " + tweet.getText());
         StatusUpdate statusUpdate = new StatusUpdate(tweet.getText());
         return twitter.updateStatus(statusUpdate);
     }

@@ -73,9 +73,11 @@ public class TwitterUpdater {
 
                 Tweet updatedStatus = null;
                 if (destination == Destination.TWITTER) {
+                    log.info("Tweeting: " + tweet.getText());
                     updatedStatus = twitterService.tweet(tweet, account);
                 }
                 if (destination == Destination.MASTODON) {
+                    log.info("Tooting: " + tweet.getText());
                     updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
                 }
                 if (updatedStatus != null) {
