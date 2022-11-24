@@ -12,6 +12,7 @@ import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.*;
 
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterUpdater;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,7 +30,7 @@ public class UpdateServiceTest {
     @Mock
     FeedService feedService;
     @Mock
-    Updater twitterUpdater;
+    TwitterUpdater twitterUpdater;
 
     private UpdateService service;
 

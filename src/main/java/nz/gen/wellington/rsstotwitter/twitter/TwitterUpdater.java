@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
-import nz.gen.wellington.rsstotwitter.timers.Updater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class TwitterUpdater implements Updater {
+public class TwitterUpdater {
 
     private final static Logger log = LogManager.getLogger(TwitterUpdater.class);
 

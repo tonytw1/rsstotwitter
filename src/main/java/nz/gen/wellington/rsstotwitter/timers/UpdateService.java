@@ -3,6 +3,7 @@ package nz.gen.wellington.rsstotwitter.timers;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,10 @@ public class UpdateService implements Runnable {
 
     private JobDAO feedToTwitterJobDAO;
     private FeedService feedService;
-    private Updater twitterUpdater;
+    private TwitterUpdater twitterUpdater;
 
     @Autowired
-    public UpdateService(JobDAO tweetFeedJobDAO, FeedService feedService, Updater twitterUpdater) {
+    public UpdateService(JobDAO tweetFeedJobDAO, FeedService feedService, TwitterUpdater twitterUpdater) {
         this.feedToTwitterJobDAO = tweetFeedJobDAO;
         this.feedService = feedService;
         this.twitterUpdater = twitterUpdater;
