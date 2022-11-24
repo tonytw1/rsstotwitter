@@ -45,8 +45,13 @@ public class TwitterUpdater {
                 return;
             }
 
+            final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
+            if (!isLessThanOneWeekOld) {
+                log.debug("Not tweeting as the item's publication date is more than one week old: " + feedItem.getGuid());
+            }
+
             boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account);
-            if (!publisherRateLimitExceeded) {
+            if (!publisherRateLimitExceeded && isLessThanOneWeekOld) {
                 if (processItem(account, feedItem, destination)) {
                     sentThisRound++;
                 }
@@ -61,12 +66,6 @@ public class TwitterUpdater {
 
     private boolean processItem(Account account, FeedItem feedItem, Destination destination) {
         final String guid = feedItem.getGuid();
-
-        final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
-        if (!isLessThanOneWeekOld) {
-            log.debug("Not tweeting as the item's publication date is more than one week old: " + guid);    // TODO push up
-            return false;
-        }
 
         if (!twitterHistoryDAO.hasAlreadyBeenTweeted(account, guid, destination)) {
             try {
