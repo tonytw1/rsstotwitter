@@ -17,14 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class MastodonSigninController {
-
-    private final static Logger log = LogManager.getLogger(MastodonSigninController.class);
-
-    private final TwitterAccountDAO accountDAO;
-    private final SigninHandler signinHandler;
-    private final LoggedInUserFilter loggedInUserFilter;
-    private final String homePageUrl;
+public class MastodonSigninController extends AbstractSigninController {
 
     @Autowired
     public MastodonSigninController(TwitterAccountDAO accountDAO, MastodonSignHandler signinHandler,
@@ -34,55 +27,17 @@ public class MastodonSigninController {
         this.signinHandler = signinHandler;
         this.loggedInUserFilter = loggedInUserFilter;
         this.homePageUrl = homePageUrl;
-        log.info("Home page url: " + homePageUrl);
     }
 
+    @Override
     @RequestMapping(value = "/mastodon/oauth/login", method = RequestMethod.GET)
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ModelAndView loginView = signinHandler.getLoginView(request, response);
-        if (loginView != null) {
-            return loginView;
-        }
-        log.warn("Null sign in view; returning error");
-        return signinErrorView(request);
+        return super.login(request, response);
     }
 
+    @Override
     @RequestMapping(value = "/mastodon/oauth/callback", method = RequestMethod.GET)
     public ModelAndView callback(HttpServletRequest request) {
-        final Object externalIdentifier = signinHandler.getExternalUserIdentifierFromCallbackRequest(request);
-        if (externalIdentifier != null) {
-            log.info("External user identifier is: " + externalIdentifier);
-
-            Account account = signinHandler.getUserByExternalIdentifier(externalIdentifier);
-
-            final boolean localAccountAlreadyExistsForThisUser = account != null;
-            if (!localAccountAlreadyExistsForThisUser) {
-                log.info("Creating new user account for external identifier: " + externalIdentifier);
-                account = createNewUser(externalIdentifier);
-
-            } else {
-                log.info("Existing local account found for external identifier: " + externalIdentifier);
-                signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
-            }
-
-            loggedInUserFilter.setLoggedInUser(request, account);
-            return new ModelAndView(new RedirectView(homePageUrl));
-        }
-
-        return signinErrorView(request);
+        return super.callback(request);
     }
-
-    private Account createNewUser(Object externalIdentifier) {
-        Account newUser = new Account();
-        signinHandler.decorateUserWithExternalSigninIdentifier(newUser, externalIdentifier);
-        accountDAO.saveAccount(newUser);
-        log.info("Created new user with external identifier: " + externalIdentifier.toString());
-        return newUser;
-    }
-
-    private ModelAndView signinErrorView(HttpServletRequest request) {
-        log.warn("Sign in error; redirecting to home page");
-        return new ModelAndView(new RedirectView(homePageUrl));
-    }
-
 }
