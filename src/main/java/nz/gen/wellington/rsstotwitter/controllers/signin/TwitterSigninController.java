@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class TwitterSigninController extends AbstractSigninController<twitter4j.User> {
+public class TwitterSigninController extends AbstractSigninController<TwitterCredentials> {
 
     @Autowired
     public TwitterSigninController(TwitterAccountDAO accountDAO, TwitterSigninHandler signinHandler,

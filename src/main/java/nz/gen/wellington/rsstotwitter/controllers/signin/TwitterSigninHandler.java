@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
+import com.google.common.collect.Maps;
 import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
@@ -19,11 +20,10 @@ import twitter4j.auth.AccessToken;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
+public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
 
     private final static Logger log = LogManager.getLogger(TwitterSigninHandler.class);
 
@@ -35,7 +35,6 @@ public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
     private final String consumerSecret;
 
     private final Map<String, Token> requestTokens;
-    private final Map<Long, Token> accessTokens;    // TODO this is weird
 
     @Autowired
     public TwitterSigninHandler(TwitterAccountDAO accountDAO,
@@ -49,8 +48,7 @@ public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
 
-        this.requestTokens = new HashMap<>();
-        this.accessTokens = new HashMap<>();
+        this.requestTokens = Maps.newConcurrentMap();
 
         this.oauthService = makeOauthService(homepageUrl + "/oauth/callback");
     }
@@ -59,7 +57,7 @@ public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
     public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) {
         try {
             log.info("Getting request token");
-            Token requestToken = oauthService.getRequestToken();
+            Token requestToken = oauthService.getRequestToken();    // TODO can we use the code flow like the Mastadon handler?
             if (requestToken != null) {
                 log.info("Got request token: " + requestToken.getToken());
                 requestTokens.put(requestToken.getToken(), requestToken);
@@ -76,13 +74,10 @@ public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
     }
 
     @Override
-    public twitter4j.User getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request) {
+    public TwitterCredentials getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request) {
         if (request.getParameter("oauth_token") != null && request.getParameter("oauth_verifier") != null) {
             final String token = request.getParameter("oauth_token");
             final String verifier = request.getParameter("oauth_verifier");
-
-            log.info("oauth_token: " + token);
-            log.info("oauth_verifier: " + verifier);
 
             log.info("Looking for request token: " + token);
             Token requestToken = requestTokens.get(token);
@@ -100,8 +95,7 @@ public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
                     log.debug("Using access token to lookup twitter user details");
                     twitter4j.User twitterUser = twitterService.getTwitterUserCredentials(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
                     if (twitterUser != null) {
-                        accessTokens.put(twitterUser.getId(), accessToken);
-                        return twitterUser;
+                        return new TwitterCredentials(twitterUser, accessToken);
 
                     } else {
                         log.warn("Failed up obtain twitter user details");
@@ -121,16 +115,16 @@ public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
     }
 
     @Override
-    public Account getUserByExternalIdentifier(twitter4j.User externalIdentifier) {
-        return accountDAO.getUserByTwitterId(externalIdentifier.getId());
+    public Account getUserByExternalIdentifier(TwitterCredentials externalIdentifier) {
+        return accountDAO.getUserByTwitterId(externalIdentifier.getUser().getId());
     }
 
     @Override
-    public void decorateUserWithExternalSigninIdentifier(Account account, twitter4j.User externalIdentifier) {
-        account.setId(externalIdentifier.getId());
-        account.setUsername(externalIdentifier.getScreenName());
-        account.setToken(accessTokens.get(externalIdentifier.getId()).getToken());
-        account.setTokenSecret(accessTokens.get(externalIdentifier.getId()).getSecret());
+    public void decorateUserWithExternalSigninIdentifier(Account account, TwitterCredentials externalIdentifier) {
+        account.setId(externalIdentifier.getUser().getId());
+        account.setUsername(externalIdentifier.getUser().getScreenName());
+        account.setToken(externalIdentifier.getToken().getToken());
+        account.setTokenSecret(externalIdentifier.getToken().getSecret());
     }
 
     private OAuthService makeOauthService(String callBackUrl) {
