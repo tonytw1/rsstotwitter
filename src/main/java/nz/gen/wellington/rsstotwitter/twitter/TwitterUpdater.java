@@ -45,13 +45,13 @@ public class TwitterUpdater {
                 return;
             }
 
-            final boolean isLessThanOneWeekOld = isLessThanOneWeekOld(feedItem);
-            if (!isLessThanOneWeekOld) {
-                log.debug("Not tweeting as the item's publication date is more than one week old: " + feedItem.getGuid());
+            final boolean isFreshEnough = isAfterMigrationToNewEventsTable(feedItem);
+            if (!isFreshEnough) {
+                log.debug("Not tweeting as the item's publication date is not fresh enough: " + feedItem.getGuid());
             }
 
             boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account, destination);
-            if (!publisherRateLimitExceeded && isLessThanOneWeekOld) {
+            if (!publisherRateLimitExceeded && isFreshEnough) {
                 if (processItem(account, feedItem, destination)) {
                     sentThisRound++;
                 }
@@ -111,9 +111,9 @@ public class TwitterUpdater {
         return numberOfPublisherTwitsInLastTwentyFourHours >= TwitterSettings.MAX_PUBLISHER_TWITS_PER_DAY;
     }
 
-    private boolean isLessThanOneWeekOld(FeedItem feedItem) {
-        final DateTime sevenDaysAgo = new DateTime().minusDays(7);
-        return new DateTime(feedItem.getPublishedDate()).isAfter(sevenDaysAgo);
+    private boolean isAfterMigrationToNewEventsTable(FeedItem feedItem) {
+        final DateTime migrationTime = new DateTime(2022, 11, 24, 9, 0, 0, 0);   // TODO migration
+        return new DateTime(feedItem.getPublishedDate()).isAfter(migrationTime);
     }
 
 }
