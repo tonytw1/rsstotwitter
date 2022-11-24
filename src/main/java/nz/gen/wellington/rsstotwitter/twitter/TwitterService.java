@@ -72,11 +72,8 @@ public class TwitterService {
     }
 
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
-        log.info("Tweeting: " + tweet.getText() + ", location: " + tweet.getGeoLocation());
+        log.info("Tweeting: " + tweet.getText());
         StatusUpdate statusUpdate = new StatusUpdate(tweet.getText());
-        if (tweet.getGeoLocation() != null) {
-            statusUpdate.setLocation(tweet.getGeoLocation());
-        }
         return twitter.updateStatus(statusUpdate);
     }
 

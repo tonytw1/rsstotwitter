@@ -18,16 +18,10 @@ public class TweetFromFeedItemBuilder {
         this.twitBuilderService = twitBuilderService;
     }
 
-    public Tweet buildTweetFromFeedItem(FeedItem feedItem) {
+    public Tweet buildTweetFromFeedItem(FeedItem feedItem) {    // TODO could just be a string if we aren't using any extended features
         final String tweetText = twitBuilderService.buildTwitForItem(feedItem);
         validateTweet(tweetText);
-
-        Tweet tweet = new Tweet(tweetText);
-        feedItem.getLatLong().ifPresent(latLong -> {
-            tweet.setGeoLocation(new GeoLocation(latLong.getLatitude(), latLong.getLongitude()));
-        });
-
-        return tweet;
+        return new Tweet(tweetText);
     }
 
     private void validateTweet(String tweetText) {

@@ -48,10 +48,6 @@ public class TwitterEvent {
         return twit;
     }
 
-    public void setTwit(String twit) {
-        this.twit = twit;
-    }
-
     public String getPublisher() {
         return publisher;
     }
@@ -60,16 +56,8 @@ public class TwitterEvent {
         return feed;
     }
 
-    public void setFeed(Feed feed) {
-        this.feed = feed;
-    }
-
     public Tweet getTweet() {
         return tweet;
-    }
-
-    public void setTweet(Tweet tweet) {
-        this.tweet = tweet;
     }
 
     public Destination getDestination() {
