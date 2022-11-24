@@ -46,18 +46,18 @@ public class TwitterUpdater {
             }
 
             final boolean isFreshEnough = isAfterMigrationToNewEventsTable(feedItem);
-            if (!isFreshEnough) {
-                log.debug("Not tweeting as the item's publication date is not fresh enough: " + feedItem.getGuid());
-            }
-
-            boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account, destination);
-            if (!publisherRateLimitExceeded && isFreshEnough) {
-                if (processItem(account, feedItem, destination)) {
-                    sentThisRound++;
+            if (isFreshEnough) {
+                boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account, destination);
+                if (!publisherRateLimitExceeded) {
+                    if (processItem(account, feedItem, destination)) {
+                        sentThisRound++;
+                    }
+                } else {
+                    log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feed item from this publisher");
                 }
 
             } else {
-                log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feed item from this publisher");
+                log.debug("Not tweeting item which is not fresh enough: " + feedItem.getGuid());
             }
         }
 
