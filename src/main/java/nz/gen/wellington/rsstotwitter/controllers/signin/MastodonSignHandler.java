@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class MastodonSignHandler implements SigninHandler {
+public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
 
     private final TwitterAccountDAO accountDAO;
     private final String instance;
@@ -63,7 +63,7 @@ public class MastodonSignHandler implements SigninHandler {
     }
 
     @Override
-    public Object getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request) {
+    public MastodonCredentials getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request) {
         if (request.getParameter("code") != null) {
             String code = request.getParameter("code");
             log.info("Got callback code: " + code);
@@ -94,16 +94,14 @@ public class MastodonSignHandler implements SigninHandler {
     }
 
     @Override
-    public Account getUserByExternalIdentifier(Object externalIdentifier) {
-        MastodonCredentials mastodonCredentials = (MastodonCredentials) externalIdentifier;
-        return accountDAO.getUserByMastodonId(mastodonCredentials.getAccount().getId());
+    public Account getUserByExternalIdentifier(MastodonCredentials externalIdentifier) {
+        return accountDAO.getUserByMastodonId(externalIdentifier.getAccount().getId());
     }
 
     @Override
-    public void decorateUserWithExternalSigninIdentifier(Account account, Object externalIdentifier) {
-        MastodonCredentials mastodonCredentials = (MastodonCredentials) externalIdentifier;
-        account.setMastodonId(mastodonCredentials.getAccount().getId());
-        account.setMastodonAccessToken(mastodonCredentials.getAccessToken().getAccessToken());
+    public void decorateUserWithExternalSigninIdentifier(Account account, MastodonCredentials externalIdentifier) {
+        account.setMastodonId(externalIdentifier.getAccount().getId());
+        account.setMastodonAccessToken(externalIdentifier.getAccessToken().getAccessToken());
     }
 
 }

@@ -11,9 +11,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class AbstractSigninController {
+public abstract class AbstractSigninController<T> {
 
-    protected SigninHandler signinHandler;
+    protected SigninHandler<T> signinHandler;
     protected LoggedInUserFilter loggedInUserFilter;
     protected String  homePageUrl;
     protected TwitterAccountDAO accountDAO;
@@ -30,7 +30,7 @@ public abstract class AbstractSigninController {
     }
 
     public ModelAndView callback(HttpServletRequest request) {
-        final Object externalIdentifier = signinHandler.getExternalUserIdentifierFromCallbackRequest(request);
+        final T externalIdentifier = signinHandler.getExternalUserIdentifierFromCallbackRequest(request);
         if (externalIdentifier != null) {
             log.info("External user identifier is: " + externalIdentifier);
 
@@ -65,7 +65,7 @@ public abstract class AbstractSigninController {
         return new ModelAndView(new RedirectView(homePageUrl));
     }
 
-    private Account createNewUser(Object externalIdentifier) {
+    private Account createNewUser(T externalIdentifier) {
         Account newUser = new Account();
         signinHandler.decorateUserWithExternalSigninIdentifier(newUser, externalIdentifier);
         accountDAO.saveAccount(newUser);

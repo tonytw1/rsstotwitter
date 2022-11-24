@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class TwitterSigninHandler implements SigninHandler {
+public class TwitterSigninHandler implements SigninHandler<twitter4j.User> {
 
     private final static Logger log = LogManager.getLogger(TwitterSigninHandler.class);
 
@@ -76,7 +76,7 @@ public class TwitterSigninHandler implements SigninHandler {
     }
 
     @Override
-    public Object getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request) {
+    public twitter4j.User getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request) {
         if (request.getParameter("oauth_token") != null && request.getParameter("oauth_verifier") != null) {
             final String token = request.getParameter("oauth_token");
             final String verifier = request.getParameter("oauth_verifier");
@@ -121,18 +121,16 @@ public class TwitterSigninHandler implements SigninHandler {
     }
 
     @Override
-    public Account getUserByExternalIdentifier(Object externalIdentifier) {
-        twitter4j.User twitterUser = (twitter4j.User) externalIdentifier;
-        return accountDAO.getUserByTwitterId(twitterUser.getId());
+    public Account getUserByExternalIdentifier(twitter4j.User externalIdentifier) {
+        return accountDAO.getUserByTwitterId(externalIdentifier.getId());
     }
 
     @Override
-    public void decorateUserWithExternalSigninIdentifier(Account account, Object externalIdentifier) {
-        twitter4j.User twitterUser = (twitter4j.User) externalIdentifier;
-        account.setId(twitterUser.getId());
-        account.setUsername(twitterUser.getScreenName());
-        account.setToken(accessTokens.get(twitterUser.getId()).getToken());
-        account.setTokenSecret(accessTokens.get(twitterUser.getId()).getSecret());
+    public void decorateUserWithExternalSigninIdentifier(Account account, twitter4j.User externalIdentifier) {
+        account.setId(externalIdentifier.getId());
+        account.setUsername(externalIdentifier.getScreenName());
+        account.setToken(accessTokens.get(externalIdentifier.getId()).getToken());
+        account.setTokenSecret(accessTokens.get(externalIdentifier.getId()).getSecret());
     }
 
     private OAuthService makeOauthService(String callBackUrl) {
