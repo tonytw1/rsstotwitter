@@ -17,6 +17,8 @@ public class Tweet {
     private Date date;
     private String text;
     private String author;
+    private String uri;
+    private String url;
 
     public Tweet() {
     }
@@ -37,6 +39,8 @@ public class Tweet {
 
     public Tweet(com.sys1yagi.mastodon4j.api.entity.Status status) {
         this.id = status.getId();
+        this.uri = status.getUri();
+        this.url = status.getUrl();
         this.userId = status.getAccount().getId();
         this.text = status.getContent();
         this.author = status.getAccount().getUserName();
@@ -63,6 +67,13 @@ public class Tweet {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getPreviewUrl() {
+        if (url != null) {
+            return url;
+        }
+        return "https://twitter.com/" + author + "/status/" + id;
     }
 
     @Override
