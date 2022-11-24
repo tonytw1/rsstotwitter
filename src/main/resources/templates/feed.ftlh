@@ -16,7 +16,7 @@
                             <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}" target="_blank">
                             ${tweetEvent.twit} </a><br/>
                             ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
-                            ${tweetEvent.destination?}
+                            ${tweetEvent.destination}
                         </li>
                     </#list>
                 </ul>
