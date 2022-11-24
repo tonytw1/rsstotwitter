@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -51,7 +50,34 @@ public class MastodonSigninController {
     @RequestMapping(value = "/mastodon/oauth/callback", method = RequestMethod.GET)
     public ModelAndView callback(HttpServletRequest request) {
         final Object externalIdentifier = signinHandler.getExternalUserIdentifierFromCallbackRequest(request);
-        return signinErrorView(request);    // TODO implement me
+        if (externalIdentifier != null) {
+            log.info("External user identifier is: " + externalIdentifier);
+
+            Account account = signinHandler.getUserByExternalIdentifier(externalIdentifier);
+
+            final boolean localAccountAlreadyExistsForThisUser = account != null;
+            if (!localAccountAlreadyExistsForThisUser) {
+                log.info("Creating new user account for external identifier: " + externalIdentifier);
+                account = createNewUser(externalIdentifier);
+
+            } else {
+                log.info("Existing local account found for external identifier: " + externalIdentifier);
+                signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
+            }
+
+            loggedInUserFilter.setLoggedInUser(request, account);
+            return new ModelAndView(new RedirectView(homePageUrl));
+        }
+
+        return signinErrorView(request);
+    }
+
+    private Account createNewUser(Object externalIdentifier) {
+        Account newUser = new Account();
+        signinHandler.decorateUserWithExternalSigninIdentifier(newUser, externalIdentifier);
+        accountDAO.saveAccount(newUser);
+        log.info("Created new user with external identifier: " + externalIdentifier.toString());
+        return newUser;
     }
 
     private ModelAndView signinErrorView(HttpServletRequest request) {

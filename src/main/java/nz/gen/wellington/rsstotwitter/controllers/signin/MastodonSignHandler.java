@@ -9,6 +9,7 @@ import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException;
 import com.sys1yagi.mastodon4j.api.method.Accounts;
 import com.sys1yagi.mastodon4j.api.method.Apps;
 import nz.gen.wellington.rsstotwitter.model.Account;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class MastodonSignHandler implements SigninHandler {
 
-    private final String host;
+    private final TwitterAccountDAO accountDAO;
+    private final String instance;
     private final String clientId;
     private final String clientSecret;
 
@@ -34,16 +36,18 @@ public class MastodonSignHandler implements SigninHandler {
     private final static Logger log = LogManager.getLogger(MastodonSignHandler.class);
 
     @Autowired
-    public MastodonSignHandler(@Value("${mastodon.instance}") String host,
+    public MastodonSignHandler(TwitterAccountDAO accountDAO,
+                               @Value("${mastodon.instance}") String instance,
                                @Value("${mastodon.client.id}") String clientId,
                                @Value("${mastodon.client.secret}") String clientSecret,
                                @Value("${homepage.url}") String homepageUrl
     ) {
-        this.host = host;
+        this.accountDAO = accountDAO;
+        this.instance = instance;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
 
-        MastodonClient client = new MastodonClient.Builder(host, new OkHttpClient.Builder(), new Gson()).build();
+        MastodonClient client = new MastodonClient.Builder(instance, new OkHttpClient.Builder(), new Gson()).build();
         this.apps = new Apps(client);
         this.redirectUri = homepageUrl + "/mastodon/oauth/callback";
     }
@@ -71,14 +75,14 @@ public class MastodonSignHandler implements SigninHandler {
                 log.info("Got access token: " + accessToken.getAccessToken() + " with scope " + accessToken.getScope());
 
                 // Look up the owner of this access token
-                MastodonClient usersClient = new MastodonClient.Builder(host, new OkHttpClient.Builder(), new Gson()).accessToken(accessToken.getAccessToken()).build();
+                MastodonClient usersClient = new MastodonClient.Builder(instance, new OkHttpClient.Builder(), new Gson()).accessToken(accessToken.getAccessToken()).build();
 
                 Accounts accounts = new Accounts(usersClient);
                 MastodonRequest<com.sys1yagi.mastodon4j.api.entity.Account> verifyCredentialsRequest = accounts.getVerifyCredentials();
 
                 com.sys1yagi.mastodon4j.api.entity.Account account = verifyCredentialsRequest.execute();
                 log.info("Got Mastodon account: " + account.getUserName() + " / " + account.getUrl());
-                return account;
+                return new MastodonCredentials(account, accessToken);
 
             } catch (Mastodon4jRequestException e) {
                 log.error(e);
@@ -91,11 +95,15 @@ public class MastodonSignHandler implements SigninHandler {
 
     @Override
     public Account getUserByExternalIdentifier(Object externalIdentifier) {
-        return null;
+        MastodonCredentials mastodonCredentials = (MastodonCredentials) externalIdentifier;
+        return accountDAO.getUserByMastodonId(mastodonCredentials.getAccount().getId());
     }
 
     @Override
     public void decorateUserWithExternalSigninIdentifier(Account account, Object externalIdentifier) {
-        // TODO Capture Mastodon username and access token
+        MastodonCredentials mastodonCredentials = (MastodonCredentials) externalIdentifier;
+        account.setMastodonId(mastodonCredentials.getAccount().getId());
+        account.setMastodonAccessToken(mastodonCredentials.getAccessToken().getAccessToken());
     }
+
 }

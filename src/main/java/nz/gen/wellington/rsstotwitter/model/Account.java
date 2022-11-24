@@ -11,14 +11,14 @@ public class Account {
     ObjectId objectId;
 
     // This user's Twitter id
-    private long id;
+    private Long id;
     // This user's Twitter screen name
     private String username;
 
     private String token;
     private String tokenSecret;
 
-    public String mastodonInstance;
+    public Long mastodonId;
     public String mastodonAccessToken;
 
     public Account() {
@@ -29,7 +29,7 @@ public class Account {
         this.username = username;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -61,12 +61,20 @@ public class Account {
         this.tokenSecret = tokenSecret;
     }
 
-    public String getMastodonInstance() {
-        return mastodonInstance;
+    public Long getMastodonId() {
+        return mastodonId;
     }
 
     public String getMastodonAccessToken() {
         return mastodonAccessToken;
+    }
+
+    public void setMastodonId(Long mastodonId) {
+        this.mastodonId = mastodonId;
+    }
+
+    public void setMastodonAccessToken(String mastodonAccessToken) {
+        this.mastodonAccessToken = mastodonAccessToken;
     }
 
     @Override

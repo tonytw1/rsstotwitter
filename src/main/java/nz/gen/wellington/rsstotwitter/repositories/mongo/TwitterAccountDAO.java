@@ -21,4 +21,9 @@ public class TwitterAccountDAO {
     public Account getUserByTwitterId(long id) {
         return dataStoreFactory.getDs().find(Account.class, "id", id).get();
     }
+
+    public Account getUserByMastodonId(long id) {
+        return dataStoreFactory.getDs().find(Account.class, "mastodonId", id).get();
+    }
+
 }

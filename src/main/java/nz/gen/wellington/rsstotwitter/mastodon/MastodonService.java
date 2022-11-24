@@ -8,12 +8,19 @@ import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException;
 import com.sys1yagi.mastodon4j.api.method.Statuses;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MastodonService {
 
-    public Tweet post(String instance, String accessToken, String message) throws Mastodon4jRequestException {
+    private final String instance;
+
+    public MastodonService(@Value("${mastodon.instance}") String instance) {
+        this.instance = instance;
+    }
+
+    public Tweet post(String accessToken, String message) throws Mastodon4jRequestException {
         MastodonClient client = new MastodonClient.Builder(instance, new OkHttpClient.Builder(), new Gson()).
                 accessToken(accessToken).
                 build();

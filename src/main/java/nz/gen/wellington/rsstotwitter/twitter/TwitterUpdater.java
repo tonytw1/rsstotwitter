@@ -76,7 +76,7 @@ public class TwitterUpdater {
                     updatedStatus = twitterService.tweet(tweet, account);
                 }
                 if (destination == Destination.MASTODON) {
-                    updatedStatus = mastodonService.post(account.getMastodonInstance(), account.getMastodonAccessToken(), tweet.getText());
+                    updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
                 }
                 if (updatedStatus != null) {
                     twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, destination);
