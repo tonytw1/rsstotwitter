@@ -8,15 +8,16 @@
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 
 <div class="container">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">RSS to Twitter</a>
-    <#if account??>
-        @${account.username}
-        <a href="/signout">Sign out</a>
-    <#else>
-        <a href="oauth/login">Sign in using Twitter</a>
-    </#if>
-</nav>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">RSS to Twitter</a>
+        <#if account??>
+            @${account.username}
+            <a href="/signout">Sign out</a>
+        <#else>
+            <a href="oauth/login">Sign in using Twitter</a>
+            <a href="mastodon/oauth/login">Sign in using Mastodon</a>
+        </#if>
+    </nav>
 </div>
 
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -34,7 +35,8 @@
                     <li><a href="/">@${account.username}</a></li>
                     <li><a href="/signout">Sign out</a></li>
                 <#else>
-                    <li><a href="oauth/login">Sign in</a></li>
+                    <a href="oauth/login">Sign in using Twitter</a>
+                    <a href="mastodon/oauth/login">Sign in using Mastodon</a>
                 </#if>
                 </ul>
             </div><!--/.nav-collapse -->

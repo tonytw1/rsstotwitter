@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class TwitterLoginHandler implements SigninHandler {
+public class TwitterSigninHandler implements SigninHandler {
 
-    private final static Logger log = LogManager.getLogger(TwitterLoginHandler.class);
+    private final static Logger log = LogManager.getLogger(TwitterSigninHandler.class);
 
     private final TwitterAccountDAO accountDAO;
     private final TwitterService twitterService;
@@ -35,14 +35,14 @@ public class TwitterLoginHandler implements SigninHandler {
     private final String consumerSecret;
 
     private final Map<String, Token> requestTokens;
-    private final Map<Long, Token> accessTokens;
+    private final Map<Long, Token> accessTokens;    // TODO this is weird
 
     @Autowired
-    public TwitterLoginHandler(TwitterAccountDAO accountDAO,
-                               TwitterService twitterService,
-                               @Value("${consumer.key}") String consumerKey,
-                               @Value("${consumer.secret}") String consumerSecret,
-                               @Value("${homepage.url}") String homepageUrl) {
+    public TwitterSigninHandler(TwitterAccountDAO accountDAO,
+                                TwitterService twitterService,
+                                @Value("${consumer.key}") String consumerKey,
+                                @Value("${consumer.secret}") String consumerSecret,
+                                @Value("${homepage.url}") String homepageUrl) {
         this.accountDAO = accountDAO;
         this.twitterService = twitterService;
 

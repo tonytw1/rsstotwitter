@@ -18,6 +18,9 @@ public class Account {
     private String token;
     private String tokenSecret;
 
+    public String mastodonInstance;
+    public String mastodonAccessToken;
+
     public Account() {
     }
 
@@ -58,17 +61,25 @@ public class Account {
         this.tokenSecret = tokenSecret;
     }
 
+    public String getMastodonInstance() {
+        return mastodonInstance;
+    }
+
+    public String getMastodonAccessToken() {
+        return mastodonAccessToken;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return id == account.id && Objects.equals(objectId, account.objectId) && Objects.equals(username, account.username) && Objects.equals(token, account.token) && Objects.equals(tokenSecret, account.tokenSecret);
+        return Objects.equals(objectId, account.objectId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(objectId, id, username, token, tokenSecret);
+        return Objects.hash(objectId);
     }
 
 }

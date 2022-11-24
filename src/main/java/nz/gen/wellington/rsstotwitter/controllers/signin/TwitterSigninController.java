@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class SigninController {
+public class TwitterSigninController {
 
-    private final static Logger log = LogManager.getLogger(SigninController.class);
+    private final static Logger log = LogManager.getLogger(TwitterSigninController.class);
 
     private final TwitterAccountDAO accountDAO;
     private final SigninHandler signinHandler;
@@ -27,14 +27,13 @@ public class SigninController {
     private final String homePageUrl;
 
     @Autowired
-    public SigninController(TwitterAccountDAO accountDAO, SigninHandler signinHandler,
-                            LoggedInUserFilter loggedInUserFilter,
-                            @Value("${homepage.url}") String homePageUrl) {
+    public TwitterSigninController(TwitterAccountDAO accountDAO, TwitterSigninHandler signinHandler,
+                                   LoggedInUserFilter loggedInUserFilter,
+                                   @Value("${homepage.url}") String homePageUrl) {
         this.accountDAO = accountDAO;
         this.signinHandler = signinHandler;
         this.loggedInUserFilter = loggedInUserFilter;
         this.homePageUrl = homePageUrl;
-        log.info("Home page url: " + homePageUrl);
     }
 
     @RequestMapping(value = "/oauth/login", method = RequestMethod.GET)
@@ -45,12 +44,6 @@ public class SigninController {
         }
         log.warn("Null sign in view; returning error");
         return signinErrorView(request);
-    }
-
-    @RequestMapping(value = "/signout", method = RequestMethod.GET)
-    public ModelAndView signout(HttpServletRequest request) {
-        loggedInUserFilter.removeLoggedInUser(request);
-        return new ModelAndView(new RedirectView(homePageUrl));
     }
 
     @RequestMapping(value = "/oauth/callback", method = RequestMethod.GET)
