@@ -22,6 +22,8 @@ public class HomepageController {
     private final JobDAO jobDAO;
     private final TwitterHistoryDAO twitterHistoryDAO;
 
+    private final Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
+
     @Autowired
     public HomepageController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO,
                               TwitterHistoryDAO twitterHistoryDAO) {
@@ -38,8 +40,6 @@ public class HomepageController {
             List<JobWithActivity> jobsWithActivity = jobDAO.getJobsForAccount(loggedInUser).stream().
                     map(job -> {
                         Feed feed = job.getFeed();
-                        Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
-
                         ActivitySummary activity = new ActivitySummary(
                                 allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount(), destination)).sum(),
                                 allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, job.getAccount(), destination)).sum());

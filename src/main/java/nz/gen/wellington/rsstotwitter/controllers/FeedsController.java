@@ -36,6 +36,8 @@ public class FeedsController {
   private final FeedService feedService;
   private final TwitterHistoryDAO twitterHistoryDAO;
 
+  private final Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
+
   @Autowired
   public FeedsController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO, FeedService feedService, TwitterHistoryDAO twitterHistoryDAO) {
     this.loggedInUserFilter = loggedInUserFilter;
@@ -65,7 +67,7 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Sets.newHashSet(Destination.TWITTER, Destination.MASTODON));
+      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, allDestinations);
       log.info("Creating job: " + job);
 
       jobDAO.save(job);
@@ -84,8 +86,6 @@ public class FeedsController {
       FeedToTwitterJob job = jobDAO.getByObjectId(id);
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
 
-      Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
-
       long numberOfTwitsInLastHour = allDestinations.stream().mapToLong( destination ->
               twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount(), destination)
       ).sum();
@@ -96,7 +96,7 @@ public class FeedsController {
       ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
 
       List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems != null ? feedItems.stream().map(
-              feedItem -> new Pair<>(feedItem, allDestinations.stream().map (destination -> twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), Destination.TWITTER)).flatMap(List::stream).collect(Collectors.toList()))
+              feedItem -> new Pair<>(feedItem, allDestinations.stream().map (destination -> twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), destination)).flatMap(List::stream).collect(Collectors.toList()))
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
