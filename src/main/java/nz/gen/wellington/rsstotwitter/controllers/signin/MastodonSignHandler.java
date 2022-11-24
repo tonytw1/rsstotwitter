@@ -55,7 +55,7 @@ public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
     @Override
     public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Mastodon is an OAuth2 platform so this will be a redirect to the OAuth flow
-        Scope.Name scopeName = Scope.Name.READ;
+        Scope.Name scopeName = Scope.Name.ALL;    // TODO we only really need "write:statuses" and verify account
         String callbackUrl = redirectUri;
         String authorizeUrl = apps.getOAuthUrl(clientId, new Scope(scopeName), callbackUrl);
 
