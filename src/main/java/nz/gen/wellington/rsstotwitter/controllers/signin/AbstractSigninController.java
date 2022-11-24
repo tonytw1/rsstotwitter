@@ -42,11 +42,12 @@ public abstract class AbstractSigninController<T> {
                 // If not append to the currently signed in user or e an entirely new user
                 Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
                 if (loggedInUser != null) {
+                    log.info("Attaching external user to currently logged in local user");
                     account = loggedInUser;
+
                 } else {
                     log.info("Creating new user account for external identifier: " + externalIdentifier);
                     account = createNewUser(externalIdentifier);
-                    signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
                 }
 
             } else {
@@ -55,6 +56,7 @@ public abstract class AbstractSigninController<T> {
 
             // Always redecorate to update access tokens and external account details if the have changed
             signinHandler.decorateUserWithExternalSigninIdentifier(account, externalIdentifier);
+            accountDAO.saveAccount(account);
 
             loggedInUserFilter.setLoggedInUser(request, account);
             return new ModelAndView(new RedirectView(homePageUrl));
