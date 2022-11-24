@@ -25,7 +25,7 @@
     </#list>
 </ul>
 
-<h4>Tweets</h4>
+<h4>Sent</h4>
 <p><#include "activity.ftlh"></p>
 <ul>
     <#list tweetEvents as tweetEvent>
@@ -33,6 +33,7 @@
             <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}" target="_blank">
                 ${tweetEvent.twit} </a><br/>
                 ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
+                ${tweetEvent.destination}
         </li>
     </#list>
 </ul>
