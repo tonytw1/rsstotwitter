@@ -102,9 +102,7 @@ public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
     public void decorateUserWithExternalSigninIdentifier(Account account, MastodonCredentials externalIdentifier) {
         account.setMastodonId(externalIdentifier.getAccount().getId());
         account.setMastodonAccessToken(externalIdentifier.getAccessToken().getAccessToken());
-        if (account.getUsername() == null) {
-            account.setUsername(externalIdentifier.getAccount().getUserName()); // TODO should be a seperate field
-        }
+        account.setMastodonUsername(externalIdentifier.getAccount().getUserName());
     }
 
 }

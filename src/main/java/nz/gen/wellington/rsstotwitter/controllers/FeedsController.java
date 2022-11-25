@@ -99,8 +99,13 @@ public class FeedsController {
               feedItem -> new Pair<>(feedItem, allDestinations.stream().map (destination -> twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), destination)).flatMap(List::stream).collect(Collectors.toList()))
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
+      List<String> accounts = Lists.newArrayList();
+      if (loggedInUser.getUsername() != null) {
+        accounts.add(loggedInUser.getUsername());
+      }
+
       return new ModelAndView("feed").
-              addObject("account", loggedInUser).
+              addObject("accounts", accounts).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
@@ -113,9 +118,14 @@ public class FeedsController {
   }
 
   private ModelAndView renderNewFeedForm(FeedDetails feedDetails, Account account) {
+    List<String> accounts = Lists.newArrayList();
+    if (account.getUsername() != null) {
+      accounts.add(account.getUsername());
+    }
+
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
-            addObject("account", account);
+            addObject("accounts", account);
   }
 
   private ModelAndView redirectToSignInPage() {

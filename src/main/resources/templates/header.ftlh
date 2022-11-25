@@ -10,8 +10,10 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">RSS to Twitter</a>
-        <#if account??>
-            @${account.username}
+        <#if accounts??>
+            <#list accounts as account>
+                 ${account}
+            </#list>
             <a href="/signout">Sign out</a>
         <#else>
             <a href="oauth/login">Sign in using Twitter</a>

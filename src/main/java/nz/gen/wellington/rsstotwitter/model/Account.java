@@ -14,12 +14,12 @@ public class Account {
     private Long id;
     // This user's Twitter screen name
     private String username;
-
     private String token;
     private String tokenSecret;
 
-    public Long mastodonId;
-    public String mastodonAccessToken;
+    private Long mastodonId;
+    private String mastodonUsername;
+    private String mastodonAccessToken;
 
     public Account() {
     }
@@ -71,6 +71,14 @@ public class Account {
 
     public void setMastodonId(Long mastodonId) {
         this.mastodonId = mastodonId;
+    }
+
+    public String getMastodonUsername() {
+        return mastodonUsername;
+    }
+
+    public void setMastodonUsername(String mastodonUsername) {
+        this.mastodonUsername = mastodonUsername;
     }
 
     public void setMastodonAccessToken(String mastodonAccessToken) {

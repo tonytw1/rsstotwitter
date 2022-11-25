@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
@@ -46,8 +47,14 @@ public class HomepageController {
                         return new JobWithActivity(job, activity);
                     }).collect(Collectors.toList());
 
+
+            List<String> accounts = Lists.newArrayList();
+            if (loggedInUser.getUsername() != null) {
+                accounts.add(loggedInUser.getUsername());
+            }
+
             return new ModelAndView("feeds").
-                    addObject("account", loggedInUser).
+                    addObject("accounts", accounts).
                     addObject("jobs", jobsWithActivity);
 
         } else {
