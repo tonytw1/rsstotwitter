@@ -73,13 +73,20 @@ public class TwitterUpdater {
 
                 Tweet updatedStatus = null;
                 if (destination == Destination.TWITTER) {
-                    log.info("Tweeting: " + tweet.getText());
-                    updatedStatus = twitterService.tweet(tweet, account);
+                    boolean isAccountContentedToTwitter = account.getToken() != null && account.getTokenSecret() != null;
+                    if (isAccountContentedToTwitter) {
+                        log.info("Tweeting: " + tweet.getText());
+                        updatedStatus = twitterService.tweet(tweet, account);
+                    }
                 }
                 if (destination == Destination.MASTODON) {
-                    log.info("Tooting: " + tweet.getText());
-                    updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
+                    boolean isAccountConnectedToMastdon = account.getMastodonAccessToken() != null;
+                    if (isAccountConnectedToMastdon) {
+                        log.info("Tooting: " + tweet.getText());
+                        updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
+                    }
                 }
+
                 if (updatedStatus != null) {
                     twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, destination);
                     return true;

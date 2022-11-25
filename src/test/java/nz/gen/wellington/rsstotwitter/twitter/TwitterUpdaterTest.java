@@ -35,8 +35,8 @@ public class TwitterUpdaterTest {
     Tweet tweetToSend;
     @Mock
     Tweet sentTweet;
-    @Mock
-    Account account;
+
+    Account account = new Account();
 
     TwitterUpdater service;
 
@@ -49,6 +49,9 @@ public class TwitterUpdaterTest {
         when(twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, account, Destination.TWITTER)).thenReturn(2L);
         feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null);
         feedItems = Lists.newArrayList(feedItem);
+
+        account.setToken("a-connected-twitter-token");
+        account.setTokenSecret("a-connected-twitter-token-secret");
 
         service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder, mastodonService);
     }
