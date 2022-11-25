@@ -1,16 +1,16 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
+import com.github.scribejava.apis.TwitterApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.oauth.OAuth10aService;
 import com.google.common.collect.Maps;
 import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.TwitterApi;
-import org.scribe.model.Token;
-import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,12 +29,12 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
 
     private final TwitterAccountDAO accountDAO;
     private final TwitterService twitterService;
-    private final OAuthService oauthService;
+    private final OAuth10aService oauthService;
 
     private final String consumerKey;
     private final String consumerSecret;
 
-    private final Map<String, Token> requestTokens;
+    private final Map<String, OAuth1RequestToken> requestTokens;
 
     @Autowired
     public TwitterSigninHandler(TwitterAccountDAO accountDAO,
@@ -57,7 +57,7 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
     public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) {
         try {
             log.info("Getting request token");
-            Token requestToken = oauthService.getRequestToken();    // TODO can we use the code flow like the Mastadon handler?
+            OAuth1RequestToken requestToken = oauthService.getRequestToken();    // TODO can we use the code flow like the Mastadon handler? Needs Twitter v2 api?
             if (requestToken != null) {
                 log.info("Got request token: " + requestToken.getToken());
                 requestTokens.put(requestToken.getToken(), requestToken);
@@ -80,30 +80,35 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
             final String verifier = request.getParameter("oauth_verifier");
 
             log.info("Looking for request token: " + token);
-            Token requestToken = requestTokens.get(token);
+            OAuth1RequestToken requestToken = requestTokens.get(token);
             if (requestToken != null) {
                 log.info("Found stored request token: " + requestToken.getToken());
 
                 log.debug("Exchanging request token for access token");
+                try {
+                    OAuth1AccessToken accessToken = oauthService.getAccessToken(requestToken, verifier);
+                    if (accessToken != null) {
+                        log.info("Got access token: '" + accessToken.getToken() + "', '" + accessToken.getTokenSecret() + "'");
+                        requestTokens.remove(requestToken.getToken());
 
-                Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(verifier));
+                        log.debug("Using access token to lookup twitter user details");
+                        twitter4j.User twitterUser = twitterService.getTwitterUserCredentials(new AccessToken(accessToken.getToken(), accessToken.getTokenSecret()));
+                        if (twitterUser != null) {
+                            return new TwitterCredentials(twitterUser, accessToken);
 
-                if (accessToken != null) {
-                    log.info("Got access token: '" + accessToken.getToken() + "', '" + accessToken.getSecret() + "'");
-                    requestTokens.remove(requestToken.getToken());
-
-                    log.debug("Using access token to lookup twitter user details");
-                    twitter4j.User twitterUser = twitterService.getTwitterUserCredentials(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
-                    if (twitterUser != null) {
-                        return new TwitterCredentials(twitterUser, accessToken);
+                        } else {
+                            log.warn("Failed up obtain twitter user details");
+                        }
 
                     } else {
-                        log.warn("Failed up obtain twitter user details");
+                        log.warn("Could not get access token for: " + requestToken.getToken());
                     }
 
-                } else {
-                    log.warn("Could not get access token for: " + requestToken.getToken());
+                } catch (Exception e) {
+                    log.error(e);
+                    return null;
                 }
+
             } else {
                 log.warn("Could not find request token for: " + token);
             }
@@ -124,13 +129,13 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
         account.setId(externalIdentifier.getUser().getId());
         account.setUsername(externalIdentifier.getUser().getScreenName());
         account.setToken(externalIdentifier.getToken().getToken());
-        account.setTokenSecret(externalIdentifier.getToken().getSecret());
+        account.setTokenSecret(externalIdentifier.getToken().getTokenSecret());
     }
 
-    private OAuthService makeOauthService(String callBackUrl) {
+    private OAuth10aService makeOauthService(String callBackUrl) {
         log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
         log.info("Oauth callback url is: " + callBackUrl);
-        return new ServiceBuilder().provider(new TwitterApi()).apiKey(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build();
+        return new ServiceBuilder(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build(TwitterApi.instance());
     }
 
 }
