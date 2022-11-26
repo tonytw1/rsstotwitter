@@ -99,13 +99,8 @@ public class FeedsController {
               feedItem -> new Pair<>(feedItem, allDestinations.stream().map (destination -> twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), destination)).flatMap(List::stream).collect(Collectors.toList()))
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
-      List<String> accounts = Lists.newArrayList();
-      if (loggedInUser.getUsername() != null) {
-        accounts.add(loggedInUser.getUsername());
-      }
-
       return new ModelAndView("feed").
-              addObject("accounts", accounts).
+              addObject("accounts", activeAccountsFor(loggedInUser)).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
@@ -118,18 +113,24 @@ public class FeedsController {
   }
 
   private ModelAndView renderNewFeedForm(FeedDetails feedDetails, Account account) {
-    List<String> accounts = Lists.newArrayList();
-    if (account.getUsername() != null) {
-      accounts.add(account.getUsername());
-    }
-
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
-            addObject("accounts", account);
+            addObject("accounts", activeAccountsFor(account));
   }
 
   private ModelAndView redirectToSignInPage() {
     return new ModelAndView(new RedirectView("/"));
+  }
+
+  private List<String> activeAccountsFor(Account account) {
+    List<String> accounts = Lists.newArrayList();
+    if (account.getUsername() != null) {
+      accounts.add(account.getUsername());
+    }
+    if (account.getMastodonUsername() != null) {
+      accounts.add(account.getMastodonUsername());
+    }
+    return accounts;
   }
 
 }
