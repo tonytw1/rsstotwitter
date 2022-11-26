@@ -100,7 +100,7 @@ public class FeedsController {
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
-              addObject("accounts", activeAccountsFor(loggedInUser)).
+              addObject("accounts", connectedAccountsFor(loggedInUser)).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
@@ -115,20 +115,20 @@ public class FeedsController {
   private ModelAndView renderNewFeedForm(FeedDetails feedDetails, Account account) {
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
-            addObject("accounts", activeAccountsFor(account));
+            addObject("accounts", connectedAccountsFor(account));
   }
 
   private ModelAndView redirectToSignInPage() {
     return new ModelAndView(new RedirectView("/"));
   }
 
-  private List<String> activeAccountsFor(Account account) {
-    List<String> accounts = Lists.newArrayList();
+  private List<ConnectedAccount> connectedAccountsFor(Account account) {
+    List<ConnectedAccount> accounts = Lists.newArrayList();
     if (account.getUsername() != null) {
-      accounts.add(account.getUsername());
+      accounts.add(new ConnectedAccount(account.getUsername(), Destination.TWITTER));
     }
     if (account.getMastodonUsername() != null) {
-      accounts.add(account.getMastodonUsername());
+      accounts.add(new ConnectedAccount(account.getMastodonUsername(), Destination.MASTODON));
     }
     return accounts;
   }

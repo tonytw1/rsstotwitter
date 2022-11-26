@@ -5,7 +5,6 @@ import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,7 +49,7 @@ public class HomepageController {
 
 
             return new ModelAndView("feeds").
-                    addObject("accounts", activeAccountsFor(loggedInUser)).
+                    addObject("accounts", connectedAccountsFor(loggedInUser)).
                     addObject("jobs", jobsWithActivity);
 
         } else {
@@ -59,13 +57,13 @@ public class HomepageController {
         }
     }
 
-    private List<String> activeAccountsFor(Account account) {
-        List<String> accounts = Lists.newArrayList();
+    private List<ConnectedAccount> connectedAccountsFor(Account account) {
+        List<ConnectedAccount> accounts = Lists.newArrayList();
         if (account.getUsername() != null) {
-            accounts.add(account.getUsername());
+            accounts.add(new ConnectedAccount(account.getUsername(), Destination.TWITTER));
         }
         if (account.getMastodonUsername() != null) {
-            accounts.add(account.getMastodonUsername());
+            accounts.add(new ConnectedAccount(account.getMastodonUsername(), Destination.MASTODON));
         }
         return accounts;
     }

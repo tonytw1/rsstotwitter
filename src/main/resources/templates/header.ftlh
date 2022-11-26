@@ -12,7 +12,7 @@
         <a class="navbar-brand" href="#">RSS to Twitter</a>
         <#if accounts??>
             <#list accounts as account>
-                 ${account}
+                 ${account.username} ${account.destination}
             </#list>
             <a href="/signout">Sign out</a>
         <#else>
@@ -35,7 +35,7 @@
                 <ul class="nav">
                     <#if accounts??>
                         <#list accounts as account>
-                             ${account}
+                            ${account.username} ${account.destination}
                         </#list>
                         <a href="/signout">Sign out</a>
                 <#else>
