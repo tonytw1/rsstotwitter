@@ -7,6 +7,7 @@ import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -84,6 +85,9 @@ public class TwitterUpdater {
                     if (isAccountConnectedToMastdon) {
                         log.info("Tooting: " + tweet.getText());
                         updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
+                        // Mastodon statuses are returned as HTML; step down to plain text
+                        String plainText= Jsoup.parse(updatedStatus.getText()).text();
+                        updatedStatus.setText(plainText);
                     }
                 }
 

@@ -61,6 +61,10 @@ public class Tweet {
         return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public String getAuthor() {
         return author;
     }
@@ -87,4 +91,5 @@ public class Tweet {
                 ", author='" + author + '\'' +
                 '}';
     }
+
 }
