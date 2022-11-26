@@ -103,6 +103,7 @@ public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
         account.setMastodonId(externalIdentifier.getAccount().getId());
         account.setMastodonAccessToken(externalIdentifier.getAccessToken().getAccessToken());
         account.setMastodonUsername(externalIdentifier.getAccount().getUserName());
+        account.setMastodonUrl(externalIdentifier.getAccount().getUrl());
     }
 
 }
