@@ -16,6 +16,15 @@ public class ConnectedAccount {
         return username;
     }
 
+    public String getLogo() {
+        if (destination == Destination.MASTODON) {
+            return "/logos/mastodon.svg";
+        } else if (destination == Destination.TWITTER) {
+            return "/logos/twitter.png";
+        }
+        return null;
+    }
+
     public Destination getDestination() {
         return destination;
     }
@@ -23,5 +32,5 @@ public class ConnectedAccount {
     public String getUrl() {
         return url;
     }
-    
+
 }

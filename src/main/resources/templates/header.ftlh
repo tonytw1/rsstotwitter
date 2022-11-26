@@ -12,12 +12,11 @@
         <a class="navbar-brand" href="#">RSS to Twitter</a>
         <#if accounts??>
             <#list accounts as account>
-                <a href="${account.url}" target="_blank">${account.username} ${account.destination}</a>
+                <a href="${account.url}" target="_blank">${account.username}
+                    <img src="${account.logo}" width="24" height="24">
+                </a>
             </#list>
             <a href="/signout">Sign out</a>
-        <#else>
-            <a href="oauth/login">Sign in using Twitter</a>
-            <a href="mastodon/oauth/login">Sign in using Mastodon</a>
         </#if>
     </nav>
 </div>
@@ -35,12 +34,11 @@
                 <ul class="nav">
                     <#if accounts??>
                         <#list accounts as account>
-                            <a href="${account.url}" target="_blank">${account.username} ${account.destination}</a>
+                            <a href="${account.url}" target="_blank">${account.username}
+                                <img src="${account.logo}" width="24" height="24">
+                            </a>
                         </#list>
                         <a href="/signout">Sign out</a>
-                <#else>
-                    <a href="oauth/login">Sign in using Twitter</a>
-                    <a href="mastodon/oauth/login">Sign in using Mastodon</a>
                 </#if>
                 </ul>
             </div><!--/.nav-collapse -->
