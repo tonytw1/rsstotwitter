@@ -33,9 +33,11 @@
             <a class="brand" href="/">RSS to Twitter</a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                <#if account??>
-                    <li><a href="/">@${account.username}</a></li>
-                    <li><a href="/signout">Sign out</a></li>
+                    <#if accounts??>
+                        <#list accounts as account>
+                             ${account}
+                        </#list>
+                        <a href="/signout">Sign out</a>
                 <#else>
                     <a href="oauth/login">Sign in using Twitter</a>
                     <a href="mastodon/oauth/login">Sign in using Mastodon</a>
