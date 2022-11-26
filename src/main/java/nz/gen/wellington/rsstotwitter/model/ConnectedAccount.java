@@ -17,12 +17,7 @@ public class ConnectedAccount {
     }
 
     public String getLogo() {
-        if (destination == Destination.MASTODON) {
-            return "/logos/mastodon.svg";
-        } else if (destination == Destination.TWITTER) {
-            return "/logos/twitter.png";
-        }
-        return null;
+        return destination.getLogo();
     }
 
     public Destination getDestination() {

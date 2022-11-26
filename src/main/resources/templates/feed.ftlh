@@ -14,9 +14,10 @@
                     <#list feedItem.getValue1() as tweetEvent>
                          <li>
                             <a href="${tweetEvent.tweet.previewUrl}" target="_blank">
-                            ${tweetEvent.twit} </a><br/>
+                                <img src="${tweetEvent.destination.logo}" width="24" height="24">
+                                ${tweetEvent.twit}
+                            </a><br/>
                             ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
-                            ${tweetEvent.destination}
                         </li>
                     </#list>
                 </ul>
@@ -31,9 +32,10 @@
     <#list tweetEvents as tweetEvent>
         <li>
             <a href="${tweetEvent.tweet.previewUrl}" target="_blank">
-                ${tweetEvent.twit} </a><br/>
-                ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
-                ${tweetEvent.destination}
+                <img src="${tweetEvent.destination.logo}" width="24" height="24">
+                ${tweetEvent.twit}
+            </a><br/>
+            ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
         </li>
     </#list>
 </ul>
