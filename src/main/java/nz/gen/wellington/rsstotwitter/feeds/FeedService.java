@@ -56,8 +56,8 @@ public class FeedService {
 
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed syndFeed = input.build(new XmlReader(bytes));
-
             if (syndFeed != null) {
+                log.info("Loaded feed with title: " + syndFeed.getTitle()); // TODO persist the title for nicer UI
                 return syndFeed.getEntries();
             } else {
                 return null;
