@@ -12,8 +12,9 @@
         <a class="navbar-brand" href="#">RSS to Twitter</a>
         <#if accounts??>
             <#list accounts as account>
-                <a href="${account.url}" target="_blank">${account.username}
+                <a href="${account.url}" target="_blank">
                     <img src="${account.logo}" width="24" height="24">
+                    ${account.username}
                 </a>
             </#list>
             <a href="/signout">Sign out</a>
@@ -34,8 +35,9 @@
                 <ul class="nav">
                     <#if accounts??>
                         <#list accounts as account>
-                            <a href="${account.url}" target="_blank">${account.username}
+                            <a href="${account.url}" target="_blank">
                                 <img src="${account.logo}" width="24" height="24">
+                                ${account.username}
                             </a>
                         </#list>
                         <a href="/signout">Sign out</a>
