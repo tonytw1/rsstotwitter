@@ -16,8 +16,7 @@
                             <a href="${tweetEvent.tweet.previewUrl}" target="_blank">
                                 <img src="${tweetEvent.destination.logo}" width="24" height="24">
                                 ${tweetEvent.twit}
-                            </a><br/>
-                            ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
+                            </a>
                         </li>
                     </#list>
                 </ul>
