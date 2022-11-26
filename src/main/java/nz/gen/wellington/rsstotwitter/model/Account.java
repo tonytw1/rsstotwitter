@@ -19,6 +19,7 @@ public class Account {
 
     private Long mastodonId;
     private String mastodonUsername;
+    private String mastodonUrl;
     private String mastodonAccessToken;
 
     public Account() {
@@ -65,10 +66,6 @@ public class Account {
         return mastodonId;
     }
 
-    public String getMastodonAccessToken() {
-        return mastodonAccessToken;
-    }
-
     public void setMastodonId(Long mastodonId) {
         this.mastodonId = mastodonId;
     }
@@ -79,6 +76,18 @@ public class Account {
 
     public void setMastodonUsername(String mastodonUsername) {
         this.mastodonUsername = mastodonUsername;
+    }
+
+    public String getMastodonUrl() {
+        return mastodonUrl;
+    }
+
+    public void setMastodonUrl(String mastodonUrl) {
+        this.mastodonUrl = mastodonUrl;
+    }
+
+    public String getMastodonAccessToken() {
+        return mastodonAccessToken;
     }
 
     public void setMastodonAccessToken(String mastodonAccessToken) {

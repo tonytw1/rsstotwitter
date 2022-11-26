@@ -125,10 +125,10 @@ public class FeedsController {
   private List<ConnectedAccount> connectedAccountsFor(Account account) {
     List<ConnectedAccount> accounts = Lists.newArrayList();
     if (account.getUsername() != null) {
-      accounts.add(new ConnectedAccount(account.getUsername(), Destination.TWITTER));
+      accounts.add(new ConnectedAccount(account.getUsername(), Destination.TWITTER, "https://twitter.com/" + account.getUsername()));
     }
     if (account.getMastodonUsername() != null) {
-      accounts.add(new ConnectedAccount(account.getMastodonUsername(), Destination.MASTODON));
+      accounts.add(new ConnectedAccount(account.getMastodonUsername(), Destination.MASTODON, account.getMastodonUrl()));
     }
     return accounts;
   }

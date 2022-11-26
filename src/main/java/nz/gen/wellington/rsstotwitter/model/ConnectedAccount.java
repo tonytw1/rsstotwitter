@@ -4,10 +4,12 @@ public class ConnectedAccount {
 
     private final String username;
     private final Destination destination;
+    private final String url;
 
-    public ConnectedAccount(String username, Destination destination) {
+    public ConnectedAccount(String username, Destination destination, String url) {
         this.username = username;
         this.destination = destination;
+        this.url = url;
     }
 
     public String getUsername() {
@@ -18,11 +20,8 @@ public class ConnectedAccount {
         return destination;
     }
 
-    @Override
-    public String toString() {
-        return "ConnectedAccount{" +
-                "username='" + username + '\'' +
-                ", destination=" + destination +
-                '}';
+    public String getUrl() {
+        return url;
     }
+    
 }
