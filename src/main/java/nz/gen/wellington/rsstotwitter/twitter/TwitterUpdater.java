@@ -35,7 +35,7 @@ public class TwitterUpdater {
     public void updateFeed(Account account, Feed feed, List<FeedItem> feedItems, Destination destination) {
         log.info("Calling update feed for account '" + account.getUsername() + "' to " + destination + " with " + feedItems.size() + " feed items");
         final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account, destination);
-        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, account, destination);
+        final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account, destination);
         log.info("Sent to " + destination + " in last hour: " + tweetsSentInLastHour);
         log.info("Sent to " + destination + " in last 24 hours: " + tweetsSentInLastTwentyForHours);
 

@@ -43,7 +43,7 @@ public class HomepageController {
                         Feed feed = job.getFeed();
                         ActivitySummary activity = new ActivitySummary(
                                 allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount(), destination)).sum(),
-                                allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, job.getAccount(), destination)).sum());
+                                allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, job.getAccount(), destination)).sum());
                         return new JobWithActivity(job, activity);
                     }).collect(Collectors.toList());
 

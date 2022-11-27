@@ -53,16 +53,12 @@ public class TwitterHistoryDAO {
         return getNumberOfTweetsSince(feed, account, DateTime.now().minusHours(1).toDate(), destination);
     }
 
-    public long getNumberOfPublisherTwitsInLastTwentyFourHours(Feed feed, Account account, Destination destination) {
+    public long getNumberOfTwitsInLastTwentyFourHours(Feed feed, Account account, Destination destination) {
         return getNumberOfTweetsSince(feed, account, DateTime.now().minusDays(1).toDate(), destination);
     }
 
     public int getNumberOfPublisherTwitsInLastTwentyFourHours(Feed feed, String publisher, Account account, Destination destination) {
         return 0;   // TODO
-    }
-
-    private void saveTwitterEvent(TwitterEvent event) {
-        dataStoreFactory.getDs().save(event);
     }
 
     private long getNumberOfTweetsSince(Feed feed, Account account, Date since, Destination destination) {
@@ -73,6 +69,10 @@ public class TwitterHistoryDAO {
                 filter("account", account).
                 filter("destination", destination).
                 count();
+    }
+
+    private void saveTwitterEvent(TwitterEvent event) {
+        dataStoreFactory.getDs().save(event);
     }
 
 }

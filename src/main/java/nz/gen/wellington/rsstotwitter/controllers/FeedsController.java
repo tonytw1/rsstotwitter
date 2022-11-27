@@ -90,7 +90,7 @@ public class FeedsController {
               twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount(), destination)
       ).sum();
       long numberOfTwitsInLastTwentyFourHours = allDestinations.stream().mapToLong( destination ->
-              twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount(), destination)
+              twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount(), destination)
       ).sum();
 
       ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
