@@ -1,7 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public class TwitterSigninController extends AbstractSigninController<TwitterCredentials> {
 
     @Autowired
-    public TwitterSigninController(TwitterAccountDAO accountDAO, TwitterSigninHandler signinHandler,
+    public TwitterSigninController(AccountDAO accountDAO, TwitterSigninHandler signinHandler,
                                    LoggedInUserFilter loggedInUserFilter,
                                    @Value("${homepage.url}") String homePageUrl) {
         this.accountDAO = accountDAO;

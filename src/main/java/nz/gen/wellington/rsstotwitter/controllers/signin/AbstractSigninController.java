@@ -2,7 +2,7 @@ package nz.gen.wellington.rsstotwitter.controllers.signin;
 
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
 import nz.gen.wellington.rsstotwitter.model.Account;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,7 +16,7 @@ public abstract class AbstractSigninController<T> {
     protected SigninHandler<T> signinHandler;
     protected LoggedInUserFilter loggedInUserFilter;
     protected String  homePageUrl;
-    protected TwitterAccountDAO accountDAO;
+    protected AccountDAO accountDAO;
 
     private final static Logger log = LogManager.getLogger(AbstractSigninController.class);
 

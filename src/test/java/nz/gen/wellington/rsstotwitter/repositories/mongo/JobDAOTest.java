@@ -25,7 +25,7 @@ public class JobDAOTest {
         }
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
-        TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
+        AccountDAO accountDAO = new AccountDAO(dataStoreFactory);
         JobDAO jobDAO = new JobDAO(dataStoreFactory);
 
         Account account = new Account();
@@ -55,7 +55,7 @@ public class JobDAOTest {
         }
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
-        TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
+        AccountDAO accountDAO = new AccountDAO(dataStoreFactory);
         JobDAO jobDAO = new JobDAO(dataStoreFactory);
 
         Account account = new Account();

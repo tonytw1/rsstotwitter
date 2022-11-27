@@ -7,7 +7,7 @@ import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.google.common.collect.Maps;
 import nz.gen.wellington.rsstotwitter.model.Account;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +27,7 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
 
     private final static Logger log = LogManager.getLogger(TwitterSigninHandler.class);
 
-    private final TwitterAccountDAO accountDAO;
+    private final AccountDAO accountDAO;
     private final TwitterService twitterService;
     private final OAuth10aService oauthService;
 
@@ -37,7 +37,7 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
     private final Map<String, OAuth1RequestToken> requestTokens;
 
     @Autowired
-    public TwitterSigninHandler(TwitterAccountDAO accountDAO,
+    public TwitterSigninHandler(AccountDAO accountDAO,
                                 TwitterService twitterService,
                                 @Value("${consumer.key}") String consumerKey,
                                 @Value("${consumer.secret}") String consumerSecret,

@@ -9,7 +9,7 @@ import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException;
 import com.sys1yagi.mastodon4j.api.method.Accounts;
 import com.sys1yagi.mastodon4j.api.method.Apps;
 import nz.gen.wellington.rsstotwitter.model.Account;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
 import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
 
-    private final TwitterAccountDAO accountDAO;
+    private final AccountDAO accountDAO;
     private final String instance;
     private final String clientId;
     private final String clientSecret;
@@ -36,7 +36,7 @@ public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
     private final static Logger log = LogManager.getLogger(MastodonSignHandler.class);
 
     @Autowired
-    public MastodonSignHandler(TwitterAccountDAO accountDAO,
+    public MastodonSignHandler(AccountDAO accountDAO,
                                @Value("${mastodon.instance}") String instance,
                                @Value("${mastodon.client.id}") String clientId,
                                @Value("${mastodon.client.secret}") String clientSecret,

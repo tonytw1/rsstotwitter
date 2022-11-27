@@ -21,7 +21,7 @@ public class TwitterHistoryDAOTest {
 
         DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
         TwitterHistoryDAO twitterHistoryDAO = new TwitterHistoryDAO(dataStoreFactory);
-        TwitterAccountDAO accountDAO = new TwitterAccountDAO(dataStoreFactory);
+        AccountDAO accountDAO = new AccountDAO(dataStoreFactory);
 
         Feed feed = new Feed("https://wellington.gen.nz/rss");
         String link = "https://wellington.gen.nz/a-post";

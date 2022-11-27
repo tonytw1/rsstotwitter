@@ -1,17 +1,13 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
-import nz.gen.wellington.rsstotwitter.model.Account;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterAccountDAO;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MastodonSigninController extends AbstractSigninController<MastodonCredentials> {
 
     @Autowired
-    public MastodonSigninController(TwitterAccountDAO accountDAO, MastodonSignHandler signinHandler,
+    public MastodonSigninController(AccountDAO accountDAO, MastodonSignHandler signinHandler,
                                     LoggedInUserFilter loggedInUserFilter,
                                     @Value("${homepage.url}") String homePageUrl) {
         this.accountDAO = accountDAO;
