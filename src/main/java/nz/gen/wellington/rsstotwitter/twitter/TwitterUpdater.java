@@ -107,11 +107,11 @@ public class TwitterUpdater {
     }
 
     private boolean hasExceededMaxTweetsPerHourRateLimit(long tweetsSent) {
-        return tweetsSent >= TwitterSettings.MAX_TWITS_PER_HOUR;
+        return tweetsSent >= RateLimitingSettings.MAX_TWITS_PER_HOUR;
     }
 
     private boolean hasExceededMaxTweetsPerDayFeedRateLimit(long tweetsSent) {
-        return tweetsSent >= TwitterSettings.MAX_TWITS_PER_DAY;
+        return tweetsSent >= RateLimitingSettings.MAX_TWITS_PER_DAY;
     }
 
     private boolean isPublisherRateLimitExceed(Feed feed, String publisher, Account account, Destination destination) {
@@ -121,7 +121,7 @@ public class TwitterUpdater {
 
         final long numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, publisher, account, destination);
         log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
-        return numberOfPublisherTwitsInLastTwentyFourHours >= TwitterSettings.MAX_PUBLISHER_TWITS_PER_DAY;
+        return numberOfPublisherTwitsInLastTwentyFourHours >= RateLimitingSettings.MAX_PUBLISHER_TWITS_PER_DAY;
     }
 
     private boolean isAfterMigrationToNewEventsTable(FeedItem feedItem) {

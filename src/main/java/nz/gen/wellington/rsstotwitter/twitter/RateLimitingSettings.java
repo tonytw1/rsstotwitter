@@ -1,6 +1,6 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
-public class TwitterSettings {
+public class RateLimitingSettings {
 
     public static final int MAX_TWITS_PER_HOUR = 5;
     public static final int MAX_TWITS_PER_DAY = 50;
