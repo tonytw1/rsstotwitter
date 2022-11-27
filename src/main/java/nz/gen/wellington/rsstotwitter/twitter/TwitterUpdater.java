@@ -119,7 +119,7 @@ public class TwitterUpdater {
             return false;
         }
 
-        final int numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, publisher, account, destination);
+        final long numberOfPublisherTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfPublisherTwitsInLastTwentyFourHours(feed, publisher, account, destination);
         log.debug("Publisher '" + publisher + "' has made " + numberOfPublisherTwitsInLastTwentyFourHours + " twits in the last 24 hours");
         return numberOfPublisherTwitsInLastTwentyFourHours >= TwitterSettings.MAX_PUBLISHER_TWITS_PER_DAY;
     }

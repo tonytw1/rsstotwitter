@@ -13,14 +13,13 @@ import java.util.List;
 @Component
 public class TwitterHistoryDAO {
 
-    private DataStoreFactory dataStoreFactory;
+    private final DataStoreFactory dataStoreFactory;
 
     @Autowired
     public TwitterHistoryDAO(DataStoreFactory dataStoreFactory) {
         this.dataStoreFactory = dataStoreFactory;
     }
 
-    @SuppressWarnings("unchecked")
     public boolean hasAlreadyBeenTweeted(Account account, String guid, Destination destination) {
         return !tweetsForGuid(account, guid, destination).isEmpty();
     }
@@ -57,8 +56,16 @@ public class TwitterHistoryDAO {
         return getNumberOfTweetsSince(feed, account, DateTime.now().minusDays(1).toDate(), destination);
     }
 
-    public int getNumberOfPublisherTwitsInLastTwentyFourHours(Feed feed, String publisher, Account account, Destination destination) {
-        return 0;   // TODO
+    public long getNumberOfPublisherTwitsInLastTwentyFourHours(Feed feed, String publisher, Account account, Destination destination) {
+        Date since = DateTime.now().minusDays(1).toDate();
+        return dataStoreFactory.getDs().find(TwitterEvent.class).
+                field("date").
+                greaterThan(since).
+                filter("feed.url", feed.getUrl()).
+                filter("account", account).
+                filter("destination", destination).
+                filter("publisher", publisher).
+                count();
     }
 
     private long getNumberOfTweetsSince(Feed feed, Account account, Date since, Destination destination) {
