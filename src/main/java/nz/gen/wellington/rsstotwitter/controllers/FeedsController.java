@@ -100,7 +100,7 @@ public class FeedsController {
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
-              addObject("accounts", destinationsConnectedToAccount(loggedInUser)).
+              addObject("accounts", connectedAccountsFor(loggedInUser)).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
@@ -120,6 +120,14 @@ public class FeedsController {
 
   private ModelAndView redirectToSignInPage() {
     return new ModelAndView(new RedirectView("/"));
+  }
+
+  private List<ConnectedAccount> connectedAccountsFor(Account account) {
+    List<ConnectedAccount> accounts = Lists.newArrayList();
+    for (Destination destination : destinationsConnectedToAccount(account)) {
+      accounts.add(new ConnectedAccount(destination.getAccountUsername(account), destination, destination.getAccountUrl(account)));
+    }
+    return accounts;
   }
 
   private Set<Destination> destinationsConnectedToAccount(Account account) {
