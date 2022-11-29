@@ -23,7 +23,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -36,7 +35,7 @@ public class FeedsController {
   private final FeedService feedService;
   private final TwitterHistoryDAO twitterHistoryDAO;
 
-  private final Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
+  private final List<Destination> allDestinations = Lists.newArrayList(Destination.values());
 
   @Autowired
   public FeedsController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO, FeedService feedService, TwitterHistoryDAO twitterHistoryDAO) {
@@ -67,7 +66,7 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, allDestinations);
+      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Sets.newHashSet(allDestinations));
       log.info("Creating job: " + job);
 
       jobDAO.save(job);
@@ -100,7 +99,7 @@ public class FeedsController {
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
-              addObject("accounts", connectedAccountsFor(loggedInUser)).
+              addObject("accounts", loggedInUserFilter.connectedAccountsFor(loggedInUser)).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
@@ -115,38 +114,11 @@ public class FeedsController {
   private ModelAndView renderNewFeedForm(FeedDetails feedDetails, Account account) {
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
-            addObject("accounts", destinationsConnectedToAccount(account));
+            addObject("accounts", loggedInUserFilter.connectedAccountsFor(account));
   }
 
   private ModelAndView redirectToSignInPage() {
     return new ModelAndView(new RedirectView("/"));
-  }
-
-  private List<ConnectedAccount> connectedAccountsFor(Account account) {
-    List<ConnectedAccount> accounts = Lists.newArrayList();
-    for (Destination destination : destinationsConnectedToAccount(account)) {
-      accounts.add(new ConnectedAccount(destination.getAccountUsername(account), destination, destination.getAccountUrl(account)));
-    }
-    return accounts;
-  }
-
-  private Set<Destination> destinationsConnectedToAccount(Account account) {
-    Set<Destination> connected = Sets.newHashSet();
-    if (isAccountConnectedToMastdon(account)) {
-      connected.add(Destination.MASTODON);
-    }
-    if (isAccountContentedToTwitter(account)) {
-      connected.add(Destination.TWITTER);
-    }
-    return connected;
-  }
-
-  private boolean isAccountConnectedToMastdon(Account account) {
-    return account.getMastodonAccessToken() != null;
-  }
-
-  private boolean isAccountContentedToTwitter(Account account) {
-    return account.getToken() != null && account.getTokenSecret() != null;
   }
 
 }

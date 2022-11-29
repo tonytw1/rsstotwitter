@@ -2,8 +2,15 @@ package nz.gen.wellington.rsstotwitter.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.model.Account;
+import nz.gen.wellington.rsstotwitter.model.ConnectedAccount;
+import nz.gen.wellington.rsstotwitter.model.Destination;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class LoggedInUserFilter {
@@ -20,6 +27,33 @@ public class LoggedInUserFilter {
 
     public void removeLoggedInUser(HttpServletRequest request) {
         request.getSession().removeAttribute(LOGGED_IN_USER);
+    }
+
+    public List<ConnectedAccount> connectedAccountsFor(Account account) {
+        List<ConnectedAccount> accounts = Lists.newArrayList();
+        for (Destination destination : destinationsConnectedToAccount(account)) {
+            accounts.add(new ConnectedAccount(destination.getAccountUsername(account), destination, destination.getAccountUrl(account)));
+        }
+        return accounts;
+    }
+
+    private Set<Destination> destinationsConnectedToAccount(Account account) {
+        Set<Destination> connected = Sets.newHashSet();
+        if (isAccountConnectedToMastodon(account)) {
+            connected.add(Destination.MASTODON);
+        }
+        if (isAccountContentedToTwitter(account)) {
+            connected.add(Destination.TWITTER);
+        }
+        return connected;
+    }
+
+    private boolean isAccountConnectedToMastodon(Account account) {
+        return account.getMastodonAccessToken() != null;
+    }
+
+    private boolean isAccountContentedToTwitter(Account account) {
+        return account.getToken() != null && account.getTokenSecret() != null;
     }
 
 }
