@@ -46,7 +46,7 @@ public class TwitterUpdater {
                 return;
             }
 
-            final boolean isFreshEnough = isAfterMigrationToNewEventsTable(feedItem);
+            final boolean isFreshEnough = isLessThanSevenDaysOld(feedItem);
             if (isFreshEnough) {
                 boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account, destination);
                 if (!publisherRateLimitExceeded) {
@@ -122,9 +122,9 @@ public class TwitterUpdater {
         return numberOfPublisherTwitsInLastTwentyFourHours >= RateLimitingSettings.MAX_PUBLISHER_TWITS_PER_DAY;
     }
 
-    private boolean isAfterMigrationToNewEventsTable(FeedItem feedItem) {
-        final DateTime migrationTime = new DateTime(2022, 11, 24, 9, 0, 0, 0);   // TODO migration
-        return new DateTime(feedItem.getPublishedDate()).isAfter(migrationTime);
+    private boolean isLessThanSevenDaysOld(FeedItem feedItem) {
+        final DateTime sevenDaysAgo = new DateTime().minusDays(7);
+        return new DateTime(feedItem.getPublishedDate()).isAfter(sevenDaysAgo);
     }
 
     private boolean isAccountConnectedToMastdon(Account account) {
