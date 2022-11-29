@@ -9,9 +9,11 @@ import java.util.List;
 
 import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.*;
 
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterUpdater;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,12 +46,16 @@ public class UpdateServiceTest {
     List<FeedItem> feedItems;
     @Mock
     private List<FeedItem> secondFeedItems;
+    @Mock
+    private MastodonService mastodonService;
+    @Mock
+    private TwitterService twitterService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         jobs = new ArrayList<>();
-        service = new UpdateService(jobDAO, feedService, twitterUpdater);
+        service = new UpdateService(jobDAO, feedService, twitterUpdater, mastodonService, twitterService);
 
         feed = new Feed(FEED_URL);
         account = new Account(1, TWITTER_USERNAME);
@@ -59,6 +65,7 @@ public class UpdateServiceTest {
         jobs.add(new FeedToTwitterJob(secondFeed, secondAccount, Sets.newHashSet(Destination.TWITTER)));
 
         when(jobDAO.getAllTweetFeedJobs()).thenReturn(jobs);
+        when(twitterService.isConfigured()).thenReturn(true);
     }
 
     @Test
