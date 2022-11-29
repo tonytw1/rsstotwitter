@@ -1,7 +1,5 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
-import com.github.scribejava.apis.TwitterApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
@@ -29,32 +27,31 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
 
     private final AccountDAO accountDAO;
     private final TwitterService twitterService;
-    private final OAuth10aService oauthService;
-
-    private final String consumerKey;
-    private final String consumerSecret;
+    private OAuth10aService oauthService;
 
     private final Map<String, OAuth1RequestToken> requestTokens;
 
     @Autowired
     public TwitterSigninHandler(AccountDAO accountDAO,
                                 TwitterService twitterService,
-                                @Value("${consumer.key}") String consumerKey,
-                                @Value("${consumer.secret}") String consumerSecret,
                                 @Value("${homepage.url}") String homepageUrl) {
         this.accountDAO = accountDAO;
         this.twitterService = twitterService;
 
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;
-
         this.requestTokens = Maps.newConcurrentMap();
 
-        this.oauthService = makeOauthService(homepageUrl + "/oauth/callback");
+        if (twitterService.isConfigured()) {
+            this.oauthService = twitterService.makeOauthService(homepageUrl + "/oauth/callback");
+        }
     }
 
     @Override
     public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) {
+        if (oauthService == null) {
+            log.warn("Twitter is not configured; can not login");
+            return null;
+        }
+
         try {
             log.info("Getting request token");
             OAuth1RequestToken requestToken = oauthService.getRequestToken();    // TODO can we use the code flow like the Mastadon handler? Needs Twitter v2 api?
@@ -130,12 +127,6 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
         account.setUsername(externalIdentifier.getUser().getScreenName());
         account.setToken(externalIdentifier.getToken().getToken());
         account.setTokenSecret(externalIdentifier.getToken().getTokenSecret());
-    }
-
-    private OAuth10aService makeOauthService(String callBackUrl) {
-        log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
-        log.info("Oauth callback url is: " + callBackUrl);
-        return new ServiceBuilder(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build(TwitterApi.instance());
     }
 
 }

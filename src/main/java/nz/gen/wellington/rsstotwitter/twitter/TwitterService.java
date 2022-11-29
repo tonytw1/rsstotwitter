@@ -1,11 +1,13 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
+import com.github.scribejava.apis.TwitterApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.oauth.OAuth10aService;
 import com.google.common.base.Strings;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import nz.gen.wellington.rsstotwitter.model.Tweet;
 import nz.gen.wellington.rsstotwitter.model.Account;
-import org.apache.commons.lang.ArrayUtils;
+import nz.gen.wellington.rsstotwitter.model.Tweet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,6 @@ import org.springframework.stereotype.Component;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class TwitterService {
@@ -49,19 +48,6 @@ public class TwitterService {
         return null;
     }
 
-    public List<Long> getFollowers(Account account) {
-        final Twitter twitter = getAuthenticatedApiForAccount(account);
-        try {
-            IDs followersIDs = twitter.getFollowersIDs(account.getId());
-            log.info("Found " + followersIDs.getIDs().length + " follower ids");
-            return Arrays.asList(ArrayUtils.toObject(followersIDs.getIDs()));
-
-        } catch (TwitterException e) {
-            log.error("Error while fetching follows of '" + account.getUsername() + "'", e);
-        }
-        return null;
-    }
-
     public twitter4j.User getTwitterUserCredentials(AccessToken accessToken) {
         Twitter twitterApi = getAuthenticatedApiForAccessToken(accessToken);
         try {
@@ -70,6 +56,12 @@ public class TwitterService {
             log.warn("Failed up obtain twitter user details due to Twitter exception: " + e.getMessage());
             return null;
         }
+    }
+
+    public OAuth10aService makeOauthService(String callBackUrl) {
+        log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
+        log.info("Oauth callback url is: " + callBackUrl);
+        return new ServiceBuilder(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build(TwitterApi.instance());
     }
 
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
