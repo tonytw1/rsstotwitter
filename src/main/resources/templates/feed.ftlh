@@ -2,6 +2,8 @@
 
 <h4><a href="/">Feeds</a> / <a href="${job.feed.url}">${job.feed.url}</a></h4>
 
+<p><#include "activity.ftlh"></p>
+
 <h4>Feed items</h4>
 <ul>
     <#list feedItemsWithTweets as feedItem>
@@ -26,7 +28,6 @@
 </ul>
 
 <h4>Sent</h4>
-<p><#include "activity.ftlh"></p>
 <ul>
     <#list tweetEvents as tweetEvent>
         <li>
