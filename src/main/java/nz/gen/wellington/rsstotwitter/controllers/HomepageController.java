@@ -1,9 +1,11 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
 import com.google.common.collect.Lists;
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +22,21 @@ public class HomepageController {
     private final LoggedInUserFilter loggedInUserFilter;
     private final JobDAO jobDAO;
     private final TwitterHistoryDAO twitterHistoryDAO;
+    private final MastodonService mastodonService;
+    private final TwitterService twitterService;
 
     private final List<Destination> allDestinations = Lists.newArrayList(Destination.values());
 
     @Autowired
-    public HomepageController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO,
-                              TwitterHistoryDAO twitterHistoryDAO) {
+    public <twitterService> HomepageController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO,
+                                               TwitterHistoryDAO twitterHistoryDAO,
+                                               MastodonService mastodonService,
+                              TwitterService twitterService) {
         this.loggedInUserFilter = loggedInUserFilter;
         this.jobDAO = jobDAO;
         this.twitterHistoryDAO = twitterHistoryDAO;
+        this.mastodonService = mastodonService;
+        this.twitterService = twitterService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -52,8 +60,19 @@ public class HomepageController {
 
         } else {
             return new ModelAndView("homepage").
-                    addObject("destinations", allDestinations);
+                    addObject("destinations", availableDestinations());
         }
+    }
+
+    private List<Destination> availableDestinations() {
+        List<Destination> available = Lists.newArrayList();
+        if (mastodonService.isConfigured()) {
+            available.add(Destination.MASTODON);
+        }
+        if (twitterService.isConfigured()) {
+            available.add(Destination.TWITTER);
+        }
+        return available;
     }
 
 }

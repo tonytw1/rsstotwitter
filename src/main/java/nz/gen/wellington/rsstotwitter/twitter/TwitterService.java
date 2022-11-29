@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
+import com.google.common.base.Strings;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
@@ -89,6 +90,10 @@ public class TwitterService {
                 setOAuthConsumerKey(consumerKey).
                 setOAuthConsumerSecret(consumerSecret);
         return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
+    }
+
+    public boolean isConfigured() {
+        return !Strings.isNullOrEmpty(consumerKey) && !Strings.isNullOrEmpty(consumerSecret);
     }
 
 }

@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.mastodon;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.sys1yagi.mastodon4j.MastodonClient;
 import com.sys1yagi.mastodon4j.MastodonRequest;
@@ -29,6 +30,10 @@ public class MastodonService {
         MastodonRequest<Status> request = statuses.postStatus(message, null, null, false, null, Status.Visibility.Public);
         Status status = request.execute();
         return new Tweet(status);
+    }
+
+    public boolean isConfigured() {
+        return !Strings.isNullOrEmpty(instance); // TODO why are the client creds not on this bean?
     }
 
 }
