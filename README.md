@@ -1,4 +1,4 @@
-# RSS to Twitter
+# RSS to Twitter (and Mastodon)
 
 Pushes RSS feed items to linked Twitter accounts.
 
