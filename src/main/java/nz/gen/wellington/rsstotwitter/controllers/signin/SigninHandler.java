@@ -3,18 +3,18 @@ package nz.gen.wellington.rsstotwitter.controllers.signin;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.model.Account;
 
 import org.springframework.web.servlet.ModelAndView;
 
-public interface SigninHandler {
+public interface SigninHandler<T> {
 
     ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
-    Object getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request);
+    T getExternalUserIdentifierFromCallbackRequest(HttpServletRequest request);
 
-    TwitterAccount getUserByExternalIdentifier(Object externalIdentifier);
+    Account getUserByExternalIdentifier(T externalIdentifier);
 
-    void decorateUserWithExternalSigninIdentifier(TwitterAccount account, Object externalIdentifier);
+    void decorateUserWithExternalSigninIdentifier(Account account, T externalIdentifier);
 
 }

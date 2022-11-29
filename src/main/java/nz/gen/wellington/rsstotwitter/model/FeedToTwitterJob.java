@@ -1,7 +1,11 @@
 package nz.gen.wellington.rsstotwitter.model;
 
 import dev.morphia.annotations.Id;
+import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
+
+import java.util.Objects;
+import java.util.Set;
 
 public class FeedToTwitterJob {
 
@@ -9,14 +13,18 @@ public class FeedToTwitterJob {
     ObjectId objectId;
 
     private Feed feed;
-    private TwitterAccount account;
+    private Set<Destination> destinations;
+
+    @Reference
+    private Account account;
 
     public FeedToTwitterJob() {
     }
 
-    public FeedToTwitterJob(Feed feed, TwitterAccount account) {
+    public FeedToTwitterJob(Feed feed, Account account, Set<Destination> destinations) {
         this.feed = feed;
         this.account = account;
+        this.destinations = destinations;
     }
 
     public String getObjectId() {
@@ -27,16 +35,25 @@ public class FeedToTwitterJob {
         return feed;
     }
 
-    public void setFeed(Feed feed) {
-        this.feed = feed;
-    }
-
-    public TwitterAccount getAccount() {
+    public Account getAccount() {
         return account;
     }
 
-    public void setAccount(TwitterAccount account) {
-        this.account = account;
+    public Set<Destination> getDestinations() {
+        return destinations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FeedToTwitterJob that = (FeedToTwitterJob) o;
+        return Objects.equals(objectId, that.objectId) && Objects.equals(feed, that.feed) && Objects.equals(destinations, that.destinations) && Objects.equals(account, that.account);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectId, feed, destinations, account);
     }
 
     @Override

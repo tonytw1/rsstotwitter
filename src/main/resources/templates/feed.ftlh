@@ -2,6 +2,8 @@
 
 <h4><a href="/">Feeds</a> / <a href="${job.feed.url}">${job.feed.url}</a></h4>
 
+<p><#include "activity.ftlh"></p>
+
 <h4>Feed items</h4>
 <ul>
     <#list feedItemsWithTweets as feedItem>
@@ -13,9 +15,10 @@
                 <ul>
                     <#list feedItem.getValue1() as tweetEvent>
                          <li>
-                            <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}" target="_blank">
-                            ${tweetEvent.twit} </a><br/>
-                            ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
+                            <a href="${tweetEvent.tweet.previewUrl}" target="_blank">
+                                <img src="${tweetEvent.destination.logo}" width="24" height="24">
+                                ${tweetEvent.twit}
+                            </a>
                         </li>
                     </#list>
                 </ul>
@@ -24,14 +27,15 @@
     </#list>
 </ul>
 
-<h4>Tweets</h4>
-<p><#include "activity.ftlh"></p>
+<h4>Sent</h4>
 <ul>
     <#list tweetEvents as tweetEvent>
         <li>
-            <a href="https://twitter.com/${tweetEvent.tweet.author}/status/${tweetEvent.tweet.id?c}" target="_blank">
-                ${tweetEvent.twit} </a><br/>
-                ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
+            <a href="${tweetEvent.tweet.previewUrl}" target="_blank">
+                <img src="${tweetEvent.destination.logo}" width="24" height="24">
+                ${tweetEvent.twit}
+            </a><br/>
+            ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
         </li>
     </#list>
 </ul>

@@ -16,17 +16,16 @@ public class TweetFromFeedItemBuilderTest {
     private final TwitTextBuilderService twitTextBuilderService = new TwitTextBuilderService();
 
     @Test
-    public void feedItemLocationIsIncludedOnTweet() throws IOException {
+    public void canMapFeedItemToTweet() throws IOException {
         TweetFromFeedItemBuilder tweetFromFeedItemBuilder = new TweetFromFeedItemBuilder(twitTextBuilderService);
 
         LatLong latLong = new LatLong(51.3, -0.1);
-        FeedItem feedItem = new FeedItem(null, "Has location", null, null, null, null, Optional.of(latLong));
+        FeedItem feedItem = new FeedItem(null, "A title", null, "http://localhost/test", null, "An author", Optional.of(latLong));
 
         Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
 
-        assertTrue(tweet.getGeoLocation() != null);
-        assertEquals(51.3, tweet.getGeoLocation().getLatitude(), 0);
-        assertEquals(-0.1, tweet.getGeoLocation().getLongitude(), 0);
+        assertEquals("An author - A title http://localhost/test", tweet.getText());
+        // If we were using extended features like location or spoiler test we would assert those here
     }
 
 }

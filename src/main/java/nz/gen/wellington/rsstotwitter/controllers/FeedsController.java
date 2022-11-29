@@ -1,11 +1,12 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.forms.FeedDetails;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javatuples.Pair;
@@ -32,10 +33,12 @@ public class FeedsController {
   private final LoggedInUserFilter loggedInUserFilter;
   private final JobDAO jobDAO;
   private final FeedService feedService;
-  private final MongoTwitterHistoryDAO twitterHistoryDAO;
+  private final TwitterHistoryDAO twitterHistoryDAO;
+
+  private final List<Destination> allDestinations = Lists.newArrayList(Destination.values());
 
   @Autowired
-  public FeedsController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO, FeedService feedService, MongoTwitterHistoryDAO twitterHistoryDAO) {
+  public FeedsController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO, FeedService feedService, TwitterHistoryDAO twitterHistoryDAO) {
     this.loggedInUserFilter = loggedInUserFilter;
     this.jobDAO = jobDAO;
     this.feedService = feedService;
@@ -44,7 +47,7 @@ public class FeedsController {
 
   @RequestMapping(value = "/new", method = RequestMethod.GET)
   public ModelAndView newFeed(@ModelAttribute("feedDetails") FeedDetails feedDetails, HttpServletRequest request) {
-    TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+    Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
       return renderNewFeedForm(feedDetails, loggedInUser);
 
@@ -55,7 +58,7 @@ public class FeedsController {
 
   @RequestMapping(value = "/new", method = RequestMethod.POST)
   public ModelAndView newFeedSubmit(@Valid @ModelAttribute("feedDetails") FeedDetails feedDetails, BindingResult result, HttpServletRequest request) {
-    TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+    Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
       if (result.hasErrors()) {
         log.info("Feed form errors: " + result.getAllErrors());
@@ -63,7 +66,7 @@ public class FeedsController {
       }
 
       Feed feed = new Feed(feedDetails.getUrl());
-      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser);
+      FeedToTwitterJob job = new FeedToTwitterJob(feed, loggedInUser, Sets.newHashSet(allDestinations));
       log.info("Creating job: " + job);
 
       jobDAO.save(job);
@@ -77,26 +80,28 @@ public class FeedsController {
 
   @RequestMapping(value = "/feeds/{id}", method = RequestMethod.GET)
   public ModelAndView feed(@PathVariable String id, HttpServletRequest request) {
-    TwitterAccount loggedInUser = loggedInUserFilter.getLoggedInUser(request);
+    Account loggedInUser = loggedInUserFilter.getLoggedInUser(request);
     if (loggedInUser != null) {
       FeedToTwitterJob job = jobDAO.getByObjectId(id);
       List<FeedItem> feedItems = feedService.loadFeedItems(job.getFeed());
 
-      long numberOfTwitsInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount().getId());
-      long numberOfTwitsInLastTwentyFourHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount().getId());
+      long numberOfTwitsInLastHour = allDestinations.stream().mapToLong( destination ->
+              twitterHistoryDAO.getNumberOfTwitsInLastHour(job.getFeed(), job.getAccount(), destination)
+      ).sum();
+      long numberOfTwitsInLastTwentyFourHours = allDestinations.stream().mapToLong( destination ->
+              twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(job.getFeed(), job.getAccount(), destination)
+      ).sum();
+
       ActivitySummary activity = new ActivitySummary(numberOfTwitsInLastHour, numberOfTwitsInLastTwentyFourHours);
 
       List<Pair<FeedItem, List<TwitterEvent>>> withTweets = feedItems != null ? feedItems.stream().map(
-              feedItem -> {
-                List<TwitterEvent> tweets = twitterHistoryDAO.tweetsForGuid(feedItem.getGuid());
-                return new Pair<>(feedItem, tweets);
-              }
+              feedItem -> new Pair<>(feedItem, allDestinations.stream().map (destination -> twitterHistoryDAO.tweetsForGuid(job.getAccount(), feedItem.getGuid(), destination)).flatMap(List::stream).collect(Collectors.toList()))
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
-              addObject("account", loggedInUser).
+              addObject("accounts", loggedInUserFilter.connectedAccountsFor(loggedInUser)).
               addObject("job", job).
-              addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount().getId())).
+              addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
               addObject("feedItems", feedItems).
               addObject("feedItemsWithTweets", withTweets);
@@ -106,10 +111,10 @@ public class FeedsController {
     }
   }
 
-  private ModelAndView renderNewFeedForm(FeedDetails feedDetails, TwitterAccount account) {
+  private ModelAndView renderNewFeedForm(FeedDetails feedDetails, Account account) {
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
-            addObject("account", account);
+            addObject("accounts", loggedInUserFilter.connectedAccountsFor(account));
   }
 
   private ModelAndView redirectToSignInPage() {

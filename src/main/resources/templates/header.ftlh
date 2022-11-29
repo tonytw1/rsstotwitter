@@ -8,15 +8,18 @@
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 
 <div class="container">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">RSS to Twitter</a>
-    <#if account??>
-        @${account.username}
-        <a href="/signout">Sign out</a>
-    <#else>
-        <a href="oauth/login">Sign in</a>
-    </#if>
-</nav>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">RSS to Twitter</a>
+        <#if accounts??>
+            <#list accounts as account>
+                <a href="${account.url}" target="_blank">
+                    <img src="${account.logo}" width="24" height="24">
+                    ${account.username}
+                </a>
+            </#list>
+            <a href="/signout">Sign out</a>
+        </#if>
+    </nav>
 </div>
 
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -30,11 +33,14 @@
             <a class="brand" href="/">RSS to Twitter</a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                <#if account??>
-                    <li><a href="/">@${account.username}</a></li>
-                    <li><a href="/signout">Sign out</a></li>
-                <#else>
-                    <li><a href="oauth/login">Sign in</a></li>
+                    <#if accounts??>
+                        <#list accounts as account>
+                            <a href="${account.url}" target="_blank">
+                                <img src="${account.logo}" width="24" height="24">
+                                ${account.username}
+                            </a>
+                        </#list>
+                        <a href="/signout">Sign out</a>
                 </#if>
                 </ul>
             </div><!--/.nav-collapse -->

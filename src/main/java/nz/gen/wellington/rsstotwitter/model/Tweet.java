@@ -1,13 +1,11 @@
 package nz.gen.wellington.rsstotwitter.model;
 
-import java.util.Date;
-
 import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
-
-import twitter4j.GeoLocation;
 import twitter4j.Status;
+
+import java.util.Date;
 
 public class Tweet {
 
@@ -19,8 +17,8 @@ public class Tweet {
     private Date date;
     private String text;
     private String author;
-    private long inReplyToUserId;
-    private GeoLocation geoLocation;
+    private String uri;
+    private String url;
 
     public Tweet() {
     }
@@ -37,24 +35,26 @@ public class Tweet {
 
         DateTime time = new DateTime(status.getCreatedAt());
         this.date = time.toDate();
+    }
 
-        this.inReplyToUserId = status.getInReplyToUserId();
+    public Tweet(com.sys1yagi.mastodon4j.api.entity.Status status) {
+        this.id = status.getId();
+        this.uri = status.getUri();
+        this.url = status.getUrl();
+        this.userId = status.getAccount().getId();
+        this.text = status.getContent();
+        this.author = status.getAccount().getUserName();
+
+        DateTime time = new DateTime(status.getCreatedAt());
+        this.date = time.toDate();
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public long getUserId() {
         return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getText() {
@@ -69,44 +69,27 @@ public class Tweet {
         return author;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public long getInReplyToUserId() {
-        return inReplyToUserId;
-    }
-
-    public void setInReplyToUserId(long inReplyToUserId) {
-        this.inReplyToUserId = inReplyToUserId;
-    }
-
-    public GeoLocation getGeoLocation() {
-        return geoLocation;
-    }
-
-    public void setGeoLocation(GeoLocation geoLocation) {
-        this.geoLocation = geoLocation;
+    public String getPreviewUrl() {
+        if (url != null) {
+            return url;
+        }
+        return "https://twitter.com/" + author + "/status/" + id;
     }
 
     @Override
     public String toString() {
         return "Tweet{" +
-                "id=" + id +
+                "objectId=" + objectId +
+                ", id=" + id +
                 ", userId=" + userId +
                 ", date=" + date +
                 ", text='" + text + '\'' +
                 ", author='" + author + '\'' +
-                ", inReplyToUserId=" + inReplyToUserId +
-                ", geoLocation=" + geoLocation +
                 '}';
     }
+
 }

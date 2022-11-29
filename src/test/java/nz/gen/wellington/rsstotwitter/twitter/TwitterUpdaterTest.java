@@ -1,10 +1,9 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import nz.gen.wellington.rsstotwitter.repositories.mongo.MongoTwitterHistoryDAO;
+import com.google.common.collect.Lists;
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
+import nz.gen.wellington.rsstotwitter.model.*;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.TwitterHistoryDAO;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,11 +20,14 @@ import static org.mockito.Mockito.*;
 public class TwitterUpdaterTest {
 
     @Mock
-    MongoTwitterHistoryDAO twitterHistoryDAO;
+    TwitterHistoryDAO twitterHistoryDAO;
     @Mock
     TweetFromFeedItemBuilder tweetFromFeedItemBuilder;
     @Mock
     TwitterService twitterService;
+    @Mock
+    MastodonService mastodonService;
+
     @Mock
     Feed feed;
 
@@ -34,8 +35,8 @@ public class TwitterUpdaterTest {
     Tweet tweetToSend;
     @Mock
     Tweet sentTweet;
-    @Mock
-    TwitterAccount account;
+
+    Account account = new Account();
 
     TwitterUpdater service;
 
@@ -45,19 +46,21 @@ public class TwitterUpdaterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(2L);
+        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account, Destination.TWITTER)).thenReturn(2L);
         feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null);
-        feedItems = new ArrayList<FeedItem>();
-        feedItems.add(feedItem);
+        feedItems = Lists.newArrayList(feedItem);
 
-        service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder);
+        account.setToken("a-connected-twitter-token");
+        account.setTokenSecret("a-connected-twitter-token-secret");
+
+        service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder, mastodonService);
     }
 
     @Test
     public void shouldNotTwitIfFeedWasInitiallyOverFeedRateLimit() {
-        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(55L);
+        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account, Destination.TWITTER)).thenReturn(55L);
 
-        service.updateFeed(feed, feedItems, account);
+        service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
         verifyNoMoreInteractions(twitterService);
     }
@@ -67,10 +70,10 @@ public class TwitterUpdaterTest {
         when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem)).thenReturn(tweetToSend);
         when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
 
-        service.updateFeed(feed, feedItems, account);
+        service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
         verify(twitterService).tweet(tweetToSend, account);
-        verify(twitterHistoryDAO).markAsTweeted(feedItem, sentTweet);
+        verify(twitterHistoryDAO).markAsTweeted(account, feedItem, sentTweet,  Destination.TWITTER);
     }
 
     @Test
@@ -80,7 +83,7 @@ public class TwitterUpdaterTest {
         feedItems.clear();
         feedItems.add(oldFeedItem);
 
-        service.updateFeed(feed, feedItems, account);
+        service.updateFeed(account, feed, feedItems, Destination.TWITTER);
 
         verifyNoMoreInteractions(tweetFromFeedItemBuilder);
         verifyNoMoreInteractions(twitterService);
@@ -88,7 +91,7 @@ public class TwitterUpdaterTest {
 
     @Test
     public void shouldNotExceedRateLimitDuringRun() {
-        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account.getId())).thenReturn(29L);
+        when(twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account, Destination.TWITTER)).thenReturn(29L);
     }
 
 }

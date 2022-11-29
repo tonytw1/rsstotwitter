@@ -7,13 +7,14 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
-import nz.gen.wellington.rsstotwitter.model.Feed;
-import nz.gen.wellington.rsstotwitter.model.FeedItem;
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
+import nz.gen.wellington.rsstotwitter.model.*;
 
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterUpdater;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,7 +32,7 @@ public class UpdateServiceTest {
     @Mock
     FeedService feedService;
     @Mock
-    Updater twitterUpdater;
+    TwitterUpdater twitterUpdater;
 
     private UpdateService service;
 
@@ -39,27 +40,32 @@ public class UpdateServiceTest {
 
     Feed feed;
     Feed secondFeed;
-    TwitterAccount account;
-    TwitterAccount secondAccount;
+    Account account;
+    Account secondAccount;
     @Mock
     List<FeedItem> feedItems;
     @Mock
     private List<FeedItem> secondFeedItems;
+    @Mock
+    private MastodonService mastodonService;
+    @Mock
+    private TwitterService twitterService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         jobs = new ArrayList<>();
-        service = new UpdateService(jobDAO, feedService, twitterUpdater);
+        service = new UpdateService(jobDAO, feedService, twitterUpdater, mastodonService, twitterService);
 
         feed = new Feed(FEED_URL);
-        account = new TwitterAccount(1, TWITTER_USERNAME);
+        account = new Account(1, TWITTER_USERNAME);
         secondFeed = new Feed(SECOND_FEED_URL);
-        secondAccount = new TwitterAccount(2, TWITTER_USERNAME);
-        jobs.add(new FeedToTwitterJob(feed, account));
-        jobs.add(new FeedToTwitterJob(secondFeed, secondAccount));
+        secondAccount = new Account(2, TWITTER_USERNAME);
+        jobs.add(new FeedToTwitterJob(feed, account, Sets.newHashSet(Destination.TWITTER)));
+        jobs.add(new FeedToTwitterJob(secondFeed, secondAccount, Sets.newHashSet(Destination.TWITTER)));
 
         when(jobDAO.getAllTweetFeedJobs()).thenReturn(jobs);
+        when(twitterService.isConfigured()).thenReturn(true);
     }
 
     @Test
@@ -68,7 +74,7 @@ public class UpdateServiceTest {
 
         service.run();
 
-        verify(twitterUpdater).updateFeed(feed, feedItems, account);
+        verify(twitterUpdater).updateFeed(account, feed, feedItems, Destination.TWITTER);
     }
 
     @Test
@@ -87,7 +93,7 @@ public class UpdateServiceTest {
 
         service.run();
 
-        verify(twitterUpdater).updateFeed(secondFeed, secondFeedItems, secondAccount);
+        verify(twitterUpdater).updateFeed(secondAccount, secondFeed, secondFeedItems, Destination.TWITTER);
     }
 
 }

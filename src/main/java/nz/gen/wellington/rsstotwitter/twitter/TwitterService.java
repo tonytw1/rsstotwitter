@@ -1,10 +1,13 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
+import com.github.scribejava.apis.TwitterApi;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.oauth.OAuth10aService;
+import com.google.common.base.Strings;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
-import nz.gen.wellington.rsstotwitter.model.TwitterAccount;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +16,6 @@ import org.springframework.stereotype.Component;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class TwitterService {
@@ -28,14 +28,15 @@ public class TwitterService {
     private final Counter tweetedCounter;
 
     @Autowired
-    public TwitterService(@Value("${consumer.key}") String consumerKey, @Value("${consumer.secret}") String consumerSecret,
+    public TwitterService(@Value("${twitter.consumer.key}") String consumerKey,
+                          @Value("${twitter.consumer.secret}") String consumerSecret,
                           MeterRegistry meterRegistry) {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.tweetedCounter = meterRegistry.counter("tweeted");
     }
 
-    public Tweet tweet(Tweet tweet, TwitterAccount account) {
+    public Tweet tweet(Tweet tweet, Account account) {
         log.info("Attempting to tweet: " + tweet.getText());
         final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);
         try {
@@ -44,19 +45,6 @@ public class TwitterService {
             return new Tweet(updatedStatus);
         } catch (TwitterException e) {
             log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
-        }
-        return null;
-    }
-
-    public List<Long> getFollowers(TwitterAccount account) {
-        final Twitter twitter = getAuthenticatedApiForAccount(account);
-        try {
-            IDs followersIDs = twitter.getFollowersIDs(account.getId());
-            log.info("Found " + followersIDs.getIDs().length + " follower ids");
-            return Arrays.asList(ArrayUtils.toObject(followersIDs.getIDs()));
-
-        } catch (TwitterException e) {
-            log.error("Error while fetching follows of '" + account.getUsername() + "'", e);
         }
         return null;
     }
@@ -71,16 +59,18 @@ public class TwitterService {
         }
     }
 
+    public OAuth10aService makeOauthService(String callBackUrl) {
+        log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
+        log.info("Oauth callback url is: " + callBackUrl);
+        return new ServiceBuilder(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build(TwitterApi.instance());
+    }
+
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
-        log.info("Tweeting: " + tweet.getText() + ", location: " + tweet.getGeoLocation());
         StatusUpdate statusUpdate = new StatusUpdate(tweet.getText());
-        if (tweet.getGeoLocation() != null) {
-            statusUpdate.setLocation(tweet.getGeoLocation());
-        }
         return twitter.updateStatus(statusUpdate);
     }
 
-    private Twitter getAuthenticatedApiForAccount(TwitterAccount account) {
+    private Twitter getAuthenticatedApiForAccount(Account account) {
         Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(new AccessToken(account.getToken(), account.getTokenSecret()));
         if (twitterApiForAccount == null) {
             throw new RuntimeException("Could not get api instance for account: " + account.getUsername());    // TODO is a null return really what twitter4j returns?
@@ -93,6 +83,10 @@ public class TwitterService {
                 setOAuthConsumerKey(consumerKey).
                 setOAuthConsumerSecret(consumerSecret);
         return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
+    }
+
+    public boolean isConfigured() {
+        return !Strings.isNullOrEmpty(consumerKey) && !Strings.isNullOrEmpty(consumerSecret);
     }
 
 }
