@@ -11,14 +11,17 @@ Java / Spring Boot / Maven application intended to be run in a Docker container.
 Example output: [@wellynews](https://twitter.com/wellynews)
 
 
+### Sign in
+![Signing in to link a social account](screenshots/signin.png)
+
 ### Adding a new feed
-![Adding a new feed](newfeed.png)
+![Adding a new feed](screenshots/newfeed.png)
 
 ### Listing feeds
-![Listing feeds](feeds.png)
+![Listing feeds](screenshots/feeds.png)
 
 ### Feed details
-![Feed detail](feed.png)
+![Feed detail](screenshots/feed.png)
 
 
 ## Run locally
