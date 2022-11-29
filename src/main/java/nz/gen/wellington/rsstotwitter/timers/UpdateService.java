@@ -1,8 +1,14 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
+import com.google.common.collect.Lists;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
-import nz.gen.wellington.rsstotwitter.model.*;
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
+import nz.gen.wellington.rsstotwitter.model.Destination;
+import nz.gen.wellington.rsstotwitter.model.Feed;
+import nz.gen.wellington.rsstotwitter.model.FeedItem;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
+import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterUpdater;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,15 +23,20 @@ public class UpdateService implements Runnable {
 
     private final static Logger log = LogManager.getLogger(UpdateService.class);
 
-    private JobDAO feedToTwitterJobDAO;
-    private FeedService feedService;
-    private TwitterUpdater twitterUpdater;
+    private final JobDAO feedToTwitterJobDAO;
+    private final FeedService feedService;
+    private final TwitterUpdater twitterUpdater;
+    private final MastodonService mastodonService;
+    private final TwitterService twitterService;
 
     @Autowired
-    public UpdateService(JobDAO tweetFeedJobDAO, FeedService feedService, TwitterUpdater twitterUpdater) {
+    public UpdateService(JobDAO tweetFeedJobDAO, FeedService feedService, TwitterUpdater twitterUpdater,
+                         MastodonService mastodonService, TwitterService twitterService) {
         this.feedToTwitterJobDAO = tweetFeedJobDAO;
         this.feedService = feedService;
         this.twitterUpdater = twitterUpdater;
+        this.mastodonService = mastodonService;
+        this.twitterService = twitterService;
     }
 
     @Scheduled(cron = "0 */5 * * * *")
@@ -50,7 +61,12 @@ public class UpdateService implements Runnable {
             List<FeedItem> feedItems = feedService.loadFeedItems(feed);
             if (feedItems != null && !feedItems.isEmpty()) {
                 for (Destination destination : job.getDestinations()) {
-                    twitterUpdater.updateFeed(job.getAccount(), feed, feedItems, destination);
+                    // Filter this jobs requested destinations against currently available destinations
+                    if (availableDestinations().contains(destination)) {
+                        twitterUpdater.updateFeed(job.getAccount(), feed, feedItems, destination);
+                    } else {
+                        log.warn("Omitting unconfigured destination " + destination + " for job " + job.getFeed().getUrl());
+                    }
                 }
 
             } else {
@@ -60,6 +76,17 @@ public class UpdateService implements Runnable {
         } catch (Exception e) {
             log.error("Uncaught Error running process job", e);
         }
+    }
+
+    private List<Destination> availableDestinations() {
+        List<Destination> available = Lists.newArrayList();
+        if (mastodonService.isConfigured()) {
+            available.add(Destination.MASTODON);
+        }
+        if (twitterService.isConfigured()) {
+            available.add(Destination.TWITTER);
+        }
+        return available;
     }
 
 }
