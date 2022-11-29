@@ -32,8 +32,9 @@ Use Docker to provide a local MongoDB instance:
 docker-compose -f docker/docker-compose.yml up
 ```
 
-Inspect the application.properties file.
-Set the Mongo connection details and your Twitter client credentials.
+Inspect the `application.properties` file.
+
+Set the Mongo connection details and your Mastodon and Twitter client credentials.
 
 In the Twitter developer tools, set http://localhost:8080/oauth/callback as an allowed oauth callback url.
 
@@ -47,7 +48,7 @@ The sign in screen will be visible at http://localhost:8080
 ## Dependencies
 
 OkHttp for RSS feed fetching.
-
+[Mastodon4j](https://github.com/sys1yagi/mastodon4j) for Mastodon API access.
 
 ## Build
 
