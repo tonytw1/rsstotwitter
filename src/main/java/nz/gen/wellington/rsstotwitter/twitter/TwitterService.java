@@ -28,7 +28,8 @@ public class TwitterService {
     private final Counter tweetedCounter;
 
     @Autowired
-    public TwitterService(@Value("${consumer.key}") String consumerKey, @Value("${consumer.secret}") String consumerSecret,
+    public TwitterService(@Value("${twitter.consumer.key}") String consumerKey,
+                          @Value("${twitter.consumer.secret}") String consumerSecret,
                           MeterRegistry meterRegistry) {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;

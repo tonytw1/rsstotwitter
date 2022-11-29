@@ -1,16 +1,12 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
-import com.google.gson.Gson;
-import com.sys1yagi.mastodon4j.MastodonClient;
 import com.sys1yagi.mastodon4j.MastodonRequest;
 import com.sys1yagi.mastodon4j.api.Scope;
 import com.sys1yagi.mastodon4j.api.entity.auth.AccessToken;
 import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException;
-import com.sys1yagi.mastodon4j.api.method.Accounts;
-import com.sys1yagi.mastodon4j.api.method.Apps;
+import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
-import okhttp3.OkHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,29 +22,19 @@ import javax.servlet.http.HttpServletResponse;
 public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
 
     private final AccountDAO accountDAO;
-    private final String instance;
-    private final String clientId;
-    private final String clientSecret;
+    private final MastodonService mastodonService;
 
-    private final Apps apps;
     private final String redirectUri;
 
     private final static Logger log = LogManager.getLogger(MastodonSignHandler.class);
 
     @Autowired
     public MastodonSignHandler(AccountDAO accountDAO,
-                               @Value("${mastodon.instance}") String instance,
-                               @Value("${mastodon.client.id}") String clientId,
-                               @Value("${mastodon.client.secret}") String clientSecret,
+                               MastodonService mastodonService,
                                @Value("${homepage.url}") String homepageUrl
     ) {
         this.accountDAO = accountDAO;
-        this.instance = instance;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-
-        MastodonClient client = new MastodonClient.Builder(instance, new OkHttpClient.Builder(), new Gson()).build();
-        this.apps = new Apps(client);
+        this.mastodonService = mastodonService;
         this.redirectUri = homepageUrl + "/mastodon/oauth/callback";
     }
 
@@ -57,7 +43,7 @@ public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
         // Mastodon is an OAuth2 platform so this will be a redirect to the OAuth flow
         Scope.Name scopeName = Scope.Name.ALL;    // TODO we only really need "write:statuses" and verify account
         String callbackUrl = redirectUri;
-        String authorizeUrl = apps.getOAuthUrl(clientId, new Scope(scopeName), callbackUrl);
+        String authorizeUrl = mastodonService.getOAuthUrl(scopeName, callbackUrl);
 
         return new ModelAndView(new RedirectView(authorizeUrl));
     }
@@ -69,20 +55,16 @@ public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {
             log.info("Got callback code: " + code);
 
             // Exchange for access token
-            MastodonRequest<AccessToken> accessTokenRequest = apps.getAccessToken(clientId, clientSecret, redirectUri, code, "authorization_code");
+            MastodonRequest<AccessToken> accessTokenRequest = mastodonService.getAccessToken(redirectUri, code, "authorization_code");
             try {
                 AccessToken accessToken = accessTokenRequest.execute();
                 log.info("Got access token: " + accessToken.getAccessToken() + " with scope " + accessToken.getScope());
 
                 // Look up the owner of this access token
-                MastodonClient usersClient = new MastodonClient.Builder(instance, new OkHttpClient.Builder(), new Gson()).accessToken(accessToken.getAccessToken()).build();
+                com.sys1yagi.mastodon4j.api.entity.Account mastodonAccount = mastodonService.verifyCredentials(accessToken);
+                log.info("Got Mastodon account: " + mastodonAccount.getUserName() + " / " + mastodonAccount.getUrl());
 
-                Accounts accounts = new Accounts(usersClient);
-                MastodonRequest<com.sys1yagi.mastodon4j.api.entity.Account> verifyCredentialsRequest = accounts.getVerifyCredentials();
-
-                com.sys1yagi.mastodon4j.api.entity.Account account = verifyCredentialsRequest.execute();
-                log.info("Got Mastodon account: " + account.getUserName() + " / " + account.getUrl());
-                return new MastodonCredentials(account, accessToken);
+                return new MastodonCredentials(mastodonAccount, accessToken);
 
             } catch (Mastodon4jRequestException e) {
                 log.error(e);
