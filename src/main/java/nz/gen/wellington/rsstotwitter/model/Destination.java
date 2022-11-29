@@ -1,8 +1,8 @@
 package nz.gen.wellington.rsstotwitter.model;
 
 public enum Destination {
-    MASTODON("Mastodon", "/logos/mastodon.svg", "oauth/login"),
-    TWITTER("Twitter", "/logos/twitter.png", "mastodon/oauth/login");
+    MASTODON("Mastodon", "/logos/mastodon.svg", "mastodon/oauth/login"),
+    TWITTER("Twitter", "/logos/twitter.png", "oauth/login");
 
     private final String displayName;
     private final String logo;
@@ -15,7 +15,7 @@ public enum Destination {
     }
 
     public String getLogo() {
-       return logo;
+        return logo;
     }
 
     public String getDisplayName() {
