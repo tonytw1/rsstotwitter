@@ -12,4 +12,24 @@ public enum Destination {
         return null;
     }
 
+    public String getAccountUrl(Account account) {
+        if (this == MASTODON) {
+            return account.getMastodonUrl();
+        }
+        if (this == TWITTER) {
+            return "https://twitter.com/" + account.getUsername();
+        }
+        return null;
+    }
+
+    public String getAccountUsername(Account account) {
+        if (this == MASTODON) {
+            return account.getMastodonUsername();
+        }
+        if (this == TWITTER) {
+            return account.getUsername();
+        }
+        return null;
+    }
+
 }

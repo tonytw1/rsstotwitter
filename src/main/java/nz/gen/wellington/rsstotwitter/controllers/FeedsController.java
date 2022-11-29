@@ -100,7 +100,7 @@ public class FeedsController {
       ).collect(Collectors.toList()) : Lists.newArrayList();  // TODO push this null back up
 
       return new ModelAndView("feed").
-              addObject("accounts", connectedAccountsFor(loggedInUser)).
+              addObject("accounts", destinationsConnectedToAccount(loggedInUser)).
               addObject("job", job).
               addObject("tweetEvents", twitterHistoryDAO.getTweetEvents(job.getFeed(), job.getAccount())).
               addObject("activity", activity).
@@ -115,22 +115,30 @@ public class FeedsController {
   private ModelAndView renderNewFeedForm(FeedDetails feedDetails, Account account) {
     return new ModelAndView("newfeed").
             addObject("feedDetails", feedDetails).
-            addObject("accounts", connectedAccountsFor(account));
+            addObject("accounts", destinationsConnectedToAccount(account));
   }
 
   private ModelAndView redirectToSignInPage() {
     return new ModelAndView(new RedirectView("/"));
   }
 
-  private List<ConnectedAccount> connectedAccountsFor(Account account) {
-    List<ConnectedAccount> accounts = Lists.newArrayList();
-    if (account.getUsername() != null) {
-      accounts.add(new ConnectedAccount(account.getUsername(), Destination.TWITTER, "https://twitter.com/" + account.getUsername()));
+  private Set<Destination> destinationsConnectedToAccount(Account account) {
+    Set<Destination> connected = Sets.newHashSet();
+    if (isAccountConnectedToMastdon(account)) {
+      connected.add(Destination.MASTODON);
     }
-    if (account.getMastodonUsername() != null) {
-      accounts.add(new ConnectedAccount(account.getMastodonUsername(), Destination.MASTODON, account.getMastodonUrl()));
+    if (isAccountContentedToTwitter(account)) {
+      connected.add(Destination.TWITTER);
     }
-    return accounts;
+    return connected;
+  }
+
+  private boolean isAccountConnectedToMastdon(Account account) {
+    return account.getMastodonAccessToken() != null;
+  }
+
+  private boolean isAccountContentedToTwitter(Account account) {
+    return account.getToken() != null && account.getTokenSecret() != null;
   }
 
 }

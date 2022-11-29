@@ -74,15 +74,13 @@ public class TwitterUpdater {
 
                 Tweet updatedStatus = null;
                 if (destination == Destination.TWITTER) {
-                    boolean isAccountContentedToTwitter = account.getToken() != null && account.getTokenSecret() != null;
-                    if (isAccountContentedToTwitter) {
+                    if (isAccountContentedToTwitter(account)) {
                         log.info("Tweeting: " + tweet.getText());
                         updatedStatus = twitterService.tweet(tweet, account);
                     }
                 }
                 if (destination == Destination.MASTODON) {
-                    boolean isAccountConnectedToMastdon = account.getMastodonAccessToken() != null;
-                    if (isAccountConnectedToMastdon) {
+                    if (isAccountConnectedToMastdon(account)) {
                         log.info("Tooting: " + tweet.getText());
                         updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
                         // Mastodon statuses are returned as HTML; step down to plain text
@@ -127,6 +125,14 @@ public class TwitterUpdater {
     private boolean isAfterMigrationToNewEventsTable(FeedItem feedItem) {
         final DateTime migrationTime = new DateTime(2022, 11, 24, 9, 0, 0, 0);   // TODO migration
         return new DateTime(feedItem.getPublishedDate()).isAfter(migrationTime);
+    }
+
+    private boolean isAccountConnectedToMastdon(Account account) {
+        return account.getMastodonAccessToken() != null;
+    }
+
+    private boolean isAccountContentedToTwitter(Account account) {
+        return account.getToken() != null && account.getTokenSecret() != null;
     }
 
 }

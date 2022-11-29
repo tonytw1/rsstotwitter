@@ -42,8 +42,8 @@ public class HomepageController {
                     map(job -> {
                         Feed feed = job.getFeed();
                         ActivitySummary activity = new ActivitySummary(
-                                allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount(), destination)).sum(),
-                                allDestinations.stream().mapToLong( destination -> twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, job.getAccount(), destination)).sum());
+                                allDestinations.stream().mapToLong(destination -> twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, job.getAccount(), destination)).sum(),
+                                allDestinations.stream().mapToLong(destination -> twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, job.getAccount(), destination)).sum());
                         return new JobWithActivity(job, activity);
                     }).collect(Collectors.toList());
 
@@ -59,13 +59,29 @@ public class HomepageController {
 
     private List<ConnectedAccount> connectedAccountsFor(Account account) {
         List<ConnectedAccount> accounts = Lists.newArrayList();
-        if (account.getUsername() != null) {
-            accounts.add(new ConnectedAccount(account.getUsername(), Destination.TWITTER, "https://twitter.com/" + account.getUsername()));
-        }
-        if (account.getMastodonUsername() != null) {
-            accounts.add(new ConnectedAccount(account.getMastodonUsername(), Destination.MASTODON, account.getMastodonUrl()));
+        for (Destination destination : destinationsConnectedToAccount(account)) {
+            accounts.add(new ConnectedAccount(destination.getAccountUsername(account), destination, destination.getAccountUrl(account)));
         }
         return accounts;
+    }
+
+    private Set<Destination> destinationsConnectedToAccount(Account account) {
+        Set<Destination> connected = Sets.newHashSet();
+        if (isAccountConnectedToMastdon(account)) {
+            connected.add(Destination.MASTODON);
+        }
+        if (isAccountContentedToTwitter(account)) {
+            connected.add(Destination.TWITTER);
+        }
+        return connected;
+    }
+
+    private boolean isAccountConnectedToMastdon(Account account) {
+        return account.getMastodonAccessToken() != null;
+    }
+
+    private boolean isAccountContentedToTwitter(Account account) {
+        return account.getToken() != null && account.getTokenSecret() != null;
     }
 
 }
