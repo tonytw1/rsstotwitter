@@ -23,7 +23,7 @@ public class HomepageController {
     private final JobDAO jobDAO;
     private final TwitterHistoryDAO twitterHistoryDAO;
 
-    private final Set<Destination> allDestinations = Sets.newHashSet(Destination.TWITTER, Destination.MASTODON);
+    private final List<Destination> allDestinations = Lists.newArrayList(Destination.MASTODON, Destination.TWITTER);
 
     @Autowired
     public HomepageController(LoggedInUserFilter loggedInUserFilter, JobDAO jobDAO,
@@ -53,7 +53,8 @@ public class HomepageController {
                     addObject("jobs", jobsWithActivity);
 
         } else {
-            return new ModelAndView("homepage");
+            return new ModelAndView("homepage").
+                    addObject("destinations", allDestinations);
         }
     }
 
