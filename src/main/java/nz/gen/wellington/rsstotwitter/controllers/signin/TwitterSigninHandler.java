@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import twitter4j.auth.AccessToken;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,7 +88,7 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
                         requestTokens.remove(requestToken.getToken());
 
                         log.debug("Using access token to lookup twitter user details");
-                        twitter4j.User twitterUser = twitterService.getTwitterUserCredentials(new AccessToken(accessToken.getToken(), accessToken.getTokenSecret()));
+                        twitter4j.v1.User twitterUser = twitterService.getTwitterUserCredentials(accessToken.getToken(), accessToken.getTokenSecret());
                         if (twitterUser != null) {
                             return new TwitterCredentials(twitterUser, accessToken);
 

@@ -13,9 +13,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import twitter4j.*;
-import twitter4j.auth.AccessToken;
-import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.v1.Status;
+import twitter4j.v1.StatusUpdate;
 
 @Component
 public class TwitterService {
@@ -49,10 +50,11 @@ public class TwitterService {
         return null;
     }
 
-    public twitter4j.User getTwitterUserCredentials(AccessToken accessToken) {
-        Twitter twitterApi = getAuthenticatedApiForAccessToken(accessToken);
+    public twitter4j.v1.User getTwitterUserCredentials(String accessTokenKey, String accessTokenSecret) {
+        Twitter twitterApi = getAuthenticatedApiForAccessToken(accessTokenKey, accessTokenSecret);
         try {
-            return twitterApi.verifyCredentials();
+            return twitterApi.v1().users().verifyCredentials();
+
         } catch (TwitterException e) {
             log.warn("Failed up obtain twitter user details due to Twitter exception: " + e.getMessage());
             return null;
@@ -66,23 +68,23 @@ public class TwitterService {
     }
 
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {
-        StatusUpdate statusUpdate = new StatusUpdate(tweet.getText());
-        return twitter.updateStatus(statusUpdate);
+        StatusUpdate statusUpdate = StatusUpdate.of(tweet.getText());
+        return twitter.v1().tweets().updateStatus(statusUpdate);
     }
 
     private Twitter getAuthenticatedApiForAccount(Account account) {
-        Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(new AccessToken(account.getToken(), account.getTokenSecret()));
+        Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(account.getToken(), account.getTokenSecret());
         if (twitterApiForAccount == null) {
             throw new RuntimeException("Could not get api instance for account: " + account.getUsername());    // TODO is a null return really what twitter4j returns?
         }
         return twitterApiForAccount;
     }
 
-    private Twitter getAuthenticatedApiForAccessToken(AccessToken accessToken) {
-        final ConfigurationBuilder configBuilder = new ConfigurationBuilder().
-                setOAuthConsumerKey(consumerKey).
-                setOAuthConsumerSecret(consumerSecret);
-        return new TwitterFactory(configBuilder.build()).getInstance(accessToken);
+    private Twitter getAuthenticatedApiForAccessToken(String accessKeyToken, String accessKeySecret) {
+        return Twitter.newBuilder().
+                oAuthConsumer(consumerKey, consumerSecret).
+                oAuthAccessToken(accessKeyToken, accessKeySecret).
+                build();
     }
 
     public boolean isConfigured() {

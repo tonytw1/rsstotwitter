@@ -71,27 +71,32 @@ public class TwitterUpdater {
         if (!twitterHistoryDAO.hasAlreadyBeenTweeted(account, guid, destination)) {
             try {
                 final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
-
-                Tweet updatedStatus = null;
-                if (destination == Destination.TWITTER) {
-                    if (isAccountContentedToTwitter(account)) {
-                        log.info("Tweeting: " + tweet.getText());
-                        updatedStatus = twitterService.tweet(tweet, account);
+                if (tweet != null) {
+                    Tweet updatedStatus = null;
+                    if (destination == Destination.TWITTER) {
+                        if (isAccountContentedToTwitter(account)) {
+                            log.info("Tweeting: " + tweet.getText());
+                            updatedStatus = twitterService.tweet(tweet, account);
+                        }
                     }
-                }
-                if (destination == Destination.MASTODON) {
-                    if (isAccountConnectedToMastdon(account)) {
-                        log.info("Tooting: " + tweet.getText());
-                        updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
-                        // Mastodon statuses are returned as HTML; step down to plain text
-                        String plainText= Jsoup.parse(updatedStatus.getText()).text();
-                        updatedStatus.setText(plainText);
+                    if (destination == Destination.MASTODON) {
+                        if (isAccountConnectedToMastdon(account)) {
+                            log.info("Tooting: " + tweet.getText());
+                            updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
+                            // Mastodon statuses are returned as HTML; step down to plain text
+                            String plainText = Jsoup.parse(updatedStatus.getText()).text();
+                            updatedStatus.setText(plainText);
+                        }
                     }
-                }
 
-                if (updatedStatus != null) {
-                    twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, destination);
-                    return true;
+                    if (updatedStatus != null) {
+                        twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, destination);
+                        return true;
+                    }
+
+                } else {
+                    // TODO do we really need to impose the same formatting restrictions on Twitter and Mastodon?
+                    log.warn("Could not compose tweet for feeditem: " + feedItem);
                 }
 
             } catch (Exception e) {
