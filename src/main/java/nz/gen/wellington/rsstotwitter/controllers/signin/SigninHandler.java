@@ -1,10 +1,9 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import nz.gen.wellington.rsstotwitter.model.Account;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public interface SigninHandler<T> {
 

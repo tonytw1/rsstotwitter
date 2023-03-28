@@ -1,6 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers;
 
 import com.google.common.collect.Lists;
+import jakarta.servlet.http.HttpServletRequest;
 import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.*;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
