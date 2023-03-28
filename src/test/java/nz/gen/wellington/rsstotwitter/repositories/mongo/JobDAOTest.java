@@ -1,10 +1,10 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import com.google.common.collect.Sets;
+import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.model.Destination;
 import nz.gen.wellington.rsstotwitter.model.Feed;
 import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
-import nz.gen.wellington.rsstotwitter.model.Account;
 import org.junit.Test;
 
 import java.util.List;

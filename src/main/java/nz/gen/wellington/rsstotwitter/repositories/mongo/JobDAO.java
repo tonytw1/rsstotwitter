@@ -1,8 +1,8 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
 import dev.morphia.Datastore;
-import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import nz.gen.wellington.rsstotwitter.model.Account;
+import nz.gen.wellington.rsstotwitter.model.FeedToTwitterJob;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

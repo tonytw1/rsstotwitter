@@ -1,17 +1,9 @@
 package nz.gen.wellington.rsstotwitter.timers;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.Sets;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.*;
-
 import nz.gen.wellington.rsstotwitter.repositories.mongo.JobDAO;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterService;
 import nz.gen.wellington.rsstotwitter.twitter.TwitterUpdater;
@@ -19,6 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
 
 public class UpdateServiceTest {
 
