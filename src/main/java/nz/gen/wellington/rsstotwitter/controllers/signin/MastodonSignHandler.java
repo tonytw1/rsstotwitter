@@ -4,6 +4,8 @@ import com.sys1yagi.mastodon4j.MastodonRequest;
 import com.sys1yagi.mastodon4j.api.Scope;
 import com.sys1yagi.mastodon4j.api.entity.auth.AccessToken;
 import com.sys1yagi.mastodon4j.api.exception.Mastodon4jRequestException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import nz.gen.wellington.rsstotwitter.mastodon.MastodonService;
 import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
@@ -14,9 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class MastodonSignHandler implements SigninHandler<MastodonCredentials> {

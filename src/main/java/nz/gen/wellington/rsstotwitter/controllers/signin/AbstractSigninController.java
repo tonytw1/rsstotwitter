@@ -1,5 +1,7 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
 import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
@@ -7,9 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public abstract class AbstractSigninController<T> {
 

@@ -2,6 +2,8 @@ package nz.gen.wellington.rsstotwitter.controllers;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import nz.gen.wellington.rsstotwitter.feeds.FeedService;
 import nz.gen.wellington.rsstotwitter.forms.FeedDetails;
 import nz.gen.wellington.rsstotwitter.model.*;
@@ -20,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 

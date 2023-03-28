@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nz.gen.wellington.rsstotwitter.controllers.LoggedInUserFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class SignoutController {
