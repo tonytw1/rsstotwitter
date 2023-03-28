@@ -45,7 +45,7 @@ public class TwitterService {
             tweetedCounter.increment();
             return new Tweet(updatedStatus);
         } catch (TwitterException e) {
-            log.warn("A TwitterException occured while trying to tweet: " + e.getMessage());
+            log.warn("A TwitterException occurred while trying to tweet: " + e.getMessage());
         }
         return null;
     }
