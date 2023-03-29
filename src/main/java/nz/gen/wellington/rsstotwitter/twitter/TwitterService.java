@@ -10,6 +10,8 @@ import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,9 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.v1.Status;
 import twitter4j.v1.StatusUpdate;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Component
 public class TwitterService {
@@ -41,9 +46,14 @@ public class TwitterService {
         log.info("Attempting to tweet: " + tweet.getText());
         final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);
         try {
-            final Status updatedStatus = updateStatus(twitterApiForAccount, tweet);
+            final Status status = updateStatus(twitterApiForAccount, tweet);
             tweetedCounter.increment();
-            return new Tweet(updatedStatus);
+
+            // v1 createdAt is "UTC time when this Tweet was created."
+            LocalDateTime createdAt = status.getCreatedAt();
+            DateTime time = new DateTime(createdAt.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli(), DateTimeZone.UTC);
+            return new Tweet(status.getId(), status.getUser().getId(), time.toDate(), status.getText(), status.getUser().getScreenName());
+
         } catch (TwitterException e) {
             log.warn("A TwitterException occurred while trying to tweet: " + e.getMessage());
         }
