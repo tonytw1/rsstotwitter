@@ -1,11 +1,13 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
 
+@Entity
 public class TwitterEvent {
 
     @Id

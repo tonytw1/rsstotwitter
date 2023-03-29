@@ -19,7 +19,7 @@ public class TwitterHistoryDAOTest {
             mongoHost = "localhost";
         }
 
-        DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
+        DataStoreFactory dataStoreFactory = new DataStoreFactory("mongodb://" + mongoHost + ":27017", mongoDatabase);
         TwitterHistoryDAO twitterHistoryDAO = new TwitterHistoryDAO(dataStoreFactory);
         AccountDAO accountDAO = new AccountDAO(dataStoreFactory);
 

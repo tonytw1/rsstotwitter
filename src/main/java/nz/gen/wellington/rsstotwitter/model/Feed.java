@@ -1,7 +1,10 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Entity;
+
 import java.util.Objects;
 
+@Entity
 public class Feed {
 
     private String url;

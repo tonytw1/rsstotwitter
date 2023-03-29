@@ -1,5 +1,6 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
@@ -7,6 +8,7 @@ import twitter4j.v1.Status;
 
 import java.util.Date;
 
+@Entity
 public class Tweet {
 
     @Id

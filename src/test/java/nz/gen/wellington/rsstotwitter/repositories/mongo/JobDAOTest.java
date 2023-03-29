@@ -24,7 +24,7 @@ public class JobDAOTest {
             mongoHost = "localhost";
         }
 
-        DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
+        DataStoreFactory dataStoreFactory = new DataStoreFactory("mongodb://" + mongoHost + ":27017", mongoDatabase);
         AccountDAO accountDAO = new AccountDAO(dataStoreFactory);
         JobDAO jobDAO = new JobDAO(dataStoreFactory);
 
@@ -54,7 +54,7 @@ public class JobDAOTest {
             mongoHost = "localhost";
         }
 
-        DataStoreFactory dataStoreFactory = new DataStoreFactory(mongoHost + ":27017", mongoDatabase, "", "", false);
+        DataStoreFactory dataStoreFactory = new DataStoreFactory("mongodb://" + mongoHost + ":27017", mongoDatabase);
         AccountDAO accountDAO = new AccountDAO(dataStoreFactory);
         JobDAO jobDAO = new JobDAO(dataStoreFactory);
 

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static dev.morphia.query.filters.Filters.eq;
+
 @Component
 public class JobDAO {
 
@@ -21,18 +23,18 @@ public class JobDAO {
 
     public List<FeedToTwitterJob> getAllTweetFeedJobs() {
         final Datastore ds = dataStoreFactory.getDs();
-        return ds.find(FeedToTwitterJob.class).asList();
+        return ds.find(FeedToTwitterJob.class).stream().toList();
     }
 
     @SuppressWarnings("unchecked")
     public List<FeedToTwitterJob> getJobsForAccount(Account account) {
         return dataStoreFactory.getDs().
                 find(FeedToTwitterJob.class).
-                filter("account", account).asList();
+                filter(eq("account", account)).stream().toList();
     }
 
     public FeedToTwitterJob getByObjectId(String id) {
-        return dataStoreFactory.getDs().find(FeedToTwitterJob.class, "_id", new ObjectId(id)).get();
+        return dataStoreFactory.getDs().find(FeedToTwitterJob.class).filter(eq("_id", new ObjectId(id))).first();
     }
 
     public void save(FeedToTwitterJob job) {

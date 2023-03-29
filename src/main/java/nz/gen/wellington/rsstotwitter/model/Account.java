@@ -1,10 +1,12 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 
 import java.util.Objects;
 
+@Entity
 public class Account {
 
     @Id

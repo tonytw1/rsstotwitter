@@ -21,6 +21,7 @@
 
     <properties>
         <rome.version>1.19.0</rome.version>
+        <morphia.version>2.3.0</morphia.version>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
     </properties>
@@ -86,13 +87,8 @@
 
         <dependency>
             <groupId>dev.morphia.morphia</groupId>
-            <artifactId>core</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongo-java-driver</artifactId>
-            <version>3.6.0</version>
+            <artifactId>morphia-core</artifactId>
+            <version>${morphia.version}</version>
         </dependency>
 
         <dependency>
