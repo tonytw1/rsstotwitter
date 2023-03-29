@@ -1,12 +1,12 @@
 package nz.gen.wellington.rsstotwitter.model;
 
+import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
-import twitter4j.v1.Status;
 
 import java.util.Date;
 
+@Entity
 public class Tweet {
 
     @Id
@@ -27,26 +27,22 @@ public class Tweet {
         this.text = text;
     }
 
-    public Tweet(Status status) {
-        this.id = status.getId();
-        this.userId = status.getUser().getId();
-        this.text = status.getText();
-        this.author = status.getUser().getScreenName();
-
-        DateTime time = new DateTime(status.getCreatedAt());
-        this.date = time.toDate();
+    public Tweet(Long id, long userId, Date date, String text, String author) {
+        this.id = id;
+        this.userId = userId;
+        this.date = date;
+        this.text = text;
+        this.author = author;
     }
 
-    public Tweet(com.sys1yagi.mastodon4j.api.entity.Status status) {
-        this.id = status.getId();
-        this.uri = status.getUri();
-        this.url = status.getUrl();
-        this.userId = status.getAccount().getId();
-        this.text = status.getContent();
-        this.author = status.getAccount().getUserName();
-
-        DateTime time = new DateTime(status.getCreatedAt());
-        this.date = time.toDate();
+    public Tweet(Long id, long userId, Date date, String text, String author, String uri, String url) {
+        this.id = id;
+        this.userId = userId;
+        this.date = date;
+        this.text = text;
+        this.author = author;
+        this.uri = uri;
+        this.url = url;
     }
 
     public Long getId() {

@@ -4,6 +4,8 @@ import nz.gen.wellington.rsstotwitter.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static dev.morphia.query.filters.Filters.eq;
+
 @Component
 public class AccountDAO {
 
@@ -19,11 +21,11 @@ public class AccountDAO {
     }
 
     public Account getUserByTwitterId(long id) {
-        return dataStoreFactory.getDs().find(Account.class, "id", id).get();
+        return dataStoreFactory.getDs().find(Account.class).filter(eq("id", id)).first();
     }
 
     public Account getUserByMastodonId(long id) {
-        return dataStoreFactory.getDs().find(Account.class, "mastodonId", id).get();
+        return dataStoreFactory.getDs().find(Account.class).filter(eq( "mastodonId", id)).first();
     }
 
 }

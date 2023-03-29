@@ -1,19 +1,19 @@
 package nz.gen.wellington.rsstotwitter.repositories.mongo;
 
-import com.google.common.base.Strings;
-import com.mongodb.*;
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoClient;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
-import nz.gen.wellington.rsstotwitter.model.Account;
+import dev.morphia.mapping.DiscriminatorFunction;
+import dev.morphia.mapping.MapperOptions;
+import dev.morphia.mapping.NamingStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.mongodb.client.MongoClients.create;
 
 @Component
 public class DataStoreFactory {
@@ -23,24 +23,9 @@ public class DataStoreFactory {
     private final Datastore datastore;
 
     @Autowired
-    public DataStoreFactory(@Value("${mongo.hosts}") String mongoHosts,
-                            @Value("${mongo.database}") String mongoDatabase,
-                            @Value("${mongo.user}") String mongoUser,
-                            @Value("${mongo.password}") String mongoPassword,
-                            @Value("${mongo.ssl}") Boolean mongoSSL) throws MongoException {
-
-        List<ServerAddress> addresses = Arrays.stream(mongoHosts.split(",")).
-                map(mongoHost -> new ServerAddress((mongoHost))).
-                collect(Collectors.toList());
-
-        log.debug("Mongo addresses: " + addresses);
-        log.debug("Mongo database: " + mongoDatabase);
-        log.debug("Mongo credentials: " + "'" + mongoUser + "'" + " / " + "'" + mongoPassword + "'" + " / " + mongoSSL);
-
-        MongoClientOptions mongoClientOptions = MongoClientOptions.builder().sslEnabled(mongoSSL).build();
-        MongoCredential credential = !Strings.isNullOrEmpty(mongoUser) ? MongoCredential.createScramSha1Credential(mongoUser, mongoDatabase, mongoPassword.toCharArray()) : null;
-
-        datastore = createDataStore(addresses, mongoDatabase, credential, mongoClientOptions);
+    public DataStoreFactory(@Value("${mongo.uri}") String mongoUri,
+                            @Value("${mongo.database}")String mongoDatabase) throws MongoException {
+        datastore = createDataStore(mongoUri, mongoDatabase);
         datastore.ensureIndexes();
     }
 
@@ -48,18 +33,14 @@ public class DataStoreFactory {
         return datastore;
     }
 
-    private Datastore createDataStore(List<ServerAddress> addresses, String database, MongoCredential credential, MongoClientOptions mongoClientOptions) {
-        Morphia morphia = new Morphia();
-        morphia.map(Account.class);
+    private Datastore createDataStore(String mongoUri, String mongoDatabase) {
+        MapperOptions legacyMapperOptions = MapperOptions.builder().discriminatorKey("className")
+                .discriminator(DiscriminatorFunction.className())
+                .collectionNaming(NamingStrategy.identity())
+                .propertyNaming(NamingStrategy.identity()).build();
 
-        try {
-            MongoClient m = credential != null ? new MongoClient(addresses, credential, mongoClientOptions) : new MongoClient(addresses, mongoClientOptions);
-            return morphia.createDatastore(m, database);
-
-        } catch (MongoException e) {
-            log.error(e);
-            throw new RuntimeException(e);
-        }
+        MongoClient mongoClient = create(mongoUri);
+        return Morphia.createDatastore(mongoClient, mongoDatabase, legacyMapperOptions);
     }
 
 }

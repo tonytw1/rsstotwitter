@@ -13,6 +13,7 @@ import com.sys1yagi.mastodon4j.api.method.Apps;
 import com.sys1yagi.mastodon4j.api.method.Statuses;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import okhttp3.OkHttpClient;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +43,8 @@ public class MastodonService {
 
         MastodonRequest<Status> request = statuses.postStatus(message, null, null, false, null, Status.Visibility.Public);
         Status status = request.execute();
-        return new Tweet(status);
+
+        return new Tweet(status.getId(), status.getAccount().getId(), new DateTime(status.getCreatedAt()).toDate(), status.getContent(), status.getAccount().getUserName());
     }
 
     public String getOAuthUrl(Scope.Name scopeName, String callbackUrl) {
