@@ -4,7 +4,9 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
+import dev.morphia.mapping.DiscriminatorFunction;
 import dev.morphia.mapping.MapperOptions;
+import dev.morphia.mapping.NamingStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +34,13 @@ public class DataStoreFactory {
     }
 
     private Datastore createDataStore(String mongoUri, String mongoDatabase) {
-        MapperOptions mapperOptions = MapperOptions.builder().build();
+        MapperOptions legacyMapperOptions = MapperOptions.builder().discriminatorKey("className")
+                .discriminator(DiscriminatorFunction.className())
+                .collectionNaming(NamingStrategy.identity())
+                .propertyNaming(NamingStrategy.identity()).build();
 
         MongoClient mongoClient = create(mongoUri);
-        return Morphia.createDatastore(mongoClient, mongoDatabase, mapperOptions);
+        return Morphia.createDatastore(mongoClient, mongoDatabase, legacyMapperOptions);
     }
 
 }
