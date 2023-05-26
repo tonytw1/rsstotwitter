@@ -44,7 +44,8 @@ public class MastodonService {
         MastodonRequest<Status> request = statuses.postStatus(message, null, null, false, null, Status.Visibility.Public);
         Status status = request.execute();
 
-        return new Tweet(status.getId(), status.getAccount().getId(), new DateTime(status.getCreatedAt()).toDate(), status.getContent(), status.getAccount().getUserName());
+        return new Tweet(status.getId(), status.getAccount().getId(), new DateTime(status.getCreatedAt()).toDate(),
+                status.getContent(), status.getAccount().getUserName(), status.getUri(), status.getUrl());
     }
 
     public String getOAuthUrl(Scope.Name scopeName, String callbackUrl) {
