@@ -70,6 +70,18 @@ public class TwitterEvent {
         return account;
     }
 
+    public String getPreviewUrl() {
+        Tweet tweet = this.getTweet();
+        if (destination == Destination.TWITTER) {
+            return "https://twitter.com/" + tweet.getAuthor() + "/status/" + tweet.getId();
+        } else {
+            if (tweet.getUrl() != null) {
+                return tweet.getUrl();
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "TwitterEvent{" +
