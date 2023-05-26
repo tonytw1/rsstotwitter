@@ -29,7 +29,7 @@ Example output: [@wellynews](https://twitter.com/wellynews)
 Use Docker to provide a local MongoDB instance:
 
 ```
-docker-compose -f docker/docker-compose.yml up
+docker compose -f docker/docker-compose.yml up
 ```
 
 Inspect the `application.properties` file.
