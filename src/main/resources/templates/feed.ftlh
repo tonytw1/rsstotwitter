@@ -12,16 +12,20 @@
                 <a href="${feedItem.value0.link}" target="_blank">${feedItem.value0.title}</a><br/>
                 ${(feedItem.value0.author)!}
                 ${feedItem.value0.publishedDate?datetime?string("dd-MM-yyyy")}<br/>
-                <ul>
-                    <#list feedItem.getValue1() as tweetEvent>
-                         <li>
-                            <a href="${tweetEvent.tweet.previewUrl}" target="_blank">
-                                <img src="${tweetEvent.destination.logo}" width="24" height="24">
-                                ${tweetEvent.twit}
+            <ul>
+                <#list feedItem.getValue1() as tweetEvent>
+                    <li>
+                        <#if tweetEvent.previewUrl??>
+                            <a href="${tweetEvent.previewUrl}" target="_blank">
+                        </#if>
+                        <img src="${tweetEvent.destination.logo}" width="24" height="24">
+                        ${tweetEvent.twit}
+                        <#if tweetEvent.previewUrl??>
                             </a>
-                        </li>
-                    </#list>
-                </ul>
+                        </#if>
+                    </li>
+                </#list>
+            </ul>
             </p>
         </li>
     </#list>
@@ -31,10 +35,15 @@
 <ul>
     <#list tweetEvents as tweetEvent>
         <li>
-            <a href="${tweetEvent.tweet.previewUrl}" target="_blank">
-                <img src="${tweetEvent.destination.logo}" width="24" height="24">
-                ${tweetEvent.twit}
-            </a><br/>
+            <#if tweetEvent.previewUrl??>
+                <a href="${tweetEvent.previewUrl}" target="_blank">
+            </#if>
+            <img src="${tweetEvent.destination.logo}" width="24" height="24">
+            ${tweetEvent.twit}
+            <#if tweetEvent.previewUrl??>
+                </a>
+            </#if>
+            <br/>
             ${tweetEvent.date?datetime?string("dd-MM-yyyy")}
         </li>
     </#list>

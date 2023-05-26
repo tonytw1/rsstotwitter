@@ -69,11 +69,12 @@ public class Tweet {
         return date;
     }
 
-    public String getPreviewUrl() {
-        if (url != null) {
-            return url;
-        }
-        return "https://twitter.com/" + author + "/status/" + id;
+    public String getUri() {
+        return uri;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     @Override
