@@ -1,8 +1,5 @@
 package nz.gen.wellington.rsstotwitter.twitter;
 
-import com.github.scribejava.apis.TwitterApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.oauth.OAuth10aService;
 import com.google.common.base.Strings;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -15,6 +12,7 @@ import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import twitter4j.OAuthAuthorization;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.v1.Status;
@@ -71,10 +69,8 @@ public class TwitterService {
         }
     }
 
-    public OAuth10aService makeOauthService(String callBackUrl) {
-        log.info("Building oauth service with consumer key and consumer secret: " + consumerKey + ":" + consumerSecret);
-        log.info("Oauth callback url is: " + callBackUrl);
-        return new ServiceBuilder(consumerKey).apiSecret(consumerSecret).callback(callBackUrl).build(TwitterApi.instance());
+    public OAuthAuthorization oauthAuthentication() {
+        return OAuthAuthorization.newBuilder().oAuthConsumer(consumerKey, consumerSecret).build();
     }
 
     private Status updateStatus(Twitter twitter, Tweet tweet) throws TwitterException {

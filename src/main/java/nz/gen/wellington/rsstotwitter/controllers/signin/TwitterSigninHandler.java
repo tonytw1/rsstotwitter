@@ -1,8 +1,5 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuth1RequestToken;
-import com.github.scribejava.core.oauth.OAuth10aService;
 import com.google.common.collect.Maps;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import twitter4j.AccessToken;
+import twitter4j.RequestToken;
 
 import java.util.Map;
 
@@ -26,9 +25,10 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
 
     private final AccountDAO accountDAO;
     private final TwitterService twitterService;
-    private OAuth10aService oauthService;
 
-    private final Map<String, OAuth1RequestToken> requestTokens;
+    private final String callbackUrl;
+
+    private final Map<String, RequestToken> requestTokens;
 
     @Autowired
     public TwitterSigninHandler(AccountDAO accountDAO,
@@ -38,27 +38,25 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
         this.twitterService = twitterService;
 
         this.requestTokens = Maps.newConcurrentMap();
-
-        if (twitterService.isConfigured()) {
-            this.oauthService = twitterService.makeOauthService(homepageUrl + "/oauth/callback");
-        }
+        this.callbackUrl = homepageUrl + "/oauth/callback";
     }
 
     @Override
     public ModelAndView getLoginView(HttpServletRequest request, HttpServletResponse response) {
-        if (oauthService == null) {
+        if (!twitterService.isConfigured()) {
             log.warn("Twitter is not configured; can not login");
             return null;
         }
 
         try {
-            log.info("Getting request token");
-            OAuth1RequestToken requestToken = oauthService.getRequestToken();    // TODO can we use the code flow like the Mastadon handler? Needs Twitter v2 api?
+            log.info("Getting request token for callback url: " + callbackUrl);
+            RequestToken requestToken = twitterService.oauthAuthentication().getOAuthRequestToken(callbackUrl);
+
             if (requestToken != null) {
                 log.info("Got request token: " + requestToken.getToken());
                 requestTokens.put(requestToken.getToken(), requestToken);
 
-                final String authorizeUrl = oauthService.getAuthorizationUrl(requestToken);
+                final String authorizeUrl = requestToken.getAuthorizationURL();
                 log.info("Redirecting user to authorize url : " + authorizeUrl);
                 return new ModelAndView(new RedirectView(authorizeUrl));
             }
@@ -76,13 +74,13 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
             final String verifier = request.getParameter("oauth_verifier");
 
             log.info("Looking for request token: " + token);
-            OAuth1RequestToken requestToken = requestTokens.get(token);
+            RequestToken requestToken = requestTokens.get(token);
             if (requestToken != null) {
                 log.info("Found stored request token: " + requestToken.getToken());
 
                 log.debug("Exchanging request token for access token");
                 try {
-                    OAuth1AccessToken accessToken = oauthService.getAccessToken(requestToken, verifier);
+                    AccessToken accessToken = twitterService.oauthAuthentication().getOAuthAccessToken(requestToken, verifier);
                     if (accessToken != null) {
                         log.info("Got access token: '" + accessToken.getToken() + "', '" + accessToken.getTokenSecret() + "'");
                         requestTokens.remove(requestToken.getToken());
