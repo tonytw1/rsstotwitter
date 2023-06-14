@@ -74,13 +74,13 @@ public class TwitterUpdater {
                 if (tweet != null) {
                     Tweet updatedStatus = null;
                     if (destination == Destination.TWITTER) {
-                        if (isAccountContentedToTwitter(account)) {
+                        if (isAccountConnectedToTwitter(account)) {
                             log.info("Tweeting: " + tweet.getText());
                             updatedStatus = twitterService.tweet(tweet, account);
                         }
                     }
                     if (destination == Destination.MASTODON) {
-                        if (isAccountConnectedToMastdon(account)) {
+                        if (isAccountConnectedToMastodon(account)) {
                             log.info("Tooting: " + tweet.getText());
                             updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
                             // Mastodon statuses are returned as HTML; step down to plain text
@@ -132,12 +132,12 @@ public class TwitterUpdater {
         return new DateTime(feedItem.getPublishedDate()).isAfter(sevenDaysAgo);
     }
 
-    private boolean isAccountConnectedToMastdon(Account account) {
+    private boolean isAccountConnectedToMastodon(Account account) {
         return account.getMastodonAccessToken() != null;
     }
 
-    private boolean isAccountContentedToTwitter(Account account) {
-        return account.getToken() != null && account.getTokenSecret() != null;
+    private boolean isAccountConnectedToTwitter(Account account) {
+        return account.getToken() != null;
     }
 
 }

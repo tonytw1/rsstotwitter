@@ -1,23 +1,22 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
-import twitter4j.AccessToken;
-import twitter4j.v1.User;
+import twitter4j.User2;
 
 public class TwitterCredentials {
 
-    private final User user;
-    private final AccessToken token;
+    private final User2 user;
+    private final String token;
 
-    public TwitterCredentials(User user, AccessToken token) {
+    public TwitterCredentials(User2 user, String token) {
         this.user = user;
         this.token = token;
     }
 
-    public User getUser() {
+    public User2 getUser() {
         return user;
     }
 
-    public AccessToken getToken() {
+    public String getToken() {
         return token;
     }
 }
