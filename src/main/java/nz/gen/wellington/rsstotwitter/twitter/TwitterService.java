@@ -7,6 +7,7 @@ import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -82,22 +83,29 @@ public class TwitterService {
     public Tweet tweet(Tweet tweet, Account account) {
         log.info("Attempting to tweet: " + tweet.getText());
         final Twitter twitterApiForAccount = getAuthenticatedApiForAccount(account);
-        throw new UnsupportedOperationException();
-        /*
+
         try {
-            final Status status = updateStatus(twitterApiForAccount, tweet);
+            final CreateTweetResponse status = createTweet(twitterApiForAccount, tweet);
             tweetedCounter.increment();
 
-            // v1 createdAt is "UTC time when this Tweet was created."
-            LocalDateTime createdAt = status.getCreatedAt();
-            DateTime time = new DateTime(createdAt.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli(), DateTimeZone.UTC);
-            return new Tweet(status.getId(), status.getUser().getId(), time.toDate(), status.getText(), status.getUser().getScreenName());
+            // The v2 response is really sparse, so we have to make approximations =(
+            DateTime created = DateTime.now();
+            return new Tweet(status.getId(), account.getId(), created.toDate(), status.getText(), account.getUsername());
 
         } catch (TwitterException e) {
             log.warn("A TwitterException occurred while trying to tweet: " + e.getMessage());
+            return null;
         }
-        */
     }
+
+    private CreateTweetResponse createTweet(Twitter twitterApi, Tweet tweet) throws TwitterException {
+        final TwitterV2 v2 = TwitterV2ExKt.getV2(twitterApi);
+        return v2.createTweet(null, null, null,
+                null, null, null,
+                null, null, null, null, null,
+                tweet.getText());
+    }
+
 
     private Twitter getAuthenticatedApiForAccount(Account account) {
         Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(account.getToken());
