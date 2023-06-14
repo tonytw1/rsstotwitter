@@ -6,10 +6,12 @@ public class TwitterCredentials {
 
     private final User2 user;
     private final String token;
+    private final String refreshToken;
 
-    public TwitterCredentials(User2 user, String token) {
+    public TwitterCredentials(User2 user, String token, String refreshToken) {
         this.user = user;
         this.token = token;
+        this.refreshToken = refreshToken;
     }
 
     public User2 getUser() {
@@ -18,5 +20,9 @@ public class TwitterCredentials {
 
     public String getToken() {
         return token;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 }

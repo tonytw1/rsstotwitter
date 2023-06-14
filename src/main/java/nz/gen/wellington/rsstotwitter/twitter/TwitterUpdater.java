@@ -137,7 +137,7 @@ public class TwitterUpdater {
     }
 
     private boolean isAccountConnectedToTwitter(Account account) {
-        return account.getToken() != null;
+        return account.getTwitterAccessToken() != null;
     }
 
 }

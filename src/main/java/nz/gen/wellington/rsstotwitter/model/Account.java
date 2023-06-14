@@ -16,8 +16,8 @@ public class Account {
     private Long id;
     // This user's Twitter screen name
     private String username;
-    private String token;
-    private String tokenSecret;
+    private String twitterAccessToken;
+    private String twitterRefreshToken;
 
     private Long mastodonId;
     private String mastodonUsername;
@@ -48,20 +48,20 @@ public class Account {
         this.username = username;
     }
 
-    public String getToken() {
-        return token;
+    public String getTwitterAccessToken() {
+        return twitterAccessToken;
     }
 
-    public void setToken(String token) {    // TODO rename to accessToken
-        this.token = token;
+    public void setTwitterAccessToken(String twitterAccessToken) {    // TODO rename to accessToken
+        this.twitterAccessToken = twitterAccessToken;
     }
 
-    public String getTokenSecret() {    // TODO rename to accessTokenSecret
-        return tokenSecret;
+    public String getTwitterRefreshToken() {    // TODO rename to accessTokenSecret
+        return twitterRefreshToken;
     }
 
-    public void setTokenSecret(String tokenSecret) {
-        this.tokenSecret = tokenSecret;
+    public void setTwitterRefreshToken(String twitterRefreshToken) {
+        this.twitterRefreshToken = twitterRefreshToken;
     }
 
     public Long getMastodonId() {

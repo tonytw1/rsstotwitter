@@ -50,8 +50,8 @@ public class TwitterUpdaterTest {
         feedItem = new FeedItem(feed, "title", "guid", "link", Calendar.getInstance().getTime(), "author", null);
         feedItems = Lists.newArrayList(feedItem);
 
-        account.setToken("a-connected-twitter-token");
-        account.setTokenSecret("a-connected-twitter-token-secret");
+        account.setTwitterAccessToken("a-connected-twitter-token");
+        account.setTwitterRefreshToken("a-connected-twitter-token-secret");
 
         service = new TwitterUpdater(twitterHistoryDAO, twitterService, tweetFromFeedItemBuilder, mastodonService);
     }

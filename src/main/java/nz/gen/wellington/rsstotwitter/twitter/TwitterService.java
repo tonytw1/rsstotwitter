@@ -108,7 +108,7 @@ public class TwitterService {
 
 
     private Twitter getAuthenticatedApiForAccount(Account account) {
-        Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(account.getToken());
+        Twitter twitterApiForAccount = getAuthenticatedApiForAccessToken(account.getTwitterAccessToken());
         if (twitterApiForAccount == null) {
             throw new RuntimeException("Could not get api instance for account: " + account.getUsername());    // TODO is a null return really what twitter4j returns?
         }

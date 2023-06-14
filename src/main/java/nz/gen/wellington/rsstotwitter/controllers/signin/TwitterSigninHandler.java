@@ -56,12 +56,13 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
             try {
                 OAuth2TokenProvider.Result result = twitterService.getOAuth2Token(code, callbackUrl);
                 String accessToken = result.getAccessToken();
+                String refreshToken = result.getRefreshToken();
                 log.info("Got access token " + accessToken);
 
                 log.info("Using access token to lookup twitter user details");
                 UsersResponse twitterUserResponse = twitterService.getTwitterUserCredentials(accessToken);
                 if (twitterUserResponse != null && !twitterUserResponse.getUsers().isEmpty()) {
-                    return new TwitterCredentials(twitterUserResponse.getUsers().get(0), accessToken);
+                    return new TwitterCredentials(twitterUserResponse.getUsers().get(0), accessToken, refreshToken);
 
                 } else {
                     log.warn("Failed up obtain twitter user details");
@@ -87,8 +88,8 @@ public class TwitterSigninHandler implements SigninHandler<TwitterCredentials> {
     public void decorateUserWithExternalSigninIdentifier(Account account, TwitterCredentials externalIdentifier) {
         account.setId(externalIdentifier.getUser().getId());
         account.setUsername(externalIdentifier.getUser().getScreenName());
-        account.setToken(externalIdentifier.getToken());
-        account.setTokenSecret(null);
+        account.setTwitterAccessToken(externalIdentifier.getToken());
+        account.setTwitterRefreshToken(externalIdentifier.getRefreshToken());
     }
 
 }
