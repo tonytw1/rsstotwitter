@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import nz.gen.wellington.rsstotwitter.model.Account;
 import nz.gen.wellington.rsstotwitter.model.Tweet;
+import nz.gen.wellington.rsstotwitter.repositories.mongo.AccountDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -26,16 +27,19 @@ public class TwitterService {
     private final String consumerSecret;
     private final String clientId;
 
+    private final AccountDAO accountDAO;
     private final Counter tweetedCounter;
 
     @Autowired
     public TwitterService(@Value("${twitter.consumer.key}") String consumerKey,
                           @Value("${twitter.consumer.secret}") String consumerSecret,
                           @Value("${twitter.oauth2.client.id}") String clientId,
+                          AccountDAO accountDAO,
                           MeterRegistry meterRegistry) {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.clientId = clientId;
+        this.accountDAO = accountDAO;
         this.tweetedCounter = meterRegistry.counter("tweeted");
     }
 
@@ -120,6 +124,63 @@ public class TwitterService {
         OAuth2Authorization oAuth2Authorization = new OAuth2Authorization(conf);
         oAuth2Authorization.setOAuth2Token(new OAuth2Token("bearer", accessToken));
         return new TwitterFactory(conf).getInstance(oAuth2Authorization);
+    }
+
+    public boolean isReadyToPublishFor(Account account) {
+        String twitterAccessToken = account.getTwitterAccessToken();
+        if (twitterAccessToken == null) {
+            log.info("Twitter access token is null for: " + account.getUsername());
+            return false;
+        }
+
+        try {
+            // Check that the access token is valid
+            Twitter twitterApi = getAuthenticatedApiForAccessToken(twitterAccessToken);
+            final TwitterV2 v2 = TwitterV2ExKt.getV2(twitterApi);
+            UsersResponse me = v2.getMe("",
+                    V2DefaultFields.tweetFields,
+                    V2DefaultFields.userFields
+            );
+            log.info("Twitter is ready to publish for: " + me.getUsers().get(0));
+            return true;
+
+        } catch (TwitterException tw) {
+            log.warn("Twitter is not ready to publish: " + tw.getErrorCode() + " " + tw.getStatusCode() + " " + tw.getExceptionCode() + " / " + tw.getMessage());
+            String twitterRefreshToken = account.getTwitterRefreshToken();
+            if (tw.getStatusCode() == 401 && twitterRefreshToken != null) {
+                // Attempt to refresh the access token
+                log.info("Attempting to refresh access token for account: " + account.getUsername());
+
+                try {
+                    twitter4j.conf.ConfigurationBuilder cb = new twitter4j.conf.ConfigurationBuilder().
+                            setDebugEnabled(true).
+                            setOAuthConsumerKey(consumerKey).
+                            setOAuthConsumerSecret(consumerSecret);
+
+                    OAuth2TokenProvider oAuth2TokenProvider = new OAuth2TokenProvider(cb.build());
+
+                    OAuth2TokenProvider.Result result = oAuth2TokenProvider.refreshToken(clientId, twitterRefreshToken);
+                    if (result != null) {
+                        log.info("Refreshed access token for account: " + result);
+                        account.setTwitterAccessToken(result.getAccessToken());
+                        account.setTwitterRefreshToken(result.getRefreshToken());
+                        accountDAO.saveAccount(account);
+                        return true;
+                    } else {
+                        log.warn("Failed to refresh access token for account: " + account.getUsername());
+                        return false;
+                    }
+
+                } catch (Exception e) {
+                    log.warn("Failed to refresh access token for account: " + account.getUsername() + " due to exception: " + e.getMessage());
+                    return false;
+                }
+
+            } else {
+                log.warn("Twitter is not ready to publish for account: " + account.getUsername() + " and no refresh token is available");
+                return false;
+            }
+        }
     }
 
     public boolean isConfigured() {

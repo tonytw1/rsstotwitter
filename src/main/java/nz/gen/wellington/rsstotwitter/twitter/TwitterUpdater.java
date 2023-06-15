@@ -37,6 +37,11 @@ public class TwitterUpdater {
         final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account, destination);
         final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account, destination);
 
+        if (hasExceededFeedRateLimit(tweetsSentInLastHour, tweetsSentInLastTwentyForHours, 0)) {
+            log.info("Feed '" + feed.getUrl() + "' has exceeded maximum per hour or day rate limit; returning");
+            return;
+        }
+
         List<FeedItem> newFeedItems = feedItems.stream().filter(feedItem -> {
             final String guid = feedItem.getGuid();
             final boolean isFreshEnough = isLessThanSevenDaysOld(feedItem);
@@ -47,6 +52,13 @@ public class TwitterUpdater {
         if (newFeedItems.isEmpty()) {
             log.info("No new feed items to process for " + destination.getDisplayName());
             return;
+        }
+
+        if (destination == Destination.TWITTER) {
+            if (!twitterService.isReadyToPublishFor(account)) {
+                log.info("Twitter is not ready to publish; returning");
+                return;
+            }
         }
 
         long sentThisRound = 0;

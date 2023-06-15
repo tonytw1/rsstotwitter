@@ -68,6 +68,7 @@ public class TwitterUpdaterTest {
     @Test
     public void shouldTweetFeedItems() throws IOException {
         when(tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem)).thenReturn(tweetToSend);
+        when(twitterService.isReadyToPublishFor(account)).thenReturn(true);
         when(twitterService.tweet(tweetToSend, account)).thenReturn(sentTweet);
 
         service.updateFeed(account, feed, feedItems, Destination.TWITTER);
