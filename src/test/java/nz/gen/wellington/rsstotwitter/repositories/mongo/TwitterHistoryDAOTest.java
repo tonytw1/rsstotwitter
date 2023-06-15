@@ -38,10 +38,10 @@ public class TwitterHistoryDAOTest {
 
         twitterHistoryDAO.markAsTweeted(account, feedItem, tweet, Destination.TWITTER);
 
-        assertTrue(twitterHistoryDAO.hasAlreadyBeenTweeted(account, link, Destination.TWITTER));
-        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(account, "http://localhost/not-seen-before", Destination.TWITTER));
-        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(account, link, Destination.MASTODON));
-        assertFalse(twitterHistoryDAO.hasAlreadyBeenTweeted(anotherAccount, link, Destination.TWITTER));
+        assertTrue(twitterHistoryDAO.hasAlreadyBeenPublished(account, link, Destination.TWITTER));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenPublished(account, "http://localhost/not-seen-before", Destination.TWITTER));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenPublished(account, link, Destination.MASTODON));
+        assertFalse(twitterHistoryDAO.hasAlreadyBeenPublished(anotherAccount, link, Destination.TWITTER));
     }
 
 }

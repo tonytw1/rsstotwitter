@@ -36,29 +36,33 @@ public class TwitterUpdater {
         log.info("Calling update feed for account '" + account.getUsername() + "' to " + destination + " with " + feedItems.size() + " feed items");
         final long tweetsSentInLastHour = twitterHistoryDAO.getNumberOfTwitsInLastHour(feed, account, destination);
         final long tweetsSentInLastTwentyForHours = twitterHistoryDAO.getNumberOfTwitsInLastTwentyFourHours(feed, account, destination);
-        log.info("Sent to " + destination + " in last hour: " + tweetsSentInLastHour);
-        log.info("Sent to " + destination + " in last 24 hours: " + tweetsSentInLastTwentyForHours);
+
+        List<FeedItem> newFeedItems = feedItems.stream().filter(feedItem -> {
+            final String guid = feedItem.getGuid();
+            final boolean isFreshEnough = isLessThanSevenDaysOld(feedItem);
+            final boolean hasNotAlreadyBePublished = !twitterHistoryDAO.hasAlreadyBeenPublished(account, guid, destination);
+            return isFreshEnough && hasNotAlreadyBePublished;
+        }).toList();
+
+        if (newFeedItems.isEmpty()) {
+            log.info("No new feed items to process for " + destination.getDisplayName());
+            return;
+        }
 
         long sentThisRound = 0;
-        for (FeedItem feedItem : feedItems) {
-            if (hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + sentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + sentThisRound)) {
+        for (FeedItem feedItem : newFeedItems) {
+            if (hasExceededFeedRateLimit(tweetsSentInLastHour, tweetsSentInLastTwentyForHours, sentThisRound)) {
                 log.info("Feed '" + feed.getUrl() + "' has exceeded maximum per hour or day rate limit; returning");
                 return;
             }
 
-            final boolean isFreshEnough = isLessThanSevenDaysOld(feedItem);
-            if (isFreshEnough) {
-                boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account, destination);
-                if (!publisherRateLimitExceeded) {
-                    if (processItem(account, feedItem, destination)) {
-                        sentThisRound++;
-                    }
-                } else {
-                    log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feed item from this publisher");
+            boolean publisherRateLimitExceeded = isPublisherRateLimitExceed(feed, feedItem.getAuthor(), account, destination);
+            if (!publisherRateLimitExceeded) {
+                if (processItem(account, feedItem, destination)) {
+                    sentThisRound++;
                 }
-
             } else {
-                log.debug("Not tweeting item which is not fresh enough: " + feedItem.getGuid());
+                log.info("Publisher '" + feedItem.getAuthor() + "' has exceed the rate limit; skipping feed item from this publisher");
             }
         }
 
@@ -66,47 +70,45 @@ public class TwitterUpdater {
     }
 
     private boolean processItem(Account account, FeedItem feedItem, Destination destination) {
-        final String guid = feedItem.getGuid();
-
-        if (!twitterHistoryDAO.hasAlreadyBeenTweeted(account, guid, destination)) {
-            try {
-                final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
-                if (tweet != null) {
-                    Tweet updatedStatus = null;
-                    if (destination == Destination.TWITTER) {
-                        if (isAccountConnectedToTwitter(account)) {
-                            log.info("Tweeting: " + tweet.getText());
-                            updatedStatus = twitterService.tweet(tweet, account);
-                        }
+        try {
+            final Tweet tweet = tweetFromFeedItemBuilder.buildTweetFromFeedItem(feedItem);
+            if (tweet != null) {
+                Tweet updatedStatus = null;
+                if (destination == Destination.TWITTER) {
+                    if (isAccountConnectedToTwitter(account)) {
+                        log.info("Tweeting: " + tweet.getText());
+                        updatedStatus = twitterService.tweet(tweet, account);
                     }
-                    if (destination == Destination.MASTODON) {
-                        if (isAccountConnectedToMastodon(account)) {
-                            log.info("Tooting: " + tweet.getText());
-                            updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
-                            // Mastodon statuses are returned as HTML; step down to plain text
-                            String plainText = Jsoup.parse(updatedStatus.getText()).text();
-                            updatedStatus.setText(plainText);
-                        }
+                }
+                if (destination == Destination.MASTODON) {
+                    if (isAccountConnectedToMastodon(account)) {
+                        log.info("Tooting: " + tweet.getText());
+                        updatedStatus = mastodonService.post(account.getMastodonAccessToken(), tweet.getText());
+                        // Mastodon statuses are returned as HTML; step down to plain text
+                        String plainText = Jsoup.parse(updatedStatus.getText()).text();
+                        updatedStatus.setText(plainText);
                     }
-
-                    if (updatedStatus != null) {
-                        twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, destination);
-                        return true;
-                    }
-
-                } else {
-                    // TODO do we really need to impose the same formatting restrictions on Twitter and Mastodon?
-                    log.warn("Could not compose tweet for feeditem: " + feedItem);
                 }
 
-            } catch (Exception e) {
-                log.warn("Failed to tweet: " + feedItem.getTitle(), e);
+                if (updatedStatus != null) {
+                    twitterHistoryDAO.markAsTweeted(account, feedItem, updatedStatus, destination);
+                    return true;
+                }
+
+            } else {
+                // TODO do we really need to impose the same formatting restrictions on Twitter and Mastodon?
+                log.warn("Could not compose tweet for feeditem: " + feedItem);
             }
 
-        } else {
-            log.debug("Not tweeting as guid has already been tweeted: " + guid);
+        } catch (Exception e) {
+            log.warn("Failed to tweet: " + feedItem.getTitle(), e);
         }
+
         return false;
+    }
+
+    private boolean hasExceededFeedRateLimit(long tweetsSentInLastHour, long tweetsSentInLastTwentyForHours, long sentThisRound) {
+        return hasExceededMaxTweetsPerHourRateLimit(tweetsSentInLastHour + sentThisRound) || hasExceededMaxTweetsPerDayFeedRateLimit(tweetsSentInLastTwentyForHours + sentThisRound);
     }
 
     private boolean hasExceededMaxTweetsPerHourRateLimit(long tweetsSent) {
@@ -139,5 +141,6 @@ public class TwitterUpdater {
     private boolean isAccountConnectedToTwitter(Account account) {
         return account.getTwitterAccessToken() != null;
     }
+
 
 }

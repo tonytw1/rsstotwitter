@@ -23,7 +23,7 @@ public class TwitterHistoryDAO {
         this.dataStoreFactory = dataStoreFactory;
     }
 
-    public boolean hasAlreadyBeenTweeted(Account account, String guid, Destination destination) {
+    public boolean hasAlreadyBeenPublished(Account account, String guid, Destination destination) {
         return !tweetsForGuid(account, guid, destination).isEmpty();
     }
 
