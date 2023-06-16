@@ -52,7 +52,7 @@ public class LoggedInUserFilter {
     }
 
     private boolean isAccountContentedToTwitter(Account account) {
-        return account.getToken() != null && account.getTokenSecret() != null;
+        return account.getTwitterAccessToken() != null && account.getTwitterRefreshToken() != null;
     }
 
 }

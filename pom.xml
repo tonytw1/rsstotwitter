@@ -113,7 +113,12 @@
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
-            <version>4.1.2</version>
+            <version>4.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.takke</groupId>
+            <artifactId>jp.takke.twitter4j-v2</artifactId>
+            <version>1.4.1</version>
         </dependency>
 
         <dependency>
@@ -160,12 +165,6 @@
             <groupId>org.javatuples</groupId>
             <artifactId>javatuples</artifactId>
             <version>1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.scribejava</groupId>
-            <artifactId>scribejava-apis</artifactId>
-            <version>8.3.2</version>
         </dependency>
 
         <dependency>

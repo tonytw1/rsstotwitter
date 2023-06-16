@@ -1,23 +1,28 @@
 package nz.gen.wellington.rsstotwitter.controllers.signin;
 
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import twitter4j.v1.User;
+import twitter4j.User2;
 
 public class TwitterCredentials {
 
-    private final User user;
-    private final OAuth1AccessToken token;
+    private final User2 user;
+    private final String token;
+    private final String refreshToken;
 
-    public TwitterCredentials(User user, OAuth1AccessToken token) {
+    public TwitterCredentials(User2 user, String token, String refreshToken) {
         this.user = user;
         this.token = token;
+        this.refreshToken = refreshToken;
     }
 
-    public User getUser() {
+    public User2 getUser() {
         return user;
     }
 
-    public OAuth1AccessToken getToken() {
+    public String getToken() {
         return token;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 }
